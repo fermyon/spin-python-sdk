@@ -1,0 +1,6 @@
+[submodule "cpython"]
+        path = cpython
+        url = https://github.com/python/cpython
+[submodule "wasi-vfs"]
+        path = wasi-vfs
+        url = https://github.com/dicej/wasi-vfs

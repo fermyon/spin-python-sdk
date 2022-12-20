@@ -4,6 +4,9 @@ use pyo3::{
 };
 
 fn main() -> PyResult<()> {
+    // Force `wasi_vfs_pack_fs` to be linked in and exported so `wasi-vfs-cli` can do its thing:
+    std::hint::black_box(wasi_vfs::__internal_wasi_vfs_rt_init);
+
     pyo3::prepare_freethreaded_python();
 
     Python::with_gil(|py| {
