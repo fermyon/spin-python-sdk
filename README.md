@@ -51,7 +51,9 @@ Pack the CPython lib directory into the module using `wasi-vfs`:
 
 ```
 (cd wasi-vfs && cargo build --release -p wasi-vfs-cli)
-wasi-vfs/target/release/wasi-vfs pack target/wasm32-wasi/release/python-wasi.wasm --mapdir lib::$(pwd)/cpython/builddir/wasi/install/lib -o target/wasm32-wasi/release/python-wasi-vfs.wasm
+wasi-vfs/target/release/wasi-vfs pack target/wasm32-wasi/release/python-wasi.wasm \
+    --mapdir lib::$(pwd)/cpython/builddir/wasi/install/lib \
+    -o target/wasm32-wasi/release/python-wasi-vfs.wasm
 ```
 
 Finally, run:
