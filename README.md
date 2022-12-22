@@ -30,7 +30,13 @@ make install
 cd ../../..
 ```
 
-Then, build and run this app:
+Then, build the wasi-vfs CLI:
+
+```
+(cd wasi-vfs && cargo build --release -p wasi-vfs-cli)
+```
+
+Finally, build and run this app:
 
 ```
 spin build
