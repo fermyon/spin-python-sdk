@@ -1,17 +1,18 @@
-# python-wasi
+# spin-python-sdk
 
-This is an experiment to build the CPython interpreter as a self-contained,
-WASI-enabled Wasm module with Rust interopability.
+This is an experiment to build a Spin Python SDK using CPython, wasi-vfs, and PyO3.
 
 ## Prerequisites
 
-- CPython build prereqs (e.g. Make, Clang, etc.)
-- Rust (including `wasm32-wasi` target)
+- [CPython](https://github.com/python/cpython) build prereqs (e.g. Make, Clang, etc.)
+- [Rust](https://rustup.rs/) (including `wasm32-wasi` target)
 - [wasi-sdk](https://github.com/WebAssembly/wasi-sdk) v16 or later
+- [Wizer](https://github.com/bytecodealliance/wizer) v1.6.0 or later
+- [Spin](https://github.com/fermyon/spin)
 
 ## Building and Running
 
-First, CPython:
+First, build CPython for wasm32-wasi:
 
 ```
 git submodule update --init --recursive
@@ -29,35 +30,9 @@ make install
 cd ../../..
 ```
 
-Then, this project:
+Then, build and run this app:
 
 ```
-mkdir -p target
-cat > target/config.txt <<EOF
-implementation=CPython
-version=3.11
-shared=false
-abi3=true
-lib_name=python3.11
-pointer_width=32
-build_flags=
-suppress_build_script_link_lines=false
-lib_dir=$(pwd)/cpython/builddir/wasi
-EOF
-PYO3_CONFIG_FILE=$(pwd)/target/config.txt cargo build --release --target=wasm32-wasi
-```
-
-Pack the CPython lib directory into the module using `wasi-vfs`:
-
-```
-(cd wasi-vfs && cargo build --release -p wasi-vfs-cli)
-wasi-vfs/target/release/wasi-vfs pack target/wasm32-wasi/release/python-wasi.wasm \
-    --mapdir lib::$(pwd)/cpython/builddir/wasi/install/lib \
-    -o target/wasm32-wasi/release/python-wasi-vfs.wasm
-```
-
-Finally, run:
-
-```
-wasmtime target/wasm32-wasi/release/python-wasi-vfs.wasm
+spin build
+spin up
 ```
