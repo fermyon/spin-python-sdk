@@ -9,6 +9,7 @@ This is an experiment to build a Spin Python SDK using CPython, wasi-vfs, and Py
 - [wasi-sdk](https://github.com/WebAssembly/wasi-sdk) v16 or later
 - [Wizer](https://github.com/bytecodealliance/wizer) v1.6.0 or later
 - [Spin](https://github.com/fermyon/spin)
+- [rsync](https://rsync.samba.org/) -- used at build time for copying files around; we could replace this with something more portable, if desired
 
 ## Building and Running
 

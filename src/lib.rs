@@ -18,6 +18,7 @@ struct HttpRequest<'a> {
     method: &'a str,
     uri: &'a str,
     headers: Vec<(&'a str, &'a str)>,
+    // todo: this should be a byte slice, but make sure it gets converted to/from Python correctly
     body: Option<&'a str>,
 }
 
@@ -36,6 +37,7 @@ impl IntoPy<PyObject> for HttpRequest<'_> {
 struct HttpResponse {
     status: u16,
     headers: Vec<(String, String)>,
+    // todo: this should be a byte slice, but make sure it gets converted to/from Python correctly
     body: Option<String>,
 }
 
