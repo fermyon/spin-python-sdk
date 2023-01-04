@@ -4,7 +4,7 @@ build: target/config.txt target/lib
 	wasi-vfs/target/release/wasi-vfs pack target/wasm32-wasi/release/python_wasi.wasm \
 		--mapdir lib::$$(pwd)/target/lib \
 		-o target/wasm32-wasi/release/python-wasi-vfs.wasm
-	PYTHONPATH=/py wizer target/wasm32-wasi/release/python-wasi-vfs.wasm \
+	PYTHONUNBUFFERED=1 PYTHONPATH=/py wizer target/wasm32-wasi/release/python-wasi-vfs.wasm \
 		--inherit-env true --wasm-bulk-memory true --allow-wasi --dir py \
 		-o target/wasm32-wasi/release/python-wasi-vfs-wizer.wasm
 
@@ -15,4 +15,6 @@ target/config.txt:
 
 target/lib:
 	mkdir -p $@
-	rsync -a --exclude='*.a' --exclude='*.pyc' --exclude='*.whl' cpython/builddir/wasi/install/lib/python3.11 $@
+	rsync -a --exclude='*.a' --exclude='*.pyc' --exclude='*.whl' --exclude=Makefile \
+		--exclude=Changelog --exclude=NEWS.txt \
+		cpython/builddir/wasi/install/lib/python3.11 $@
