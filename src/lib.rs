@@ -4,36 +4,32 @@ use {
     anyhow::{Error, Result},
     http::{header::HeaderName, HeaderValue},
     once_cell::unsync::OnceCell,
-    pyo3::{FromPyObject, IntoPy, PyErr, PyObject, Python},
+    pyo3::{types::PyModule, PyObject, PyResult, Python},
     spin_sdk::http::{Request, Response},
     std::{ops::Deref, str},
 };
 
 thread_local! {
-    static REQUEST: OnceCell<PyObject> = OnceCell::new();
     static HANDLE_REQUEST: OnceCell<PyObject> = OnceCell::new();
 }
 
-struct HttpRequest<'a> {
-    method: &'a str,
-    uri: &'a str,
-    headers: Vec<(&'a str, &'a str)>,
+#[pyo3::pyclass]
+#[pyo3(name = "Request")]
+struct HttpRequest {
+    #[pyo3(get)]
+    method: String,
+    #[pyo3(get)]
+    uri: String,
+    #[pyo3(get)]
+    headers: Vec<(String, String)>,
     // todo: this should be a byte slice, but make sure it gets converted to/from Python correctly
-    body: Option<&'a str>,
+    #[pyo3(get)]
+    body: Option<String>,
 }
 
-impl IntoPy<PyObject> for HttpRequest<'_> {
-    fn into_py(self, py: Python<'_>) -> PyObject {
-        REQUEST.with(|cell| {
-            cell.get()
-                .unwrap()
-                .call1(py, (self.method, self.uri, self.headers, self.body))
-                .unwrap()
-        })
-    }
-}
-
-#[derive(FromPyObject)]
+#[derive(Clone)]
+#[pyo3::pyclass]
+#[pyo3(name = "Response")]
 struct HttpResponse {
     status: u16,
     headers: Vec<(String, String)>,
@@ -41,17 +37,31 @@ struct HttpResponse {
     body: Option<String>,
 }
 
+#[pyo3::pymethods]
+impl HttpResponse {
+    #[new]
+    fn new(status: u16, headers: Vec<(String, String)>, body: Option<String>) -> Self {
+        Self {
+            status,
+            headers,
+            body,
+        }
+    }
+}
+
+#[pyo3::pymodule]
+#[pyo3(name = "spin_http")]
+fn spin_http_module(_py: Python<'_>, module: &PyModule) -> PyResult<()> {
+    module.add_class::<HttpRequest>()?;
+    module.add_class::<HttpResponse>()
+}
+
 fn do_init() -> Result<()> {
+    pyo3::append_to_inittab!(spin_http_module);
+
     pyo3::prepare_freethreaded_python();
 
     Python::with_gil(|py| {
-        REQUEST.with(|cell| {
-            cell.set(py.import("spin_http")?.getattr("Request")?.into())
-                .unwrap();
-
-            Ok::<_, PyErr>(())
-        })?;
-
         HANDLE_REQUEST.with(|cell| {
             cell.set(py.import("app")?.getattr("handle_request")?.into())
                 .unwrap();
@@ -72,17 +82,22 @@ pub extern "C" fn init() {
 fn handle(request: Request) -> Result<Response> {
     let uri = request.uri().to_string();
     let request = HttpRequest {
-        method: request.method().as_str(),
-        uri: &uri,
+        method: request.method().as_str().to_owned(),
+        uri,
         headers: request
             .headers()
             .iter()
-            .map(|(k, v)| Ok((k.as_str(), str::from_utf8(v.as_bytes())?)))
+            .map(|(k, v)| {
+                Ok((
+                    k.as_str().to_owned(),
+                    str::from_utf8(v.as_bytes())?.to_owned(),
+                ))
+            })
             .collect::<Result<_>>()?,
         body: request
             .body()
             .as_ref()
-            .map(|bytes| Ok::<_, Error>(str::from_utf8(bytes)?))
+            .map(|bytes| Ok::<_, Error>(str::from_utf8(bytes)?.to_owned()))
             .transpose()?,
     };
 
