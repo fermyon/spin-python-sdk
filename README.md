@@ -10,6 +10,7 @@ This is an experiment to build a Spin Python SDK using CPython, wasi-vfs, and Py
 - [Wizer](https://github.com/bytecodealliance/wizer) v1.6.0 or later
 - [Spin](https://github.com/fermyon/spin)
 - [rsync](https://rsync.samba.org/) -- used at build time for copying files around; we could replace this with something more portable, if desired
+- [pipenv](https://pypi.org/project/pipenv/) for installing Python project dependencies
 
 ## Building and Running
 
@@ -40,6 +41,7 @@ Then, build the wasi-vfs CLI:
 Finally, build and run this app:
 
 ```
+(cd py && pipenv install)
 spin build
 spin up
 ```

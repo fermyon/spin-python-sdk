@@ -4,8 +4,10 @@ build: target/config.txt target/lib
 	env -i wasi-vfs/target/release/wasi-vfs pack target/wasm32-wasi/release/python_wasi.wasm \
 		--mapdir lib::$$(pwd)/target/lib \
 		-o target/wasm32-wasi/release/python-wasi-vfs.wasm
-	env -i PYTHONUNBUFFERED=1 PYTHONPATH=/py $$(which wizer) target/wasm32-wasi/release/python-wasi-vfs.wasm \
+	env -i PYTHONUNBUFFERED=1 PYTHONPATH=/py:/site-packages \
+		$$(which wizer) target/wasm32-wasi/release/python-wasi-vfs.wasm \
 		--inherit-env true --wasm-bulk-memory true --allow-wasi --dir py \
+		--mapdir site-packages::$$(cd py && find $$(pipenv --venv)/lib -name site-packages | head -1) \
 		-o target/wasm32-wasi/release/python-wasi-vfs-wizer.wasm
 
 target/config.txt:
