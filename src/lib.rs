@@ -7,7 +7,7 @@ use {
     once_cell::unsync::OnceCell,
     pyo3::{
         exceptions::PyAssertionError,
-        types::{PyBytes, PyModule},
+        types::{PyBytes, PyMapping, PyModule},
         Py, PyErr, PyObject, PyResult, Python,
     },
     spin_sdk::{
@@ -15,11 +15,12 @@ use {
         http::{Request, Response},
         outbound_http, redis,
     },
-    std::{ops::Deref, str},
+    std::{env, ops::Deref, str},
 };
 
 thread_local! {
     static HANDLE_REQUEST: OnceCell<PyObject> = OnceCell::new();
+    static ENVIRON: OnceCell<Py<PyMapping>> = OnceCell::new();
 }
 
 fn bytes(py: Python<'_>, src: &[u8]) -> PyResult<Py<PyBytes>> {
@@ -203,6 +204,24 @@ fn do_init() -> Result<()> {
             cell.set(py.import("app")?.getattr("handle_request")?.into())
                 .unwrap();
 
+            Ok::<_, PyErr>(())
+        })?;
+
+        ENVIRON.with(|cell| {
+            let environ = py
+                .import("os")?
+                .getattr("environ")?
+                .downcast::<PyMapping>()
+                .unwrap();
+
+            let keys = environ.keys()?;
+
+            for i in 0..keys.len()? {
+                environ.del_item(keys.get_item(i)?)?;
+            }
+
+            cell.set(environ.into()).unwrap();
+
             Ok(())
         })
     })
@@ -241,6 +260,16 @@ fn handle(request: Request) -> Result<Response> {
                 .map(|buffer| bytes(py, buffer))
                 .transpose()?,
         };
+
+        ENVIRON.with(|cell| {
+            let environ = cell.get().unwrap().as_ref(py);
+
+            for (k, v) in env::vars() {
+                environ.set_item(k, v)?;
+            }
+
+            Ok::<(), PyErr>(())
+        })?;
 
         let response = HANDLE_REQUEST.with(|cell| {
             cell.get()

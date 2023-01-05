@@ -1,10 +1,10 @@
 .PHONY: build
 build: target/config.txt target/lib
 	PYO3_CONFIG_FILE=$$(pwd)/target/config.txt cargo build --release --target=wasm32-wasi
-	wasi-vfs/target/release/wasi-vfs pack target/wasm32-wasi/release/python_wasi.wasm \
+	env -i wasi-vfs/target/release/wasi-vfs pack target/wasm32-wasi/release/python_wasi.wasm \
 		--mapdir lib::$$(pwd)/target/lib \
 		-o target/wasm32-wasi/release/python-wasi-vfs.wasm
-	PYTHONUNBUFFERED=1 PYTHONPATH=/py wizer target/wasm32-wasi/release/python-wasi-vfs.wasm \
+	env -i PYTHONUNBUFFERED=1 PYTHONPATH=/py $$(which wizer) target/wasm32-wasi/release/python-wasi-vfs.wasm \
 		--inherit-env true --wasm-bulk-memory true --allow-wasi --dir py \
 		-o target/wasm32-wasi/release/python-wasi-vfs-wizer.wasm
 
