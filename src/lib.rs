@@ -2,10 +2,13 @@
 
 use {
     anyhow::{Error, Result},
-    http::{header::HeaderName, HeaderValue},
+    http::{header::HeaderName, request, HeaderValue},
     once_cell::unsync::OnceCell,
-    pyo3::{types::PyModule, PyObject, PyResult, Python},
-    spin_sdk::http::{Request, Response},
+    pyo3::{exceptions::PyAssertionError, types::PyModule, PyErr, PyObject, PyResult, Python},
+    spin_sdk::{
+        http::{Request, Response},
+        outbound_http,
+    },
     std::{ops::Deref, str},
 };
 
@@ -13,27 +16,49 @@ thread_local! {
     static HANDLE_REQUEST: OnceCell<PyObject> = OnceCell::new();
 }
 
+#[derive(Clone)]
 #[pyo3::pyclass]
 #[pyo3(name = "Request")]
 struct HttpRequest {
-    #[pyo3(get)]
+    #[pyo3(get, set)]
     method: String,
-    #[pyo3(get)]
+    #[pyo3(get, set)]
     uri: String,
-    #[pyo3(get)]
+    #[pyo3(get, set)]
     headers: Vec<(String, String)>,
     // todo: this should be a byte slice, but make sure it gets converted to/from Python correctly
-    #[pyo3(get)]
+    #[pyo3(get, set)]
     body: Option<String>,
+}
+
+#[pyo3::pymethods]
+impl HttpRequest {
+    #[new]
+    fn new(
+        method: String,
+        uri: String,
+        headers: Vec<(String, String)>,
+        body: Option<String>,
+    ) -> Self {
+        Self {
+            method,
+            uri,
+            headers,
+            body,
+        }
+    }
 }
 
 #[derive(Clone)]
 #[pyo3::pyclass]
 #[pyo3(name = "Response")]
 struct HttpResponse {
+    #[pyo3(get, set)]
     status: u16,
+    #[pyo3(get, set)]
     headers: Vec<(String, String)>,
     // todo: this should be a byte slice, but make sure it gets converted to/from Python correctly
+    #[pyo3(get, set)]
     body: Option<String>,
 }
 
@@ -49,9 +74,61 @@ impl HttpResponse {
     }
 }
 
+struct Anyhow(Error);
+
+impl From<Anyhow> for PyErr {
+    fn from(Anyhow(error): Anyhow) -> Self {
+        PyAssertionError::new_err(format!("{error:?}"))
+    }
+}
+
+impl<T: std::error::Error + Send + Sync + 'static> From<T> for Anyhow {
+    fn from(error: T) -> Self {
+        Self(error.into())
+    }
+}
+
+#[pyo3::pyfunction]
+fn send(request: HttpRequest) -> Result<HttpResponse, Anyhow> {
+    let mut builder = request::Builder::new()
+        .method(request.method.deref())
+        .uri(request.uri.deref());
+
+    if let Some(headers) = builder.headers_mut() {
+        for (key, value) in &request.headers {
+            headers.insert(
+                HeaderName::from_bytes(key.as_bytes())?,
+                HeaderValue::from_bytes(value.as_bytes())?,
+            );
+        }
+    }
+
+    let response = outbound_http::send_request(
+        builder.body(request.body.map(|buffer| buffer.into_bytes().into()))?,
+    )?;
+
+    Ok(HttpResponse {
+        status: response.status().as_u16(),
+        headers: response
+            .headers()
+            .iter()
+            .map(|(key, value)| {
+                Ok((
+                    key.as_str().to_owned(),
+                    str::from_utf8(value.as_bytes())?.to_owned(),
+                ))
+            })
+            .collect::<Result<_, Anyhow>>()?,
+        body: response
+            .into_body()
+            .map(|bytes| String::from_utf8_lossy(&bytes).into_owned()),
+    })
+}
+
 #[pyo3::pymodule]
 #[pyo3(name = "spin_http")]
 fn spin_http_module(_py: Python<'_>, module: &PyModule) -> PyResult<()> {
+    module.add_function(pyo3::wrap_pyfunction!(send, module)?)?;
     module.add_class::<HttpRequest>()?;
     module.add_class::<HttpResponse>()
 }
