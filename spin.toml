@@ -9,6 +9,7 @@ version = "0.1.0"
 id = "spin-webrtc"
 environment = { hello = "teapot" }
 config = { redis_address = "redis://127.0.0.1:6379" }
+files = [{ source = "static-assets/", destination = "/" }]
 source = "target/wasm32-wasi/release/python-wasi-vfs-wizer.wasm"
 allowed_http_hosts = ["insecure:allow-all"]
 [component.trigger]
