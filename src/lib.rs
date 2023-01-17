@@ -159,6 +159,13 @@ fn spin_http_module(_py: Python<'_>, module: &PyModule) -> PyResult<()> {
 }
 
 #[pyo3::pyfunction]
+fn redis_del(address: String, keys: Vec<String>) -> PyResult<i64> {
+    let keys = keys.iter().map(|s| s.as_str()).collect::<Vec<_>>();
+    redis::del(&address, &keys)
+        .map_err(|_| PyErr::from(Anyhow(anyhow!("Error executing Redis set command"))))
+}
+
+#[pyo3::pyfunction]
 #[pyo3(pass_module)]
 fn redis_get(module: &PyModule, address: String, key: String) -> PyResult<Py<PyBytes>> {
     bytes(
@@ -169,16 +176,55 @@ fn redis_get(module: &PyModule, address: String, key: String) -> PyResult<Py<PyB
 }
 
 #[pyo3::pyfunction]
+fn redis_incr(address: String, key: String) -> PyResult<i64> {
+    redis::incr(&address, &key)
+        .map_err(|_| PyErr::from(Anyhow(anyhow!("Error executing Redis incr command"))))
+}
+
+#[pyo3::pyfunction]
+fn redis_publish(address: String, channel: String, payload: &PyBytes) -> PyResult<()> {
+    redis::publish(&address, &channel, payload.as_bytes())
+        .map_err(|_| PyErr::from(Anyhow(anyhow!("Error executing Redis publish command"))))
+}
+
+#[pyo3::pyfunction]
+fn redis_sadd(address: String, key: String, values: Vec<String>) -> PyResult<i64> {
+    let values = values.iter().map(|s| s.as_str()).collect::<Vec<_>>();
+    redis::sadd(&address, &key, &values)
+        .map_err(|_| PyErr::from(Anyhow(anyhow!("Error executing Redis set command"))))
+}
+
+#[pyo3::pyfunction]
 fn redis_set(address: String, key: String, value: &PyBytes) -> PyResult<()> {
     redis::set(&address, &key, value.as_bytes())
+        .map_err(|_| PyErr::from(Anyhow(anyhow!("Error executing Redis set command"))))
+}
+
+#[pyo3::pyfunction]
+fn redis_smembers(address: String, key: String) -> PyResult<Vec<String>> {
+    redis::smembers(&address, &key)
+        .map_err(|_| PyErr::from(Anyhow(anyhow!("Error executing Redis set command"))))
+}
+
+#[pyo3::pyfunction]
+fn redis_srem(address: String, key: String, values: Vec<String>) -> PyResult<i64> {
+    let values = values.iter().map(|s| s.as_str()).collect::<Vec<_>>();
+    redis::srem(&address, &key, &values)
         .map_err(|_| PyErr::from(Anyhow(anyhow!("Error executing Redis set command"))))
 }
 
 #[pyo3::pymodule]
 #[pyo3(name = "spin_redis")]
 fn spin_redis_module(_py: Python<'_>, module: &PyModule) -> PyResult<()> {
+    module.add_function(pyo3::wrap_pyfunction!(redis_del, module)?)?;
     module.add_function(pyo3::wrap_pyfunction!(redis_get, module)?)?;
-    module.add_function(pyo3::wrap_pyfunction!(redis_set, module)?)
+    module.add_function(pyo3::wrap_pyfunction!(redis_incr, module)?)?;
+    module.add_function(pyo3::wrap_pyfunction!(redis_publish, module)?)?;
+    module.add_function(pyo3::wrap_pyfunction!(redis_sadd, module)?)?;
+    module.add_function(pyo3::wrap_pyfunction!(redis_set, module)?)?;
+    module.add_function(pyo3::wrap_pyfunction!(redis_smembers, module)?)?;
+    module.add_function(pyo3::wrap_pyfunction!(redis_srem, module)?)
+    
 }
 
 #[pyo3::pyfunction]
