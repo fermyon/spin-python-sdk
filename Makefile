@@ -1,3 +1,5 @@
+WASI_SDK_PATH ?= /opt/wasi-sdk
+
 .PHONY: build
 build: target/config.txt target/lib
 	PYO3_CONFIG_FILE=$$(pwd)/target/config.txt cargo build --release --target=wasm32-wasi
