@@ -19,7 +19,7 @@ def handle_request(request):
     print(f"And here's some TOML: {toml.loads(some_toml)}")
 
     my_file = open("/foo.txt", "r")
-    print(f"And here's the contents of foo.txt: {my_file.read()}")
+    print(f"And here's the content of foo.txt: {my_file.read()}")
 
     response = http_send(Request("GET", "https://some-random-api.ml/facts/dog", [], None))
     print(f"Got dog fact: {str(response.body, 'utf-8')}")
