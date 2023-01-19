@@ -224,7 +224,6 @@ fn spin_redis_module(_py: Python<'_>, module: &PyModule) -> PyResult<()> {
     module.add_function(pyo3::wrap_pyfunction!(redis_set, module)?)?;
     module.add_function(pyo3::wrap_pyfunction!(redis_smembers, module)?)?;
     module.add_function(pyo3::wrap_pyfunction!(redis_srem, module)?)
-    
 }
 
 #[pyo3::pyfunction]
@@ -275,8 +274,6 @@ fn do_init() -> Result<()> {
 
 #[export_name = "wizer.initialize"]
 pub extern "C" fn init() {
-    std::hint::black_box(wasi_vfs::__internal_wasi_vfs_rt_init);
-
     do_init().unwrap();
 }
 

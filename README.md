@@ -1,15 +1,13 @@
 # spin-python-sdk
 
-This is an experiment to build a Spin Python SDK using CPython, wasi-vfs, and PyO3.
+This is an experiment to build a Spin Python SDK using CPython, Wizer, and PyO3.
 
 ## Prerequisites
 
 - [CPython](https://github.com/python/cpython) build prereqs (e.g. Make, Clang, etc.)
 - [Rust](https://rustup.rs/) (including `wasm32-wasi` target)
-- [wasi-sdk](https://github.com/WebAssembly/wasi-sdk) v16 or later
 - [Wizer](https://github.com/bytecodealliance/wizer) v1.6.0 or later
 - [Spin](https://github.com/fermyon/spin)
-- [rsync](https://rsync.samba.org/) -- used at build time for copying files around; we could replace this with something more portable, if desired
 - [pipenv](https://pypi.org/project/pipenv/) for installing Python project dependencies
 
 ## Building and Running
@@ -32,13 +30,7 @@ make install
 cd ../../..
 ```
 
-Then, build the wasi-vfs CLI:
-
-```
-(cd wasi-vfs && cargo build --release -p wasi-vfs-cli)
-```
-
-Finally, build and run this app:
+Then, build and run this app:
 
 ```
 (cd py && pipenv install)
