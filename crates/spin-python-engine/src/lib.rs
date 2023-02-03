@@ -246,8 +246,16 @@ fn do_init() -> Result<()> {
 
     Python::with_gil(|py| {
         HANDLE_REQUEST.with(|cell| {
-            cell.set(py.import("app")?.getattr("handle_request")?.into())
-                .unwrap();
+            cell.set(
+                py.import(
+                    env::var("SPIN_PYTHON_APP_NAME")
+                        .map_err(Anyhow::from)?
+                        .deref(),
+                )?
+                .getattr("handle_request")?
+                .into(),
+            )
+            .unwrap();
 
             Ok::<_, PyErr>(())
         })?;

@@ -1,22 +1,23 @@
 WASI_SDK_PATH ?= /opt/wasi-sdk
 
-.PHONY: build
-build: target/config.txt
-	PYO3_CONFIG_FILE=$$(pwd)/target/config.txt cargo build --release --target=wasm32-wasi
-	env -i PYTHONUNBUFFERED=1 \
-		PYTHONHOME=/python \
-		PYTHONPATH=/python:/py:/site-packages \
-		$$(which wizer) \
-		target/wasm32-wasi/release/python_wasi.wasm \
-		--inherit-env true \
-		--wasm-bulk-memory true \
-		--allow-wasi \
-		--dir py \
-		--mapdir python::$$(pwd)/cpython/builddir/wasi/install/lib/python3.11 \
-		--mapdir site-packages::$$(cd py && find $$(pipenv --venv)/lib -name site-packages | head -1) \
-		-o target/wasm32-wasi/release/python-wasi-wizer.wasm
+target/release/spin-python: \
+		target/wasm32-wasi/release/spin_python_engine.wasm \
+		crates/spin-python-cli/build.rs \
+		crates/spin-python-cli/src/main.rs
+	cd crates/spin-python-cli && \
+	SPIN_PYTHON_ENGINE_PATH=../../$< \
+	SPIN_PYTHON_CORE_LIBRARY_PATH=$$(pwd)/../../cpython/builddir/wasi/install/lib/python3.11 \
+	cargo build --release $(BUILD_TARGET)
 
-target/config.txt:
+target/wasm32-wasi/release/spin_python_engine.wasm: \
+		crates/spin-python-engine/src/lib.rs \
+		crates/spin-python-engine/build.rs \
+		target/pyo3-config.txt
+	cd crates/spin-python-engine && \
+	PYO3_CONFIG_FILE=$$(pwd)/../../target/config.txt \
+	cargo build --release --target=wasm32-wasi
+
+target/pyo3-config.txt: crates/spin-python-engine/pyo3-config.txt
 	mkdir -p target
-	cp config.txt target
+	cp $< target
 	echo "lib_dir=$$(pwd)/cpython/builddir/wasi" >> $@

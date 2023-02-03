@@ -1,18 +1,18 @@
 spin_version = "1"
 authors = ["Fermyon Engineering <engineering@fermyon.com>"]
-description = "Spin Python SDK proof-of-concept"
-name = "python-sdk-poc"
+description = "Spin Python SDK example"
+name = "python-sdk-example"
 trigger = { type = "http", base = "/" }
 version = "0.1.0"
 
 [[component]]
-id = "spin-webrtc"
+id = "python-sdk-example"
 environment = { hello = "teapot" }
 config = { redis_address = "redis://127.0.0.1:6379" }
 files = [{ source = "static-assets/", destination = "/" }]
-source = "target/wasm32-wasi/release/python-wasi-wizer.wasm"
+source = "app.wasm"
 allowed_http_hosts = ["insecure:allow-all"]
 [component.trigger]
 route = "/..."
 [component.build]
-command = "make"
+command = "../../target/release/spin-python app -o app.wasm"
