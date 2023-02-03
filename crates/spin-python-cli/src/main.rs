@@ -25,7 +25,7 @@ struct Options {
     /// `PYTHONPATH` for specifying directory containing the app and optionally other directories containing
     /// dependencies.
     ///
-    /// If `pipenv` is in `PATH` and `pipenv --venv` produces a path containing a `site-packages` subdirectory,
+    /// If `pipenv` is in `$PATH` and `pipenv --venv` produces a path containing a `site-packages` subdirectory,
     /// that directory will be appended to this value as a convenience for `pipenv` users.
     #[arg(short = 'p', long, default_value = ".")]
     python_path: String,
@@ -132,26 +132,27 @@ fn main() -> Result<()> {
 fn find_site_packages() -> Result<Option<PathBuf>> {
     Ok(match Command::new("pipenv").arg("--venv").output() {
         Ok(output) => {
-            if !output.status.success() {
-                bail!(
-                    "Error running pipenv: {}",
-                    String::from_utf8_lossy(&output.stderr)
-                );
-            }
+            if output.status.success() {
+                let dir = Path::new(str::from_utf8(&output.stdout)?.trim()).join("lib");
 
-            let dir = Path::new(str::from_utf8(&output.stdout)?.trim()).join("lib");
-
-            if let Some(site_packages) = find_dir("site-packages", &dir)? {
-                Some(site_packages)
+                if let Some(site_packages) = find_dir("site-packages", &dir)? {
+                    Some(site_packages)
+                } else {
+                    eprintln!(
+                        "warning: site-packages directory not found under {}",
+                        dir.display()
+                    );
+                    None
+                }
             } else {
-                eprintln!(
-                    "warning: site-packages directory not found under {}",
-                    dir.display()
-                );
+                // `pipenv` is in `$PATH`, but this app does not appear to be using it
                 None
             }
         }
-        Err(_) => None,
+        Err(_) => {
+            // `pipenv` is not in `$PATH -- assume this app isn't using it
+            None
+        }
     })
 }
 
