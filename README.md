@@ -30,10 +30,17 @@ make install
 cd ../../..
 ```
 
-Then, build and run this app:
+Then, build the `spin-python-cli`:
 
 ```
-(cd py && pipenv install)
+make
+```
+
+Finally, build and run the example app:
+
+```
+cd examples/hello
+pipenv install
 spin build
 spin up
 ```
