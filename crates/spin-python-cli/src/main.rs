@@ -139,12 +139,15 @@ fn find_site_packages() -> Result<Option<PathBuf>> {
                 );
             }
 
-            let dir = str::from_utf8(&output.stdout)?.trim();
+            let dir = Path::new(str::from_utf8(&output.stdout)?.trim()).join("lib");
 
-            if let Some(site_packages) = find("site-packages", &Path::new(dir).join("lib"))? {
+            if let Some(site_packages) = find_dir("site-packages", &dir)? {
                 Some(site_packages)
             } else {
-                eprintln!("warning: site-packages directory not found under {dir}");
+                eprintln!(
+                    "warning: site-packages directory not found under {}",
+                    dir.display()
+                );
                 None
             }
         }
@@ -152,7 +155,7 @@ fn find_site_packages() -> Result<Option<PathBuf>> {
     })
 }
 
-fn find(name: &str, path: &Path) -> Result<Option<PathBuf>> {
+fn find_dir(name: &str, path: &Path) -> Result<Option<PathBuf>> {
     if path.is_dir() {
         match path.file_name().and_then(|name| name.to_str()) {
             Some(this_name) if this_name == name => {
@@ -160,7 +163,7 @@ fn find(name: &str, path: &Path) -> Result<Option<PathBuf>> {
             }
             _ => {
                 for entry in fs::read_dir(path)? {
-                    if let Some(path) = find(name, &entry?.path())? {
+                    if let Some(path) = find_dir(name, &entry?.path())? {
                         return Ok(Some(path));
                     }
                 }
