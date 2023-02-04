@@ -27,14 +27,14 @@ fn main() -> Result<()> {
 fn stubs_for_clippy() -> Result<()> {
     println!("cargo:warning=using stubbed engine and core library for static analysis purposes...");
 
-    let engine_path = PathBuf::from(env::var_os("OUT_DIR").unwrap()).join("engine.wasm.zstd");
+    let engine_path = PathBuf::from(env::var_os("OUT_DIR").unwrap()).join("engine.wasm.zst");
 
     if !engine_path.exists() {
         Encoder::new(File::create(engine_path)?, ZSTD_COMPRESSION_LEVEL)?.do_finish()?;
     }
 
     let core_library_path =
-        PathBuf::from(env::var_os("OUT_DIR").unwrap()).join("python-lib.tar.zstd");
+        PathBuf::from(env::var_os("OUT_DIR").unwrap()).join("python-lib.tar.zst");
 
     if !core_library_path.exists() {
         Builder::new(Encoder::new(
@@ -63,7 +63,7 @@ fn package_engine_and_core_library() -> Result<()> {
 
     if engine_path.exists() {
         let copied_engine_path =
-            PathBuf::from(env::var("OUT_DIR").unwrap()).join("engine.wasm.zstd");
+            PathBuf::from(env::var("OUT_DIR").unwrap()).join("engine.wasm.zst");
 
         let mut encoder = Encoder::new(File::create(copied_engine_path)?, ZSTD_COMPRESSION_LEVEL)?;
         io::copy(&mut File::open(engine_path)?, &mut encoder)?;
@@ -86,7 +86,7 @@ fn package_engine_and_core_library() -> Result<()> {
 
     if core_library_path.exists() {
         let copied_core_library_path =
-            PathBuf::from(env::var("OUT_DIR").unwrap()).join("python-lib.tar.zstd");
+            PathBuf::from(env::var("OUT_DIR").unwrap()).join("python-lib.tar.zst");
 
         let mut builder = Builder::new(Encoder::new(
             File::create(copied_core_library_path)?,

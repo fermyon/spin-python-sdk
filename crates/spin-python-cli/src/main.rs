@@ -81,7 +81,7 @@ fn main() -> Result<()> {
             &options.output,
             wizer.run(&zstd::decode_all(Cursor::new(include_bytes!(concat!(
                 env!("OUT_DIR"),
-                "/engine.wasm.zstd"
+                "/engine.wasm.zst"
             ))))?)?,
         )?;
     } else {
@@ -91,7 +91,7 @@ fn main() -> Result<()> {
 
         Archive::new(Decoder::new(Cursor::new(include_bytes!(concat!(
             env!("OUT_DIR"),
-            "/python-lib.tar.zstd"
+            "/python-lib.tar.zst"
         ))))?)
         .unpack(temp.path())?;
 
