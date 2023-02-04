@@ -14,7 +14,7 @@ target/wasm32-wasi/release/spin_python_engine.wasm: \
 		crates/spin-python-engine/build.rs \
 		target/pyo3-config.txt
 	cd crates/spin-python-engine && \
-	PYO3_CONFIG_FILE=$$(pwd)/../../target/config.txt \
+	PYO3_CONFIG_FILE=$$(pwd)/../../target/pyo3-config.txt \
 	cargo build --release --target=wasm32-wasi
 
 target/pyo3-config.txt: crates/spin-python-engine/pyo3-config.txt
