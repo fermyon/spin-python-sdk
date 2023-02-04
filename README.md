@@ -7,7 +7,6 @@ This is an experiment to build a Spin Python SDK using CPython, Wizer, and PyO3.
 - [WASI SDK](https://github.com/WebAssembly/wasi-sdk) v16 or later, installed in /opt/wasi-sdk
 - [CPython](https://github.com/python/cpython) build prereqs (e.g. Make, Clang, etc.)
 - [Rust](https://rustup.rs/) (including `wasm32-wasi` target)
-- [Wizer](https://github.com/bytecodealliance/wizer) v1.6.0 or later
 - [Spin](https://github.com/fermyon/spin)
 - [pipenv](https://pypi.org/project/pipenv/) for installing Python project dependencies
 
