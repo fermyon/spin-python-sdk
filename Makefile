@@ -20,4 +20,8 @@ target/wasm32-wasi/release/spin_python_engine.wasm: \
 target/pyo3-config.txt: crates/spin-python-engine/pyo3-config.txt
 	mkdir -p target
 	cp $< target
-	echo "lib_dir=$$(pwd)/cpython/builddir/wasi" >> $@
+	if which cygpath > /dev/null; then \
+	echo "lib_dir=$$(cygpath -w $$(pwd)/cpython/builddir/wasi)" >> $@; \
+	else \
+	echo "lib_dir=$$(pwd)/cpython/builddir/wasi" >> $@; \
+	fi
