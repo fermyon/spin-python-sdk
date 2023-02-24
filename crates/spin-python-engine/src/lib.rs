@@ -8,12 +8,13 @@ use {
     pyo3::{
         exceptions::PyAssertionError,
         types::{PyBytes, PyMapping, PyModule},
-        Py, PyErr, PyObject, PyResult, Python,
+        Py, PyAny, PyErr, PyObject, PyResult, Python, ToPyObject,
     },
     spin_sdk::{
         config,
         http::{Request, Response},
-        outbound_http, redis,
+        key_value, outbound_http,
+        redis::{self, RedisParameter, RedisResult},
     },
     std::{env, ops::Deref, str},
 };
@@ -84,6 +85,40 @@ impl HttpResponse {
             headers,
             body,
         }
+    }
+}
+
+#[derive(Clone)]
+#[pyo3::pyclass]
+#[pyo3(name = "Store")]
+struct Store {
+    inner: key_value::Store,
+}
+
+#[pyo3::pymethods]
+impl Store {
+    fn get(&self, py: Python<'_>, key: String) -> PyResult<PyObject> {
+        match self.inner.get(key) {
+            Ok(v) => bytes(py, &v).map(PyObject::from),
+            Err(key_value::Error::NoSuchKey) => Ok(py.None()),
+            Err(e) => Err(PyErr::from(Anyhow::from(e))),
+        }
+    }
+
+    fn set(&self, key: String, value: &PyBytes) -> Result<(), Anyhow> {
+        self.inner.set(key, value.as_bytes()).map_err(Anyhow::from)
+    }
+
+    fn delete(&self, key: String) -> Result<(), Anyhow> {
+        self.inner.delete(key).map_err(Anyhow::from)
+    }
+
+    fn exists(&self, key: String) -> Result<bool, Anyhow> {
+        self.inner.exists(key).map_err(Anyhow::from)
+    }
+
+    fn get_keys(&self) -> Result<Vec<String>, Anyhow> {
+        self.inner.get_keys().map_err(Anyhow::from)
     }
 }
 
@@ -213,6 +248,45 @@ fn redis_srem(address: String, key: String, values: Vec<String>) -> PyResult<i64
         .map_err(|_| PyErr::from(Anyhow(anyhow!("Error executing Redis set command"))))
 }
 
+#[pyo3::pyfunction]
+#[pyo3(pass_module)]
+fn redis_execute(
+    module: &PyModule,
+    address: String,
+    command: String,
+    arguments: Vec<&PyAny>,
+) -> PyResult<Vec<PyObject>> {
+    let arguments = arguments
+        .iter()
+        .map(|v| {
+            if let Ok(v) = v.extract::<i64>() {
+                Ok(RedisParameter::Int64(v))
+            } else if let Ok(v) = v.downcast::<PyBytes>() {
+                Ok(RedisParameter::Binary(v.as_bytes()))
+            } else {
+                Err(PyErr::from(Anyhow(anyhow!(
+                    "Unable to use {v:?} as a Redis `execute` argument \
+                     -- expected `int` or `bytes`"
+                ))))
+            }
+        })
+        .collect::<PyResult<Vec<_>>>()?;
+
+    redis::execute(&address, &command, &arguments)
+        .map_err(|_| PyErr::from(Anyhow(anyhow!("Error executing Redis set command"))))
+        .and_then(|results| {
+            results
+                .into_iter()
+                .map(|v| match v {
+                    RedisResult::Nil => Ok(module.py().None()),
+                    RedisResult::Status(v) => Ok(v.to_object(module.py())),
+                    RedisResult::Int64(v) => Ok(v.to_object(module.py())),
+                    RedisResult::Binary(v) => bytes(module.py(), &v).map(PyObject::from),
+                })
+                .collect::<PyResult<_>>()
+        })
+}
+
 #[pyo3::pymodule]
 #[pyo3(name = "spin_redis")]
 fn spin_redis_module(_py: Python<'_>, module: &PyModule) -> PyResult<()> {
@@ -223,7 +297,29 @@ fn spin_redis_module(_py: Python<'_>, module: &PyModule) -> PyResult<()> {
     module.add_function(pyo3::wrap_pyfunction!(redis_sadd, module)?)?;
     module.add_function(pyo3::wrap_pyfunction!(redis_set, module)?)?;
     module.add_function(pyo3::wrap_pyfunction!(redis_smembers, module)?)?;
-    module.add_function(pyo3::wrap_pyfunction!(redis_srem, module)?)
+    module.add_function(pyo3::wrap_pyfunction!(redis_srem, module)?)?;
+    module.add_function(pyo3::wrap_pyfunction!(redis_execute, module)?)
+}
+
+#[pyo3::pyfunction]
+fn kv_open(name: String) -> Result<Store, Anyhow> {
+    Ok(Store {
+        inner: key_value::Store::open(name).map_err(Anyhow::from)?,
+    })
+}
+
+#[pyo3::pyfunction]
+fn kv_open_default() -> Result<Store, Anyhow> {
+    Ok(Store {
+        inner: key_value::Store::open_default().map_err(Anyhow::from)?,
+    })
+}
+
+#[pyo3::pymodule]
+#[pyo3(name = "spin_key_value")]
+fn spin_key_value_module(_py: Python<'_>, module: &PyModule) -> PyResult<()> {
+    module.add_function(pyo3::wrap_pyfunction!(kv_open, module)?)?;
+    module.add_function(pyo3::wrap_pyfunction!(kv_open_default, module)?)
 }
 
 #[pyo3::pyfunction]
@@ -241,6 +337,7 @@ fn do_init() -> Result<()> {
     pyo3::append_to_inittab!(spin_http_module);
     pyo3::append_to_inittab!(spin_redis_module);
     pyo3::append_to_inittab!(spin_config_module);
+    pyo3::append_to_inittab!(spin_key_value_module);
 
     pyo3::prepare_freethreaded_python();
 

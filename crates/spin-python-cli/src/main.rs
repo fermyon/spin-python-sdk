@@ -74,7 +74,7 @@ fn main() -> Result<()> {
 
         wizer.map_dir("python", &options.python_home);
 
-        env::set_var("PYTHONPATH", &format!("/python:{python_path}"));
+        env::set_var("PYTHONPATH", format!("/python:{python_path}"));
         env::set_var("PYTHONHOME", "/python");
 
         fs::write(
@@ -110,8 +110,7 @@ fn main() -> Result<()> {
             .env("SPIN_PYTHON_WIZEN", "1")
             .arg(&options.app_name)
             .arg(
-                &temp
-                    .path()
+                temp.path()
                     .to_str()
                     .context("non-UTF-8 temporary directory name")?,
             )
