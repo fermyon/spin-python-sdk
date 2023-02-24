@@ -1,0 +1,16 @@
+spin_version = "1"
+authors = ["Fermyon Engineering <engineering@fermyon.com>"]
+description = "Spin Python Outbound HTTP Example"
+name = "Spin-python-outbound-http"
+trigger = { type = "http", base = "/" }
+version = "0.1.0"
+
+[[component]]
+id = "python-sdk-example"
+source = "app.wasm"
+environment = { hello = "teapot" }
+allowed_http_hosts = ["https://some-random-api.ml"]
+[component.trigger]
+route = "/..."
+[component.build]
+command = "spin py2wasm app -o app.wasm"
