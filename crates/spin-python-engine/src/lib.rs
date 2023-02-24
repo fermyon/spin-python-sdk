@@ -16,7 +16,7 @@ use {
         key_value, outbound_http,
         redis::{self, RedisParameter, RedisResult},
     },
-    std::{env, ops::Deref, str},
+    std::{env, ops::Deref, str, sync::Arc},
 };
 
 thread_local! {
@@ -92,7 +92,7 @@ impl HttpResponse {
 #[pyo3::pyclass]
 #[pyo3(name = "Store")]
 struct Store {
-    inner: key_value::Store,
+    inner: Arc<key_value::Store>,
 }
 
 #[pyo3::pymethods]
@@ -304,14 +304,14 @@ fn spin_redis_module(_py: Python<'_>, module: &PyModule) -> PyResult<()> {
 #[pyo3::pyfunction]
 fn kv_open(name: String) -> Result<Store, Anyhow> {
     Ok(Store {
-        inner: key_value::Store::open(name).map_err(Anyhow::from)?,
+        inner: Arc::new(key_value::Store::open(name).map_err(Anyhow::from)?),
     })
 }
 
 #[pyo3::pyfunction]
 fn kv_open_default() -> Result<Store, Anyhow> {
     Ok(Store {
-        inner: key_value::Store::open_default().map_err(Anyhow::from)?,
+        inner: Arc::new(key_value::Store::open_default().map_err(Anyhow::from)?),
     })
 }
 

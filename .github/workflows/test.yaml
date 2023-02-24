@@ -69,6 +69,12 @@ jobs:
           make install
           cd ../../..
 
+      - name: Lint
+        shell: bash
+        run: |
+          cargo fmt --all -- --check
+          cargo clippy --all-targets --all-features
+
       - name: Build spin-python-engine
         shell: bash
         run: make
