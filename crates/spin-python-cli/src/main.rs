@@ -17,7 +17,7 @@ use {
 
 /// A Spin plugin to convert Python apps to Spin-compatible WebAssembly modules
 #[derive(Parser, Debug)]
-#[command(author, version, about)]
+#[command(author, version, about, name = "py2wasm")]
 struct Options {
     /// The name of a Python module containing a `handle_request` function for handling Spin HTTP requests
     app_name: String,
