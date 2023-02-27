@@ -1,6 +1,7 @@
 manifest_version = "1"
 id = "http-py"
 description = "HTTP request handler using Python"
+tags = ["http", "python", "py"]
 
 [add_component]
 skip_files = ["spin.toml"]
