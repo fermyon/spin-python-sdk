@@ -1,0 +1,15 @@
+spin_version = "1"
+authors = ["Fermyon Engineering <engineering@fermyon.com>"]
+description = "Spin Python SDK KV"
+name = "spin-py-KV"
+trigger = { type = "http", base = "/" }
+version = "0.1.0"
+
+[[component]]
+id = "python-sdk-example"
+source = "app.wasm"
+key_value_stores = ["default"]
+[component.trigger]
+route = "/..."
+[component.build]
+command = "spin py2wasm app -o app.wasm"

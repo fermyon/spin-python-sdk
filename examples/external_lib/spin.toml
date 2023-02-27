@@ -1,0 +1,14 @@
+spin_version = "1"
+authors = ["Fermyon Engineering <engineering@fermyon.com>"]
+description = "Spin Python SDK example using external library"
+name = "spin-py-external-library"
+trigger = { type = "http", base = "/" }
+version = "0.1.0"
+
+[[component]]
+id = "python-sdk-example"
+source = "app.wasm"
+[component.trigger]
+route = "/..."
+[component.build]
+command = "spin py2wasm app -o app.wasm"
