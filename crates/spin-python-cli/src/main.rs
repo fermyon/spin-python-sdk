@@ -5,7 +5,7 @@ use {
     clap::Parser,
     std::{
         env, fs,
-        io::Cursor,
+        io::{self, Cursor, Seek},
         path::{Path, PathBuf},
         process::Command,
         str,
@@ -105,6 +105,17 @@ fn main() -> Result<()> {
             )
         }
 
+        // Spawn a subcommand to do the real work.  This gives us an opportunity to clear the environment so that
+        // build-time environment variables don't end up in the Wasm module we're building.
+        //
+        // Note that we need to use temporary files for stdio instead of the default inheriting behavior since (as
+        // of this writing) CPython interacts poorly with Wasmtime's WASI implementation if any of the stdio
+        // descriptors point to non-files on Windows.  Specifically, the WASI implementation will trap when CPython
+        // calls `fd_filestat_get` on non-files.
+
+        let mut stdout = tempfile::tempfile()?;
+        let mut stderr = tempfile::tempfile()?;
+
         let status = Command::new(env::args().next().unwrap())
             .env_clear()
             .env("SPIN_PYTHON_WIZEN", "1")
@@ -116,9 +127,18 @@ fn main() -> Result<()> {
             )
             .arg(&python_path)
             .arg(&options.output)
+            .stdin(tempfile::tempfile()?)
+            .stdout(stdout.try_clone()?)
+            .stderr(stderr.try_clone()?)
             .status()?;
 
         if !status.success() {
+            stdout.rewind()?;
+            io::copy(&mut stdout, &mut io::stdout().lock())?;
+
+            stderr.rewind()?;
+            io::copy(&mut stderr, &mut io::stderr().lock())?;
+
             bail!("Couldn't create wasm from input");
         }
 

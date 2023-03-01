@@ -24,6 +24,9 @@ thread_local! {
     static ENVIRON: OnceCell<Py<PyMapping>> = OnceCell::new();
 }
 
+#[export_name = "spin-sdk-language-python"]
+extern "C" fn __spin_sdk_language() {}
+
 fn bytes(py: Python<'_>, src: &[u8]) -> PyResult<Py<PyBytes>> {
     Ok(PyBytes::new_with(py, src.len(), |dst| {
         dst.copy_from_slice(src);
