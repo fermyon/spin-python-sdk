@@ -15,6 +15,12 @@ use {
     zstd::Decoder,
 };
 
+#[cfg(unix)]
+const NATIVE_PATH_DELIMITER: char = ':';
+
+#[cfg(windows)]
+const NATIVE_PATH_DELIMITER: char = ';';
+
 /// A Spin plugin to convert Python apps to Spin-compatible WebAssembly modules
 #[derive(Parser, Debug)]
 #[command(author, version, about, name = "py2wasm")]
@@ -62,7 +68,7 @@ fn main() -> Result<()> {
 
         let python_path = options
             .python_path
-            .split(':')
+            .split(NATIVE_PATH_DELIMITER)
             .enumerate()
             .map(|(index, path)| {
                 let index = index.to_string();
@@ -98,7 +104,7 @@ fn main() -> Result<()> {
         let mut python_path = options.python_path;
         if let Some(site_packages) = find_site_packages()? {
             python_path = format!(
-                "{python_path}:{}",
+                "{python_path}{NATIVE_PATH_DELIMITER}{}",
                 site_packages
                     .to_str()
                     .context("non-UTF-8 site-packages name")?
