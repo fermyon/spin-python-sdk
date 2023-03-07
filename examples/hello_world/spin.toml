@@ -1,4 +1,4 @@
-spin_version = "1"
+spin_manifest_version = "1"
 authors = ["Fermyon Engineering <engineering@fermyon.com>"]
 description = "Spin Python SDK hello world"
 name = "spin-py-hello-world"
