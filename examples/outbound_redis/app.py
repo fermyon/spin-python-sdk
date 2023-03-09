@@ -14,8 +14,8 @@ def handle_request(request):
     redis_sadd(redis_address, "testSets", ["hello", "world"])
     content = redis_smembers(redis_address, "testSets")
     redis_srem(redis_address, "testSets", ["hello"])
-    redis_execute("redis_address", "set", [b"foo", b"hello"])
-    redis_execute("redis_address", "append", [b"foo", b", world!"])
+    redis_execute(redis_address, "set", [b"foo", b"hello"])
+    redis_execute(redis_address, "append", [b"foo", b", world!"])
 
     assert value == b"bar", f"expected \"bar\", got \"{str(value, 'utf-8')}\""
 
