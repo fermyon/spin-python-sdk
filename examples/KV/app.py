@@ -9,7 +9,11 @@ def handle_request(request):
     match request.method:
         case "GET":
             value = store.get(request.uri)
-            return Response(200, [("content-type", "text/plain")], value)
+            if value:
+                status = 200
+            else:
+                status = 404
+            return Response(status, [("content-type", "text/plain")], value)
         case "POST":
             store.set(request.uri, request.body)
             return Response(200, [("content-type", "text/plain")])
