@@ -10,6 +10,18 @@ This is an experiment to build a Spin Python SDK using CPython, Wizer, and PyO3.
 - [Spin](https://github.com/fermyon/spin)
 - [pipenv](https://pypi.org/project/pipenv/) for installing Python project dependencies
 
+## Installing the Plugin and Running Examples
+
+Use the following command to install the `py2wasm` plugin and then build the spin app:
+
+```
+spin plugins update
+spin plugins install py2wasm
+cd examples/hello world
+spin build
+spin up
+```
+
 ## Building and Running
 
 First, build CPython for wasm32-wasi:
@@ -39,8 +51,14 @@ make
 Finally, build and run the example app:
 
 ```
-cd examples/hello
-pipenv install
-spin build
+cd examples/hello_world
+../../target/release/spin-python app -o app.wasm
 spin up
+```
+
+**Note:* `spin-python` and `py2wasm` are just different names for the same command. `spin-python` is used in the context of running the binary in a standalone context while `py2wasm` is  used when the command is run via Spin. In the samples provided in the `examples` directory, the `spin build` command depends on the plugin `py2wasm` being installed. Therefore, to test the locally built `spin-python` binary, replace the build command in the `spin.toml` to invoke it using spin build.
+
+```
+[component.build]
+command = "../../target/release/spin-python app -o app.wasm"
 ```
