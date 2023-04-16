@@ -20,5 +20,5 @@ def handle_request(request):
     assert value == b"bar", f"expected \"bar\", got \"{str(value, 'utf-8')}\""
 
     return Response(200,
-                    [("content-type", "text/plain")],
+                    {"content-type": "text/plain"},
                     bytes(f"Executed outbound Redis commands", "utf-8"))
