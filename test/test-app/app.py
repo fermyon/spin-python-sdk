@@ -7,7 +7,7 @@ import toml
 def handle_request(request):
     if request.uri == "/foo":
         return Response(200,
-                        [("content-type", "text/plain")],
+                        {"content-type": "text/plain"},
                         bytes(f"foo indeed", "utf-8"))
 
     print(f"Got request URI: {request.uri}")
@@ -26,9 +26,9 @@ def handle_request(request):
     my_file = open("/foo.txt", "r")
     print(f"And here's the content of foo.txt: {my_file.read()}")
 
-    response = http_send(Request("GET", "http://localhost:3000/foo", [], None))
+    response = http_send(Request("GET", "http://localhost:3000/foo", {}, None))
     print(f"Got foo: {str(response.body, 'utf-8')}")
 
     return Response(200,
-                    [("content-type", "text/plain")],
+                    {"content-type": "text/plain"},
                     bytes(f"Hello from Python! Got request URI: {request.uri}", "utf-8"))
