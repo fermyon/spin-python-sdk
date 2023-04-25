@@ -393,18 +393,23 @@ fn handle(request: Request) -> Result<Response> {
         let request = HttpRequest {
             method: request.method().as_str().to_owned(),
             uri,
-            headers: request
-                .headers()
-                .iter()
-                .map(|(k, v)| {
-                    Ok((
-                        k.as_str().to_owned(),
-                        str::from_utf8(v.as_bytes())
-                            .map_err(Anyhow::from)?
-                            .to_owned(),
-                    ))
-                })
-                .collect::<PyResult<HashMap<_, _>>>()?,
+            headers: request.headers().iter().fold(
+                HashMap::new(),
+                |mut acc: HashMap<String, String>, (k, v): (&HeaderName, &HeaderValue)| {
+                    let key = k.as_str().to_owned();
+                    let value = str::from_utf8(v.as_bytes())
+                        //.map_err(Anyhow::from)
+                        .unwrap()
+                        .to_owned();
+                    acc.entry(key)
+                        .and_modify(|existing_value| {
+                            existing_value.push(',');
+                            existing_value.push_str(&value);
+                        })
+                        .or_insert(value);
+                    acc
+                },
+            ),
             body: request
                 .body()
                 .as_deref()
