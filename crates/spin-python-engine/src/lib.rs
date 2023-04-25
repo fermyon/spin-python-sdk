@@ -405,7 +405,7 @@ fn handle(request: Request) -> Result<Response> {
                             .to_owned();
                         acc.entry(key)
                             .and_modify(|existing_value| {
-                                existing_value.push(',');
+                                existing_value.push_str(", ");
                                 existing_value.push_str(&value);
                             })
                             .or_insert(value);
