@@ -13,16 +13,16 @@ def handle_request(request):
                 status = 200
             else:
                 status = 404
-            return Response(status, [("content-type", "text/plain")], value)
+            return Response(status, {"content-type": "text/plain"}, value)
         case "POST":
             store.set(request.uri, request.body)
-            return Response(200, [("content-type", "text/plain")])
+            return Response(200, {"content-type": "text/plain"})
         case "DELETE":
             store.delete(request.uri)
-            return Response(200, [("content-type", "text/plain")])
+            return Response(200, {"content-type": "text/plain"})
         case "HEAD":
             if store.exists(request.uri):
-                return Response(200, [("content-type", "text/plain")])
-            return Response(404, [("content-type", "text/plain")])
+                return Response(200, {"content-type": "text/plain"})
+            return Response(404, {"content-type": "text/plain"})
         case default:
-            return Response(405, [("content-type", "text/plain")])
+            return Response(405, {"content-type": "text/plain"})

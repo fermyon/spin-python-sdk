@@ -11,5 +11,5 @@ def handle_request(request):
     """
 
     return Response(200,
-                    [("content-type", "text/plain")],
+                    {"content-type": "text/plain"},
                     bytes(f"Toml content:{toml.loads(some_toml)}", "utf-8"))

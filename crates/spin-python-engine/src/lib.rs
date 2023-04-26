@@ -16,7 +16,7 @@ use {
         key_value, outbound_http,
         redis::{self, RedisParameter, RedisResult},
     },
-    std::{env, ops::Deref, str, sync::Arc},
+    std::{collections::HashMap, env, ops::Deref, str, sync::Arc},
 };
 
 thread_local! {
@@ -44,7 +44,7 @@ struct HttpRequest {
     #[pyo3(get, set)]
     uri: String,
     #[pyo3(get, set)]
-    headers: Vec<(String, String)>,
+    headers: HashMap<String, String>,
     #[pyo3(get, set)]
     body: Option<Py<PyBytes>>,
 }
@@ -55,7 +55,7 @@ impl HttpRequest {
     fn new(
         method: String,
         uri: String,
-        headers: Vec<(String, String)>,
+        headers: HashMap<String, String>,
         body: Option<Py<PyBytes>>,
     ) -> Self {
         Self {
@@ -74,7 +74,7 @@ struct HttpResponse {
     #[pyo3(get, set)]
     status: u16,
     #[pyo3(get, set)]
-    headers: Vec<(String, String)>,
+    headers: HashMap<String, String>,
     #[pyo3(get, set)]
     body: Option<Py<PyBytes>>,
 }
@@ -82,7 +82,7 @@ struct HttpResponse {
 #[pyo3::pymethods]
 impl HttpResponse {
     #[new]
-    fn new(status: u16, headers: Vec<(String, String)>, body: Option<Py<PyBytes>>) -> Self {
+    fn new(status: u16, headers: HashMap<String, String>, body: Option<Py<PyBytes>>) -> Self {
         Self {
             status,
             headers,
@@ -179,7 +179,7 @@ fn http_send(module: &PyModule, request: HttpRequest) -> PyResult<HttpResponse> 
                         .to_owned(),
                 ))
             })
-            .collect::<PyResult<_>>()?,
+            .collect::<PyResult<HashMap<_, _>>>()?,
         body: response
             .into_body()
             .as_deref()
@@ -396,15 +396,23 @@ fn handle(request: Request) -> Result<Response> {
             headers: request
                 .headers()
                 .iter()
-                .map(|(k, v)| {
-                    Ok((
-                        k.as_str().to_owned(),
-                        str::from_utf8(v.as_bytes())
+                .try_fold::<_, _, PyResult<HashMap<_, _>>>(
+                    HashMap::new(),
+                    |mut acc: HashMap<String, String>, (k, v): (&HeaderName, &HeaderValue)| {
+                        let key = k.as_str().to_owned();
+                        let value = str::from_utf8(v.as_bytes())
                             .map_err(Anyhow::from)?
-                            .to_owned(),
-                    ))
-                })
-                .collect::<PyResult<_>>()?,
+                            .to_owned();
+                        acc.entry(key)
+                            .and_modify(|existing_value| {
+                                existing_value.push_str(", ");
+                                existing_value.push_str(&value);
+                            })
+                            .or_insert(value);
+                        Ok(acc)
+                    },
+                )
+                .map_err(Anyhow::from)?,
             body: request
                 .body()
                 .as_deref()

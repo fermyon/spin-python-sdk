@@ -12,7 +12,7 @@ echo "built the test app successfully"
 
 # Start the spin app in the background
 echo "Starting Spin app"
-spin up --follow-all &
+spin up &
 
 # wait for app to be up and running
 echo "Waiting for Spin app to be ready"
@@ -21,6 +21,7 @@ timeout 60s bash -c 'until curl --silent -f http://localhost:3000/health > /dev/
 # start the test
 echo -e "Starting test\n"
 curl -f http://localhost:3000 || isFailed=true
+curl -f -H "spin-header-test-key1: value1" -H "spin-header-test-key2: value2" -H "spin-header-test-key1: value3" -H "spin-header-test-key2: value4" http://127.0.0.1:3000/duplicateheadertest || isFailed=true
 echo -e "\n\nTest completed"
 
 # kill the spin app
