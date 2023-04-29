@@ -5,6 +5,8 @@ ARG VARIANT="bullseye"
 
 FROM mcr.microsoft.com/vscode/devcontainers/rust:0-${VARIANT}
 
+ARG VARIANT
+
 ARG WASI_VERSION="16"
 
 ARG SPIN_VERSION="canary"
@@ -22,8 +24,8 @@ RUN rustup update stable \
     && rustup target add wasm32-wasi wasm32-unknown-unknown
 
 # Install cPython build dependencies
-RUN echo 'deb-src http://deb.debian.org/debian bullseye main' >> /etc/apt/sources.list \
-    && sudo apt update \
+RUN echo "deb-src http://deb.debian.org/debian $VARIANT main" >> /etc/apt/sources.list \
+    && sudo apt-get update \
     && sudo apt-get -y build-dep python3 \
     && sudo apt-get -y install pkg-config
 
