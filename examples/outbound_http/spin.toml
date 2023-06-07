@@ -14,3 +14,4 @@ allowed_http_hosts = ["https://some-random-api.ml"]
 route = "/..."
 [component.build]
 command = "spin py2wasm app -o app.wasm"
+watch = ["app.py"]

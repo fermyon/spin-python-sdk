@@ -12,3 +12,4 @@ source = "app.wasm"
 route = "/..."
 [component.build]
 command = "spin py2wasm app -o app.wasm"
+watch = ["app.py", "Pipfile*"]

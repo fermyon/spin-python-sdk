@@ -6,4 +6,4 @@ route = "{{http-path}}"
 [component.build]
 command = "spin py2wasm app -o app.wasm"
 workdir = "{{ output-path }}"
-
+watch = ["app.py", "Pipfile"]
