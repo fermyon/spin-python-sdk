@@ -15,4 +15,4 @@ allowed_http_hosts = ["insecure:allow-all"]
 [component.trigger]
 route = "/..."
 [component.build]
-command = "../../target/release/spin-python app -o app.wasm"
+command = "spin py2wasm app -o app.wasm"
