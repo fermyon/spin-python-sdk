@@ -14,10 +14,10 @@ anyhow = "1.0.68"
 clap = { version = "4.1.4", features = [ "derive" ] }
 tar = "0.4.38"
 tempfile = "3.3.0"
-wizer = "1.6.0"
-zstd = "0.10.0"
+wizer = "3.0.0"
+zstd = "0.11.1"
 
 [build-dependencies]
 anyhow = "1.0.68"
 tar = "0.4.38"
-zstd = "0.10.0"
+zstd = "0.11.1"
