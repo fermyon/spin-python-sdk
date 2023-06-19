@@ -8,4 +8,4 @@ def handle_request(request):
 
     return Response(200,
                     {"content-type": "text/plain"},
-                    bytes(f"Here is an animal fact: {str(response.body, 'utf-8')}", "utf-8"))
+                    bytes(f" Here is an animal fact: {str(response.body, 'utf-8')}", "utf-8"))
