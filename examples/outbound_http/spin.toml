@@ -9,7 +9,7 @@ version = "0.1.0"
 id = "python-sdk-example"
 source = "app.wasm"
 environment = { hello = "teapot" }
-allowed_http_hosts = ["https://some-random-api.ml"]
+allowed_http_hosts = ["random-data-api.fermyon.app"]
 [component.trigger]
 route = "/..."
 [component.build]
