@@ -7,7 +7,7 @@ use {
     once_cell::unsync::OnceCell,
     pyo3::{
         exceptions::PyAssertionError,
-        types::{PyBytes, PyMapping, PyModule},
+        types::{PyBytes, PyList, PyMapping, PyModule},
         Py, PyAny, PyErr, PyObject, PyResult, Python, ToPyObject,
     },
     spin_sdk::{
@@ -15,6 +15,7 @@ use {
         http::{Request, Response},
         key_value, outbound_http,
         redis::{self, RedisParameter, RedisResult},
+        sqlite,
     },
     std::{collections::HashMap, env, ops::Deref, str, sync::Arc},
 };
@@ -122,6 +123,80 @@ impl Store {
 
     fn get_keys(&self) -> Result<Vec<String>, Anyhow> {
         self.inner.get_keys().map_err(Anyhow::from)
+    }
+}
+
+#[derive(Clone)]
+#[pyo3::pyclass]
+#[pyo3(name = "SqliteConnection")]
+struct SqliteConnection {
+    inner: Arc<sqlite::Connection>,
+}
+
+#[pyo3::pymethods]
+impl SqliteConnection {
+    fn execute(
+        &self,
+        _py: Python<'_>,
+        query: String,
+        parameters: Vec<&PyAny>,
+    ) -> PyResult<QueryResult> {
+        let parameters = parameters
+            .iter()
+            .map(|v| {
+                if let Ok(v) = v.extract::<i64>() {
+                    Ok(sqlite::ValueParam::Integer(v))
+                } else if let Ok(v) = v.extract::<f64>() {
+                    Ok(sqlite::ValueParam::Real(v))
+                } else if let Ok(v) = v.extract::<&str>() {
+                    Ok(sqlite::ValueParam::Text(v))
+                } else if v.is_none() {
+                    Ok(sqlite::ValueParam::Null)
+                } else if let Ok(v) = v.downcast::<PyBytes>() {
+                    Ok(sqlite::ValueParam::Blob(v.as_bytes()))
+                } else {
+                    Err(PyErr::from(Anyhow(anyhow!(
+                        "Unable to use {v:?} as a SQLite `execute` parameter \
+                     -- expected `int`, `float`, `bytes`, `string`, or `None`"
+                    ))))
+                }
+            })
+            .collect::<PyResult<Vec<_>>>()?;
+        let result = self
+            .inner
+            .execute(&query, &parameters)
+            .map_err(Anyhow::from)?;
+        Ok(QueryResult { inner: result })
+    }
+}
+
+#[derive(Clone)]
+#[pyo3::pyclass]
+#[pyo3(name = "QueryResult")]
+struct QueryResult {
+    inner: sqlite::QueryResult,
+}
+
+#[pyo3::pymethods]
+impl QueryResult {
+    fn rows(&self, py: Python<'_>) -> PyResult<PyObject> {
+        let rows = self.inner.rows.iter().map(|r| {
+            PyList::new(
+                py,
+                r.values.iter().map(|v| match v {
+                    sqlite::ValueResult::Integer(i) => i.to_object(py),
+                    sqlite::ValueResult::Real(r) => r.to_object(py),
+                    sqlite::ValueResult::Text(s) => s.to_object(py),
+                    sqlite::ValueResult::Blob(b) => b.to_object(py),
+                    sqlite::ValueResult::Null => py.None(),
+                }),
+            )
+        });
+        Ok(PyList::new(py, rows).into())
+    }
+
+    fn columns(&self, py: Python<'_>) -> PyResult<PyObject> {
+        Ok(PyList::new(py, self.inner.columns.iter()).into())
     }
 }
 
@@ -326,6 +401,27 @@ fn spin_key_value_module(_py: Python<'_>, module: &PyModule) -> PyResult<()> {
 }
 
 #[pyo3::pyfunction]
+fn sqlite_open(database: String) -> Result<SqliteConnection, Anyhow> {
+    Ok(SqliteConnection {
+        inner: Arc::new(sqlite::Connection::open(&database).map_err(Anyhow::from)?),
+    })
+}
+
+#[pyo3::pyfunction]
+fn sqlite_open_default() -> Result<SqliteConnection, Anyhow> {
+    Ok(SqliteConnection {
+        inner: Arc::new(sqlite::Connection::open_default().map_err(Anyhow::from)?),
+    })
+}
+
+#[pyo3::pymodule]
+#[pyo3(name = "spin_sqlite")]
+fn spin_sqlite_module(_py: Python<'_>, module: &PyModule) -> PyResult<()> {
+    module.add_function(pyo3::wrap_pyfunction!(sqlite_open, module)?)?;
+    module.add_function(pyo3::wrap_pyfunction!(sqlite_open_default, module)?)
+}
+
+#[pyo3::pyfunction]
 fn config_get(key: String) -> Result<String, Anyhow> {
     config::get(&key).map_err(Anyhow::from)
 }
@@ -341,6 +437,7 @@ fn do_init() -> Result<()> {
     pyo3::append_to_inittab!(spin_redis_module);
     pyo3::append_to_inittab!(spin_config_module);
     pyo3::append_to_inittab!(spin_key_value_module);
+    pyo3::append_to_inittab!(spin_sqlite_module);
 
     pyo3::prepare_freethreaded_python();
 
