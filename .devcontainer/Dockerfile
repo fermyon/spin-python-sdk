@@ -38,6 +38,7 @@ RUN cd /tmp \
 
 # Install Spin
 RUN cd /tmp \
-    && curl -fsSL https://developer.fermyon.com/downloads/install.sh | bash -s -- -v $SPIN_VERSION \
-    && sudo mv spin /usr/local/bin/ \
-    && cd -
+    && git clone -b $SPIN_VERSION https://github.com/fermyon/spin \
+    && cd spin \
+    && make build \
+    && cp ./target/release/spin /usr/local/bin
