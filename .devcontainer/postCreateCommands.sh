@@ -1,5 +1,15 @@
 #!/bin/bash
 
+set -ex
+
+# Build and install spin from source
+cd /tmp
+git clone -b $SPIN_VERSION https://github.com/fermyon/spin
+cd spin
+make build
+sudo cp ./target/release/spin /usr/local/bin
+cd /workspaces/spin-python-sdk
+
 # Build cPython for wasm32
 git submodule update --init --recursive
 mkdir -p cpython/builddir/wasi

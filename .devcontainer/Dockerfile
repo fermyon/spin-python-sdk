@@ -13,6 +13,8 @@ ARG SPIN_VERSION="canary"
 
 ENV WASI_VERSION_FULL=${WASI_VERSION}.0
 
+ENV SPIN_VERSION=${SPIN_VERSION}
+
 # [Optional] Uncomment this section to install additional packages.
 # RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
 #     && apt-get -y install --no-install-recommends <your-package-list-here>
@@ -35,10 +37,3 @@ RUN cd /tmp \
     && tar xvf wasi-sdk-${WASI_VERSION_FULL}-linux.tar.gz \
     && sudo cp -r wasi-sdk-${WASI_VERSION_FULL} /opt/wasi-sdk \
     && cd - 
-
-# Install Spin
-RUN cd /tmp \
-    && git clone -b $SPIN_VERSION https://github.com/fermyon/spin \
-    && cd spin \
-    && make build \
-    && cp ./target/release/spin /usr/local/bin
