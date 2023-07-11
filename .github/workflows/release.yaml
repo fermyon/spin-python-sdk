@@ -188,7 +188,7 @@ jobs:
           tag: ${{ env.RELEASE_VERSION }}
 
   checksums:
-    name: generate checksums
+    name: generate checksums and manifests
     runs-on: ubuntu-latest
     needs: release
     steps:
@@ -214,5 +214,16 @@ jobs:
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: checksums-${{ env.RELEASE_VERSION }}.txt
+          tag: ${{ env.RELEASE_VERSION }}
+
+      - name: create plugin manifest
+        shell: bash
+        run: ./manifest/generate-manifest.sh ${{ env.RELEASE_VERSION }} checksums-${{ env.RELEASE_VERSION }}.txt > py2wasm.json
+
+      - name: upload plugin manifest to releases
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: py2wasm.json
           tag: ${{ env.RELEASE_VERSION }}
 
