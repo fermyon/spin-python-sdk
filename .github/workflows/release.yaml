@@ -186,7 +186,7 @@ jobs:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: _dist/py2wasm-${{ env.RELEASE_VERSION }}-${{ env.RUNNER_OS }}-${{ matrix.config.arch }}.tar.gz
           tag: ${{ env.RELEASE_VERSION }}
-          overwrite: ${{ env.RELEASE_VERSION == "canary" }
+          overwrite: ${{ env.RELEASE_VERSION == "canary" }}
 
   checksums:
     name: generate checksums and manifests
@@ -216,7 +216,7 @@ jobs:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: checksums-${{ env.RELEASE_VERSION }}.txt
           tag: ${{ env.RELEASE_VERSION }}
-          overwrite: ${{ env.RELEASE_VERSION == "canary" }
+          overwrite: ${{ env.RELEASE_VERSION == "canary" }}
 
       - name: create plugin manifest
         shell: bash
@@ -228,5 +228,5 @@ jobs:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: py2wasm.json
           tag: ${{ env.RELEASE_VERSION }}
-          overwrite: ${{ env.RELEASE_VERSION == "canary" }
+          overwrite: ${{ env.RELEASE_VERSION == "canary" }}
 
