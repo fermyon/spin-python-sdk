@@ -2,13 +2,26 @@
 
 This is an experiment to build a Spin Python SDK using CPython, Wizer, and PyO3.
 
-## Installing the Plugin and Running Examples
+## Installing the Plugin
 
 Use the following command to install the `py2wasm` plugin and then build the example Spin app:
 
-```
+```bash
 spin plugins update
 spin plugins install py2wasm
+```
+
+If you'd like to try out the latest features, you can use the following command to install the *unstable* canary version of the plugin:
+
+```bash
+spin plugins install --url https://github.com/fermyon/spin-python-sdk/releases/download/canary/py2wasm.json
+```
+ 
+## Running Examples
+
+After installing the plugin, you can run the examples found in this repo:
+
+```bash
 cd examples/hello world
 spin build
 spin up
@@ -34,13 +47,13 @@ First, build CPython for wasm32-wasi.
 
 Then, build the `spin-python-cli`:
 
-```
+```bash
 make
 ```
 
 Finally, build and run the example app:
 
-```
+```bash
 cd examples/hello_world
 $CARGO_TARGET_DIR/release/spin-python app -o app.wasm
 spin up
