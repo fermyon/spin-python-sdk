@@ -2,12 +2,10 @@
 
 set -ex
 
-# Build and install spin from source
+# Install spin
 cd /tmp
-git clone -b $SPIN_VERSION https://github.com/fermyon/spin
-cd spin
-make build
-sudo cp ./target/release/spin /usr/local/bin
+curl -fsSL https://developer.fermyon.com/downloads/install.sh | bash
+sudo mv ./spin /usr/local/bin/spin
 cd /workspaces/spin-python-sdk
 
 # Build cPython for wasm32
