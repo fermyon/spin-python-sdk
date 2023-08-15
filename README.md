@@ -39,7 +39,12 @@ spin up
 
 ### Instructions
 
-First, build CPython for wasm32-wasi.
+First, perform a git submodule update to update the cpython submodule
+```bash
+git submodule update --init --recursive
+```
+
+Then, build CPython for wasm32-wasi.
 
 ```bash
 ./build-python.sh
