@@ -9,31 +9,41 @@ ARG VARIANT
 
 ARG WASI_VERSION="16"
 
-ARG SPIN_VERSION="canary"
-
 ENV WASI_VERSION_FULL=${WASI_VERSION}.0
-
-ENV SPIN_VERSION=${SPIN_VERSION}
 
 # [Optional] Uncomment this section to install additional packages.
 # RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
 #     && apt-get -y install --no-install-recommends <your-package-list-here>
 
 # Install rust components
-RUN rustup update stable \
+RUN echo -e "${GREEN_COLOR}Installing Rust components...${RESET_COLOR}" \
+    && rustup update stable \
     && rustup default stable \
     && rustup component add clippy rustfmt \
-    && rustup target add wasm32-wasi wasm32-unknown-unknown
+    && rustup target add wasm32-wasi wasm32-unknown-unknown \
+    && echo -e "${GREEN_COLOR}Rust components installed.${RESET_COLOR}"
 
 # Install cPython build dependencies
-RUN echo "deb-src http://deb.debian.org/debian $VARIANT main" >> /etc/apt/sources.list \
+RUN echo -e "${GREEN_COLOR}Installing cPython build dependencies...${RESET_COLOR}" \
+    && echo "deb-src http://deb.debian.org/debian $VARIANT main" >> /etc/apt/sources.list \
     && sudo apt-get update \
     && sudo apt-get -y build-dep python3 \
-    && sudo apt-get -y install pkg-config
+    && sudo apt-get -y install pkg-config \
+    && echo -e "${GREEN_COLOR}cPython build dependencies installed.${RESET_COLOR}"
 
 # Install WASI-SDK
-RUN cd /tmp \
+RUN echo -e "${GREEN_COLOR}Installing WASI-SDK ${WASI_VERSION}...${RESET_COLOR}" \
+    && cd /tmp \
     && wget https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-${WASI_VERSION}/wasi-sdk-${WASI_VERSION_FULL}-linux.tar.gz \
     && tar xvf wasi-sdk-${WASI_VERSION_FULL}-linux.tar.gz \
     && sudo cp -r wasi-sdk-${WASI_VERSION_FULL} /opt/wasi-sdk \
-    && cd - 
+    && cd - \
+    && echo -e "${GREEN_COLOR}WASI-SDK installed.${RESET_COLOR}"
+
+# Install Spin
+RUN echo -e "${GREEN_COLOR}Installing Spin...${RESET_COLOR}" \
+    && cd /tmp \ 
+    && curl -fsSL https://developer.fermyon.com/downloads/install.sh | bash \
+    && sudo mv ./spin /usr/local/bin/spin \
+    && cd -
+    && echo -e "${GREEN_COLOR}Spin installed.${RESET_COLOR}"

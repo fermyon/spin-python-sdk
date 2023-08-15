@@ -10,7 +10,6 @@
 			// Use bullseye when on local on arm64/Apple Silicon.
 			"VARIANT": "bullseye",
 			"WASI_VERSION": "16",
-			"SPIN_VERSION": "canary"
 		}
 	},
 	"runArgs": [ "--cap-add=SYS_PTRACE", "--security-opt", "seccomp=unconfined" ],
@@ -50,7 +49,7 @@
 	// "forwardPorts": [],
 
 	// Use 'postCreateCommand' to run commands after the container is created.
-	"postCreateCommand": "sh ./.devcontainer/postCreateCommands.sh",
+	// "postCreateCommand": "",
 
 	// Comment out to connect as root instead. More info: https://aka.ms/vscode-remote/containers/non-root.
 	"remoteUser": "vscode"
