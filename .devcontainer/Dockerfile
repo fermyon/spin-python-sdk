@@ -16,34 +16,26 @@ ENV WASI_VERSION_FULL=${WASI_VERSION}.0
 #     && apt-get -y install --no-install-recommends <your-package-list-here>
 
 # Install rust components
-RUN echo -e "${GREEN_COLOR}Installing Rust components...${RESET_COLOR}" \
-    && rustup update stable \
+RUN rustup update stable \
     && rustup default stable \
     && rustup component add clippy rustfmt \
-    && rustup target add wasm32-wasi wasm32-unknown-unknown \
-    && echo -e "${GREEN_COLOR}Rust components installed.${RESET_COLOR}"
+    && rustup target add wasm32-wasi wasm32-unknown-unknown
 
 # Install cPython build dependencies
-RUN echo -e "${GREEN_COLOR}Installing cPython build dependencies...${RESET_COLOR}" \
-    && echo "deb-src http://deb.debian.org/debian $VARIANT main" >> /etc/apt/sources.list \
+RUN echo "deb-src http://deb.debian.org/debian $VARIANT main" >> /etc/apt/sources.list \
     && sudo apt-get update \
     && sudo apt-get -y build-dep python3 \
-    && sudo apt-get -y install pkg-config \
-    && echo -e "${GREEN_COLOR}cPython build dependencies installed.${RESET_COLOR}"
+    && sudo apt-get -y install pkg-config
 
 # Install WASI-SDK
-RUN echo -e "${GREEN_COLOR}Installing WASI-SDK ${WASI_VERSION}...${RESET_COLOR}" \
-    && cd /tmp \
+RUN cd /tmp \
     && wget https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-${WASI_VERSION}/wasi-sdk-${WASI_VERSION_FULL}-linux.tar.gz \
     && tar xvf wasi-sdk-${WASI_VERSION_FULL}-linux.tar.gz \
     && sudo cp -r wasi-sdk-${WASI_VERSION_FULL} /opt/wasi-sdk \
-    && cd - \
-    && echo -e "${GREEN_COLOR}WASI-SDK installed.${RESET_COLOR}"
+    && cd -
 
 # Install Spin
-RUN echo -e "${GREEN_COLOR}Installing Spin...${RESET_COLOR}" \
-    && cd /tmp \ 
+RUN cd /tmp \ 
     && curl -fsSL https://developer.fermyon.com/downloads/install.sh | bash \
     && sudo mv ./spin /usr/local/bin/spin \
     && cd -
-    && echo -e "${GREEN_COLOR}Spin installed.${RESET_COLOR}"
