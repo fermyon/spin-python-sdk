@@ -30,12 +30,14 @@ spin up
 ## Building and Running
 
 ### Prerequisites
+__Note__: When using the devcontainer for development, the following dependencies are already installed for you...
 
 - [WASI SDK](https://github.com/WebAssembly/wasi-sdk) v16 or later, installed in /opt/wasi-sdk
 - [CPython](https://github.com/python/cpython) build prereqs (e.g. Make, Clang, etc.)
 - [Rust](https://rustup.rs/) (including `wasm32-wasi` target)
 - [Spin](https://github.com/fermyon/spin)
 - [pipenv](https://pypi.org/project/pipenv/) for installing Python project dependencies
+
 
 ### Instructions
 
