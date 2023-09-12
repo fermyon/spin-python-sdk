@@ -1,20 +1,26 @@
-// For format details, see https://aka.ms/devcontainer.json. For config options, see the README at:
-// https://github.com/microsoft/vscode-dev-containers/tree/v0.224.2/containers/rust
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the
+// README at: https://github.com/devcontainers/templates/tree/main/src/ubuntu
 {
-	"name": "Rust",
+	"name": "Ubuntu",
+	// Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
 	"build": {
 		"context": "../",
 		"dockerfile": "Dockerfile",
 		"args": {
-			// Use the VARIANT arg to pick a Debian OS version: buster, bullseye
-			// Use bullseye when on local on arm64/Apple Silicon.
-			"VARIANT": "bullseye",
+			"VARIANT": "jammy",
 			"WASI_VERSION": "16",
 		}
 	},
-	"runArgs": [ "--cap-add=SYS_PTRACE", "--security-opt", "seccomp=unconfined" ],
-
-	// Set *default* container specific settings.json values on container create.
+	"features": {
+		"ghcr.io/devcontainers/features/python:1": {
+			"installTools": true,
+			"version": "3.11"
+		},
+		"ghcr.io/devcontainers/features/rust:1": {
+			"version": "latest",
+			"profile": "minimal"
+		}
+	},
 	"customizations": {
 		"vscode": {
 			"settings": {
@@ -25,7 +31,6 @@
 				},
 				"rust-analyzer.checkOnSave.command": "clippy"
 			},
-
 			// Add the IDs of extensions you want installed when the container is created.
 			"extensions": [
 				"vadimcn.vscode-lldb",
@@ -36,21 +41,15 @@
 			]
 		}
 	},
-
-	"features": {
-		"ghcr.io/devcontainers/features/python:1": {
-			"installTools": true,
-			"version": "3.11.4"
-		}
-	},
-
-
+	// Features to add to the dev container. More info: https://containers.dev/features.
+	// "features": {},
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	// "forwardPorts": [],
-
+	"onCreateCommand": ".devcontainer/onCreateCommands.sh",
 	// Use 'postCreateCommand' to run commands after the container is created.
-	// "postCreateCommand": "",
-
-	// Comment out to connect as root instead. More info: https://aka.ms/vscode-remote/containers/non-root.
-	"remoteUser": "vscode"
+	// "postCreateCommand": "uname -a",
+	// Configure tool-specific properties.
+	// "customizations": {},
+	// Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
+	// "remoteUser": "root"
 }
