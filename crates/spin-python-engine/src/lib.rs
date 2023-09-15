@@ -13,10 +13,9 @@ use {
     spin_sdk::{
         config,
         http::{Request, Response},
-        key_value, outbound_http,
+        key_value, llm, outbound_http,
         redis::{self, RedisParameter, RedisResult},
         sqlite,
-        llm
     },
     std::{collections::HashMap, env, ops::Deref, str, sync::Arc},
 };
@@ -440,18 +439,17 @@ struct LLMInferencingUsage {
     #[pyo3(get)]
     prompt_token_count: u32,
     #[pyo3(get)]
-    generated_token_count: u32
+    generated_token_count: u32,
 }
 
 impl From<llm::InferencingUsage> for LLMInferencingUsage {
     fn from(result: llm::InferencingUsage) -> Self {
-        LLMInferencingUsage{
+        LLMInferencingUsage {
             prompt_token_count: result.prompt_token_count,
-            generated_token_count: result.generated_token_count
+            generated_token_count: result.generated_token_count,
         }
     }
 }
-
 
 #[derive(Clone)]
 #[pyo3::pyclass]
@@ -460,42 +458,48 @@ struct LLMInferencingResult {
     #[pyo3(get)]
     text: String,
     #[pyo3(get)]
-    usage: LLMInferencingUsage
+    usage: LLMInferencingUsage,
 }
 
 impl From<llm::InferencingResult> for LLMInferencingResult {
     fn from(result: llm::InferencingResult) -> Self {
-        LLMInferencingResult{
+        LLMInferencingResult {
             text: result.text.clone(),
-            usage: LLMInferencingUsage::from(result.usage)
+            usage: LLMInferencingUsage::from(result.usage),
         }
     }
 }
-
 
 #[derive(Clone)]
 #[pyo3::pyclass]
 #[pyo3(name = "LLMInferencingParams")]
 struct LLMInferencingParams {
-    #[pyo3(get,set)]
-		max_tokens: u32,
-    #[pyo3(get,set)]
-		repeat_penalty: f32,
-    #[pyo3(get,set)]
-		repeat_penalty_last_n_token_count: u32,
-    #[pyo3(get,set)]
-		temperature: f32,
-    #[pyo3(get,set)]
-		top_k: u32,
-    #[pyo3(get,set)]
-		top_p: f32
+    #[pyo3(get, set)]
+    max_tokens: u32,
+    #[pyo3(get, set)]
+    repeat_penalty: f32,
+    #[pyo3(get, set)]
+    repeat_penalty_last_n_token_count: u32,
+    #[pyo3(get, set)]
+    temperature: f32,
+    #[pyo3(get, set)]
+    top_k: u32,
+    #[pyo3(get, set)]
+    top_p: f32,
 }
 
 #[pyo3::pymethods]
 impl LLMInferencingParams {
     #[new]
-    fn new(max_tokens: u32, repeat_penalty: f32, repeat_penalty_last_n_token_count: u32, temperature: f32, top_k: u32, top_p: f32) -> Self {
-        Self{
+    fn new(
+        max_tokens: u32,
+        repeat_penalty: f32,
+        repeat_penalty_last_n_token_count: u32,
+        temperature: f32,
+        top_k: u32,
+        top_p: f32,
+    ) -> Self {
+        Self {
             max_tokens: max_tokens,
             repeat_penalty: repeat_penalty,
             repeat_penalty_last_n_token_count: repeat_penalty_last_n_token_count,
@@ -508,7 +512,7 @@ impl LLMInferencingParams {
 
 impl From<LLMInferencingParams> for llm::InferencingParams {
     fn from(p: LLMInferencingParams) -> Self {
-        llm::InferencingParams{
+        llm::InferencingParams {
             max_tokens: p.max_tokens,
             repeat_penalty: p.repeat_penalty,
             repeat_penalty_last_n_token_count: p.repeat_penalty_last_n_token_count,
@@ -520,16 +524,20 @@ impl From<LLMInferencingParams> for llm::InferencingParams {
 }
 
 #[pyo3::pyfunction]
-fn llm_infer(model: &str, prompt: &str, options: Option<LLMInferencingParams>) -> Result<LLMInferencingResult, Anyhow> {
+fn llm_infer(
+    model: &str,
+    prompt: &str,
+    options: Option<LLMInferencingParams>,
+) -> Result<LLMInferencingResult, Anyhow> {
     let m = match model {
         "llama2-chat" => llm::InferencingModel::Llama2Chat,
         "codellama-instruct" => llm::InferencingModel::CodellamaInstruct,
-        _ => llm::InferencingModel::Other(model)
+        _ => llm::InferencingModel::Other(model),
     };
 
     let opts = match options {
         Some(o) => llm::InferencingParams::from(o),
-        _ => llm::InferencingParams::default()
+        _ => llm::InferencingParams::default(),
     };
 
     llm::infer_with_options(m, prompt, opts)
@@ -546,8 +554,18 @@ fn spin_llm_module(_py: Python<'_>, module: &PyModule) -> PyResult<()> {
     module.add_class::<LLMInferencingResult>()
 }
 
+pub fn run_ctors() {
+    unsafe {
+        extern "C" {
+            fn __wasm_call_ctors();
+        }
+        __wasm_call_ctors();
+    }
+}
 
 fn do_init() -> Result<()> {
+    run_ctors();
+
     pyo3::append_to_inittab!(spin_http_module);
     pyo3::append_to_inittab!(spin_redis_module);
     pyo3::append_to_inittab!(spin_config_module);
@@ -600,6 +618,8 @@ pub extern "C" fn init() {
 
 #[spin_sdk::http_component]
 fn handle(request: Request) -> Result<Response> {
+    run_ctors();
+
     Python::with_gil(|py| {
         let uri = request.uri().to_string();
 
