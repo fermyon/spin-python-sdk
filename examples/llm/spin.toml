@@ -1,0 +1,16 @@
+spin_manifest_version = "1"
+authors = ["Fermyon Engineering <engineering@fermyon.com>"]
+description = "Spin Python SDK hello llm"
+name = "spin-py-hello-llm"
+trigger = { type = "http", base = "/" }
+version = "0.1.0"
+
+[[component]]
+id = "python-sdk-example"
+source = "app.wasm"
+ai_models = ["llama2-chat"]
+[component.trigger]
+route = "/..."
+[component.build]
+command = "spin py2wasm app -o app.wasm"
+watch = ["app.py"]

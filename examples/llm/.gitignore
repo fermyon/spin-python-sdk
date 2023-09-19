@@ -1,4 +1,3 @@
-/target
 __pycache__
 *.wasm
 .spin
