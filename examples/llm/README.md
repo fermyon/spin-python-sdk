@@ -1,3 +1,3 @@
-# Spin python Hello World
+# Spin python llm 
 
-A simple example showcasing the return of a simple response to a request in the Spin Python SDK.
+A simple example showcasing the return of a simple LLM inferencing request with the Spin Python SDK.
