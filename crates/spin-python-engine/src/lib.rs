@@ -500,12 +500,12 @@ impl LLMInferencingParams {
         top_p: f32,
     ) -> Self {
         Self {
-            max_tokens: max_tokens,
-            repeat_penalty: repeat_penalty,
-            repeat_penalty_last_n_token_count: repeat_penalty_last_n_token_count,
-            temperature: temperature,
-            top_k: top_k,
-            top_p: top_p,
+            max_tokens,
+            repeat_penalty,
+            repeat_penalty_last_n_token_count,
+            temperature,
+            top_k,
+            top_p,
         }
     }
 }
