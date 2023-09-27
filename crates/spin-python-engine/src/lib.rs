@@ -545,13 +545,65 @@ fn llm_infer(
         .map(LLMInferencingResult::from)
 }
 
+#[pyo3::pyfunction]
+fn generate_embeddings(model: &str, text: Vec<String>) -> Result<LLMEmbeddingsResult, Anyhow> {
+    let model = match model {
+        "all-minilm-l6-v2" => llm::EmbeddingModel::AllMiniLmL6V2,
+        _ => llm::EmbeddingModel::Other(model),
+    };
+
+    let text = text.iter().map(|s| s.as_str()).collect::<Vec<_>>();
+
+    llm::generate_embeddings(model, &text)
+        .map_err(Anyhow::from)
+        .map(LLMEmbeddingsResult::from)
+}
+
+#[derive(Clone)]
+#[pyo3::pyclass]
+#[pyo3(name = "LLMEmbeddingsUsage")]
+struct LLMEmbeddingsUsage {
+    #[pyo3(get)]
+    prompt_token_count: u32,
+}
+
+impl From<llm::EmbeddingsUsage> for LLMEmbeddingsUsage {
+    fn from(result: llm::EmbeddingsUsage) -> Self {
+        LLMEmbeddingsUsage {
+            prompt_token_count: result.prompt_token_count,
+        }
+    }
+}
+
+#[derive(Clone)]
+#[pyo3::pyclass]
+#[pyo3(name = "LLMEmbeddingResult")]
+struct LLMEmbeddingsResult {
+    #[pyo3(get)]
+    embeddings: Vec<Vec<f32>>,
+    #[pyo3(get)]
+    usage: LLMEmbeddingsUsage,
+}
+
+impl From<llm::EmbeddingsResult> for LLMEmbeddingsResult {
+    fn from(result: llm::EmbeddingsResult) -> Self {
+        LLMEmbeddingsResult {
+            embeddings: result.embeddings,
+            usage: LLMEmbeddingsUsage::from(result.usage),
+        }
+    }
+}
+
 #[pyo3::pymodule]
 #[pyo3(name = "spin_llm")]
 fn spin_llm_module(_py: Python<'_>, module: &PyModule) -> PyResult<()> {
     module.add_function(pyo3::wrap_pyfunction!(llm_infer, module)?)?;
+    module.add_function(pyo3::wrap_pyfunction!(generate_embeddings, module)?)?;
     module.add_class::<LLMInferencingUsage>()?;
     module.add_class::<LLMInferencingParams>()?;
-    module.add_class::<LLMInferencingResult>()
+    module.add_class::<LLMInferencingResult>()?;
+    module.add_class::<LLMEmbeddingsUsage>()?;
+    module.add_class::<LLMEmbeddingsResult>()
 }
 
 pub fn run_ctors() {

@@ -8,7 +8,7 @@ version = "0.1.0"
 [[component]]
 id = "python-sdk-example"
 source = "app.wasm"
-ai_models = ["llama2-chat"]
+ai_models = ["llama2-chat", "all-minilm-l6-v2"]
 [component.trigger]
 route = "/..."
 [component.build]
