@@ -30,6 +30,7 @@ spin up
 ## Building and Running
 
 ### Prerequisites
+__Note__: When using the devcontainer for development, the following dependencies are already installed for you. To prevent speed up build times and prevent compatibility issues, a pre-compiled artifact of cpython for wasi is used rather than compiling from source. (https://github.com/brettcannon/cpython-wasi-build/releases/tag/v3.11.4)
 
 - [WASI SDK](https://github.com/WebAssembly/wasi-sdk) v16 or later, installed in /opt/wasi-sdk
 - [CPython](https://github.com/python/cpython) build prereqs (e.g. Make, Clang, etc.)
@@ -37,15 +38,21 @@ spin up
 - [Spin](https://github.com/fermyon/spin)
 - [pipenv](https://pypi.org/project/pipenv/) for installing Python project dependencies
 
+
 ### Instructions
 
-First, build CPython for wasm32-wasi.
+First, perform a git submodule update to update the cpython submodule. **(Unnecessary if using devcontainer)**
+```bash
+git submodule update --init --recursive
+```
+
+Then, build CPython for wasm32-wasi. **(Unnecessary if using devcontainer)**
 
 ```bash
 ./build-python.sh
 ```
 
-Then, build the `spin-python-cli`:
+Then, build the `spin-python-cli`: **(Unnecessary if using devcontainer)**
 
 ```bash
 make
