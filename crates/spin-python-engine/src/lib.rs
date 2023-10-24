@@ -23,6 +23,7 @@ use {
 thread_local! {
     static HANDLE_REQUEST: OnceCell<PyObject> = OnceCell::new();
     static ENVIRON: OnceCell<Py<PyMapping>> = OnceCell::new();
+    static SEED: OnceCell<PyObject> = OnceCell::new();
 }
 
 #[export_name = "spin-sdk-language-python"]
@@ -658,6 +659,13 @@ fn do_init() -> Result<()> {
 
             cell.set(environ.into()).unwrap();
 
+            Ok::<_, PyErr>(())
+        })?;
+
+        SEED.with(|cell| {
+            cell.set(py.import("random")?.getattr("seed")?.into())
+                .unwrap();
+
             Ok(())
         })
     })
@@ -714,6 +722,8 @@ fn handle(request: Request) -> Result<Response> {
 
             Ok::<(), PyErr>(())
         })?;
+
+        SEED.with(|cell| cell.get().unwrap().call0(py))?;
 
         let response = HANDLE_REQUEST.with(|cell| {
             cell.get()
