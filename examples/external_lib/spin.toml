@@ -1,15 +1,17 @@
-spin_manifest_version = "1"
+spin_manifest_version = 2
+
+[application]
 authors = ["Fermyon Engineering <engineering@fermyon.com>"]
 description = "Spin Python SDK example using external library"
 name = "spin-py-external-library"
-trigger = { type = "http", base = "/" }
 version = "0.1.0"
 
-[[component]]
-id = "python-sdk-example"
-source = "app.wasm"
-[component.trigger]
+[[trigger.http]]
 route = "/..."
-[component.build]
+component = "py-external-lib"
+
+[component.py-external-lib]
+source = "app.wasm"
+[component.py-external-lib.build]
 command = "spin py2wasm app -o app.wasm"
 watch = ["app.py", "Pipfile*"]

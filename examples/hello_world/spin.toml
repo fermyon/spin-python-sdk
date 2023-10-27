@@ -1,15 +1,17 @@
-spin_manifest_version = "1"
+spin_manifest_version = 2
+
+[application]
 authors = ["Fermyon Engineering <engineering@fermyon.com>"]
 description = "Spin Python SDK hello world"
 name = "spin-py-hello-world"
-trigger = { type = "http", base = "/" }
 version = "0.1.0"
 
-[[component]]
-id = "python-sdk-example"
-source = "app.wasm"
-[component.trigger]
+[[trigger.http]]
 route = "/..."
-[component.build]
+component = "python-sdk-example"
+
+[component.python-sdk-example]
+source = "app.wasm"
+[component.python-sdk-example.build]
 command = "spin py2wasm app -o app.wasm"
 watch = ["app.py"]

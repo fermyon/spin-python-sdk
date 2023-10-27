@@ -1,16 +1,18 @@
-spin_manifest_version = "1"
+spin_manifest_version = 2
+
+[application]
 authors = ["Fermyon Engineering <engineering@fermyon.com>"]
 description = "Spin Python Outbound Redis example"
 name = "spin-python-outbound-redis"
-trigger = { type = "http", base = "/" }
 version = "0.1.0"
 
-[[component]]
-id = "python-sdk-outbound-redis"
-config = { redis_address = "redis://127.0.0.1:6379" }
-source = "app.wasm"
-[component.trigger]
+[[trigger.http]]
 route = "/..."
-[component.build]
+component = "python-sdk-outbound-redis"
+
+[component.python-sdk-outbound-redis]
+variables = { redis_address = "redis://127.0.0.1:6379" }
+source = "app.wasm"
+[component.python-sdk-outbound-redis.build]
 command = "spin py2wasm app -o app.wasm"
 watch = ["app.py"]
