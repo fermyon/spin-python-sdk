@@ -19,7 +19,11 @@ spin plugins install --url https://github.com/fermyon/spin-python-sdk/releases/d
  
 ## Running Examples
 
-After installing the plugin, you can run the examples found in this repo:
+After installing the plugin, you can run the examples found in this repo.
+
+__Note__: These examples track Spin's `main` branch, so you may need to ensure you are using the [canary](https://github.com/fermyon/spin/releases/tag/canary) Spin release.  See https://developer.fermyon.com/spin/install.
+
+
 
 ```bash
 cd examples/hello world

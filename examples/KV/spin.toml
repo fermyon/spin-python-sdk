@@ -1,16 +1,18 @@
-spin_manifest_version = "1"
+spin_manifest_version = 2
+
+[application]
 authors = ["Fermyon Engineering <engineering@fermyon.com>"]
 description = "Spin Python SDK KV"
-name = "spin-py-KV"
-trigger = { type = "http", base = "/" }
+name = "spin-py-kv"
 version = "0.1.0"
 
-[[component]]
-id = "python-sdk-example"
+[[trigger.http]]
+route = "/..."
+component = "py-kv"
+
+[component.py-kv]
 source = "app.wasm"
 key_value_stores = ["default"]
-[component.trigger]
-route = "/..."
-[component.build]
+[component.py-kv.build]
 command = "spin py2wasm app -o app.wasm"
 watch = ["app.py"]
