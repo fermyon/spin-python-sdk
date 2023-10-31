@@ -13,6 +13,7 @@ component = "python-sdk-outbound-redis"
 [component.python-sdk-outbound-redis]
 variables = { redis_address = "redis://127.0.0.1:6379" }
 source = "app.wasm"
+allowed_outbound_hosts = ["redis://127.0.0.1"]
 [component.python-sdk-outbound-redis.build]
 command = "spin py2wasm app -o app.wasm"
 watch = ["app.py"]
