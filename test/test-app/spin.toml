@@ -15,6 +15,6 @@ environment = { hello = "teapot" }
 variables = { redis_address = "redis://127.0.0.1:6379" }
 files = [{ source = "static-assets/", destination = "/" }]
 source = "app.wasm"
-allowed_http_hosts = ["insecure:allow-all"]
+allowed_outbound_hosts = ["*://*:*"]
 [component.python-sdk-example.build]
 command = "../../target/release/spin-python app -o app.wasm"

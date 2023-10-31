@@ -13,7 +13,7 @@ component = "python-outbound-http"
 [component.python-outbound-http]
 source = "app.wasm"
 environment = { hello = "teapot" }
-allowed_http_hosts = ["random-data-api.fermyon.app"]
+allowed_outbound_hosts = ["https://random-data-api.fermyon.app"]
 [component.python-outbound-http.build]
 command = "spin py2wasm app -o app.wasm"
 watch = ["app.py"]
