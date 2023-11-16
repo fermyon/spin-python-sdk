@@ -16,6 +16,8 @@ If you'd like to try out the latest features, you can use the following command 
 ```bash
 spin plugins install --url https://github.com/fermyon/spin-python-sdk/releases/download/canary/py2wasm.json
 ```
+
+## [API Documentation](https://fermyon.github.io/spin-python-sdk)
  
 ## Running Examples
 
