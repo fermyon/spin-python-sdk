@@ -1,7 +1,7 @@
-from spin import exports
-from spin.types import Ok
-from spin.imports import types, variables
-from spin.imports.types import (
+from spin_http import exports
+from spin_http.types import Ok
+from spin_http.imports import types, variables
+from spin_http.imports.types import (
     MethodGet, MethodPost, Scheme, SchemeHttp, SchemeHttps, SchemeOther, IncomingRequest, ResponseOutparam,
     OutgoingResponse, Fields, OutgoingBody, OutgoingRequest
 )

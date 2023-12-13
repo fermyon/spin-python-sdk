@@ -23,7 +23,9 @@ The bindings are generated from [wit/spin.wit](./wit/spin.wit).  The
 https://github.com/bytecodealliance/wasmtime/tree/v15.0.1/crates/wasi/wit/deps
 
 ```
-componentize-py -d wit -w spin bindings bindings
+componentize-py -d wit -w spin-http bindings spin-http
+componentize-py -d wit -w spin-redis bindings spin-redis
+mkdir bindings
+cp -r spin-http/* spin-redis/* bindings/
+rm -r spin-http spin-redis
 ```
-
-That will create a new `bindings` directory containing the bindings.

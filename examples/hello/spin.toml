@@ -16,4 +16,4 @@ allowed_outbound_hosts = []
 [component.test.variables]
 message = "hello, world!"
 [component.test.build]
-command = "componentize-py -d ../../wit -w spin componentize app -o app.wasm"
+command = "componentize-py -d ../../wit -w spin-http componentize app -o app.wasm"
