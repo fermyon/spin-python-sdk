@@ -1,0 +1,4 @@
+bindings
+*.wasm
+__pycache__
+.spin
