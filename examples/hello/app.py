@@ -1,6 +1,6 @@
 from spin import exports
 from spin.types import Ok
-from spin.imports import types
+from spin.imports import types, variables
 from spin.imports.types import (
     MethodGet, MethodPost, Scheme, SchemeHttp, SchemeHttps, SchemeOther, IncomingRequest, ResponseOutparam,
     OutgoingResponse, Fields, OutgoingBody, OutgoingRequest
@@ -15,7 +15,7 @@ class IncomingHandler(exports.IncomingHandler):
             body = response.body()
             ResponseOutparam.set(response_out, Ok(response))
             stream = body.write()
-            stream.blocking_write_and_flush(b"hello, world!")
+            stream.blocking_write_and_flush(bytes(variables.get("message"), "utf-8"))
             stream.drop()
             OutgoingBody.finish(body, None)
         else:

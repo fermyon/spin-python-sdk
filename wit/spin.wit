@@ -1,5 +1,12 @@
-package fermyon:spin;
+package fermyon:spin@2.0.0;
 
 world spin {
   include wasi:http/proxy@0.2.0-rc-2023-11-10;
+  import llm;
+  import redis;
+  import postgres;
+  import mysql;
+  import sqlite;
+  import key-value;
+  import variables;
 }
