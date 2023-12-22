@@ -1,7 +1,7 @@
-from spin_http import exports
-from spin_http.types import Ok
-from spin_http.imports import types, variables
-from spin_http.imports.types import (
+from spin_sdk.wit import exports
+from spin_sdk.wit.types import Ok
+from spin_sdk.wit.imports import types, variables
+from spin_sdk.wit.imports.types import (
     MethodGet, MethodPost, Scheme, SchemeHttp, SchemeHttps, SchemeOther, IncomingRequest, ResponseOutparam,
     OutgoingResponse, Fields, OutgoingBody, OutgoingRequest
 )

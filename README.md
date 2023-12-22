@@ -8,24 +8,22 @@ This is an experimental SDK for creating Spin apps using `componentize-py`.
 
 - Python
 - `pip`
-- `componentize-py` 0.7.1
+- `componentize-py` 0.8.0
 
 Once you have `pip` installed, you can install `componentize-py` using:
 
 ```
-pip install componentize-py==0.7.1
+pip install componentize-py==0.8.0
 ```
 
 ### Generating the bindings
 
-The bindings are generated from [wit/spin.wit](./wit/spin.wit).  The
-[wit/deps](./wit/deps) directory was copied from
-https://github.com/bytecodealliance/wasmtime/tree/v15.0.1/crates/wasi/wit/deps
+The bindings are generated from [spin_sdk/wit/spin.wit](./wit/spin.wit).  The
+[spin_sdk/wit/deps](./wit/deps) directory was copied from
+https://github.com/bytecodealliance/wasmtime/tree/v16.0.0/crates/wasi/wit/deps
 
 ```
-componentize-py -d wit -w spin-http bindings spin-http
-componentize-py -d wit -w spin-redis bindings spin-redis
-mkdir bindings
-cp -r spin-http/* spin-redis/* bindings/
-rm -r spin-http spin-redis
+componentize-py -d spin_sdk/wit -w spin-all bindings bindings
+mv bindings/spin_all/* spin_sdk/wit/
+rm -r bindings
 ```
