@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "spin-sdk"
+version = "0.0.1"
+description = "Experimental SDK for Spin and Componentize-Py"
+readme = "README.md"
+license = { file = "LICENSE" }
+authors = [ { name = "Fermyon Engineering", email = "engineering@fermyon.com" } ]
+maintainers = [ { name = "Fermyon Engineering", email = "engineering@fermyon.com" } ]
+keywords = [ "webassembly", "wasm", "component", "spin" ]
+
+[project.urls]
+repository = "https://github.com/dicej/experimental-spin-python-sdk"
+
+[tool.setuptools.packages.find]
+where = ["src"]

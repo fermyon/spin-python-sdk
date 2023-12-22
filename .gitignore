@@ -2,3 +2,5 @@ bindings
 *.wasm
 __pycache__
 .spin
+src/spin_sdk.egg-info
+dist

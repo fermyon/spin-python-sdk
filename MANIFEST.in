@@ -1,0 +1,1 @@
+recursive-include src/spin_sdk *.wit *.toml
