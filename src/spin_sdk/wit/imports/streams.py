@@ -5,15 +5,15 @@ stream types.
 In the future, the component model is expected to add built-in stream types;
 when it does, they are expected to subsume this API.
 """
-from typing import TypeVar, Generic, Union, Optional, Union, Protocol, Tuple, List, Any
+from typing import TypeVar, Generic, Union, Optional, Union, Protocol, Tuple, List, Any, Self
 from enum import Flag, Enum, auto
 from dataclasses import dataclass
 from abc import abstractmethod
 import weakref
 
 from ..types import Result, Ok, Err, Some
-from ..imports import poll
 from ..imports import error
+from ..imports import poll
 
 
 @dataclass
@@ -102,9 +102,10 @@ class InputStream:
         raise NotImplementedError
 
     def drop(self):
-        (_, func, args, _) = self.finalizer.detach()
-        self.handle = None
-        func(args[0], args[1])
+        """
+        Release this resource.
+        """
+        raise NotImplementedError
 
 
 class OutputStream:
@@ -280,9 +281,10 @@ class OutputStream:
         raise NotImplementedError
 
     def drop(self):
-        (_, func, args, _) = self.finalizer.detach()
-        self.handle = None
-        func(args[0], args[1])
+        """
+        Release this resource.
+        """
+        raise NotImplementedError
 
 
 

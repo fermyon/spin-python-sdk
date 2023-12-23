@@ -1,38 +1,10 @@
-from typing import TypeVar, Generic, Union, Optional, Union, Protocol, Tuple, List, Any
+from typing import TypeVar, Generic, Union, Optional, Union, Protocol, Tuple, List, Any, Self
 from enum import Flag, Enum, auto
 from dataclasses import dataclass
 from abc import abstractmethod
 import weakref
 
 from ..types import Result, Ok, Err, Some
-
-
-class Connection:
-    """
-    A handle to an open sqlite instance
-    """
-    
-    @staticmethod
-    def open(database: str) -> Connection:
-        """
-        Open a connection to a named database instance.
-        
-        If `database` is "default", the default instance is opened.
-        
-        `error::no-such-database` will be raised if the `name` is not recognized.
-        """
-        raise NotImplementedError
-
-    def execute(self, statement: str, parameters: List[Value]) -> QueryResult:
-        """
-        Execute a statement returning back data if there is any
-        """
-        raise NotImplementedError
-
-    def drop(self):
-        (_, func, args, _) = self.finalizer.detach()
-        self.handle = None
-        func(args[0], args[1])
 
 
 
@@ -107,5 +79,34 @@ class QueryResult:
     """
     columns: List[str]
     rows: List[RowResult]
+
+class Connection:
+    """
+    A handle to an open sqlite instance
+    """
+    
+    @staticmethod
+    def open(database: str) -> Any:
+        """
+        Open a connection to a named database instance.
+        
+        If `database` is "default", the default instance is opened.
+        
+        `error::no-such-database` will be raised if the `name` is not recognized.
+        """
+        raise NotImplementedError
+
+    def execute(self, statement: str, parameters: List[Value]) -> QueryResult:
+        """
+        Execute a statement returning back data if there is any
+        """
+        raise NotImplementedError
+
+    def drop(self):
+        """
+        Release this resource.
+        """
+        raise NotImplementedError
+
 
 

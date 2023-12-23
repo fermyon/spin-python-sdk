@@ -1,4 +1,4 @@
-from typing import TypeVar, Generic, Union, Optional, Union, Protocol, Tuple, List, Any
+from typing import TypeVar, Generic, Union, Optional, Union, Protocol, Tuple, List, Any, Self
 from enum import Flag, Enum, auto
 from dataclasses import dataclass
 from abc import abstractmethod
@@ -31,10 +31,48 @@ class ErrorOther:
 # Errors related to interacting with Redis
 Error = Union[ErrorInvalidAddress, ErrorTooManyConnections, ErrorTypeError, ErrorOther]
 
+
+@dataclass
+class RedisParameterInt64:
+    value: int
+
+
+@dataclass
+class RedisParameterBinary:
+    value: bytes
+
+
+# A parameter type for the general-purpose `execute` function.
+RedisParameter = Union[RedisParameterInt64, RedisParameterBinary]
+
+
+@dataclass
+class RedisResultNil:
+    pass
+
+
+@dataclass
+class RedisResultStatus:
+    value: str
+
+
+@dataclass
+class RedisResultInt64:
+    value: int
+
+
+@dataclass
+class RedisResultBinary:
+    value: bytes
+
+
+# A return type for the general-purpose `execute` function.
+RedisResult = Union[RedisResultNil, RedisResultStatus, RedisResultInt64, RedisResultBinary]
+
 class Connection:
     
     @staticmethod
-    def open(address: str) -> Connection:
+    def open(address: str) -> Any:
         """
         Open a connection to the Redis instance at `address`.
         """
@@ -103,47 +141,10 @@ class Connection:
         raise NotImplementedError
 
     def drop(self):
-        (_, func, args, _) = self.finalizer.detach()
-        self.handle = None
-        func(args[0], args[1])
+        """
+        Release this resource.
+        """
+        raise NotImplementedError
 
-
-
-@dataclass
-class RedisParameterInt64:
-    value: int
-
-
-@dataclass
-class RedisParameterBinary:
-    value: bytes
-
-
-# A parameter type for the general-purpose `execute` function.
-RedisParameter = Union[RedisParameterInt64, RedisParameterBinary]
-
-
-@dataclass
-class RedisResultNil:
-    pass
-
-
-@dataclass
-class RedisResultStatus:
-    value: str
-
-
-@dataclass
-class RedisResultInt64:
-    value: int
-
-
-@dataclass
-class RedisResultBinary:
-    value: bytes
-
-
-# A return type for the general-purpose `execute` function.
-RedisResult = Union[RedisResultNil, RedisResultStatus, RedisResultInt64, RedisResultBinary]
 
 

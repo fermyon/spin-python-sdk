@@ -3,15 +3,15 @@ This interface defines all of the types and methods for implementing
 HTTP Requests and Responses, both incoming and outgoing, as well as
 their headers, trailers, and bodies.
 """
-from typing import TypeVar, Generic, Union, Optional, Union, Protocol, Tuple, List, Any
+from typing import TypeVar, Generic, Union, Optional, Union, Protocol, Tuple, List, Any, Self
 from enum import Flag, Enum, auto
 from dataclasses import dataclass
 from abc import abstractmethod
 import weakref
 
 from ..types import Result, Ok, Err, Some
-from ..imports import poll
 from ..imports import streams
+from ..imports import poll
 from ..imports import error
 
 
@@ -354,7 +354,7 @@ class Fields:
         raise NotImplementedError
 
     @staticmethod
-    def from_list(entries: List[Tuple[str, bytes]]) -> Fields:
+    def from_list(entries: List[Tuple[str, bytes]]) -> Any:
         """
         Construct an HTTP Fields.
         
@@ -428,7 +428,7 @@ class Fields:
         """
         raise NotImplementedError
 
-    def clone(self) -> Fields:
+    def clone(self) -> Self:
         """
         Make a deep copy of the Fields. Equivelant in behavior to calling the
         `fields` constructor on the return value of `entries`. The resulting
@@ -437,9 +437,10 @@ class Fields:
         raise NotImplementedError
 
     def drop(self):
-        (_, func, args, _) = self.finalizer.detach()
-        self.handle = None
-        func(args[0], args[1])
+        """
+        Release this resource.
+        """
+        raise NotImplementedError
 
 
 class IncomingRequest:
@@ -484,7 +485,7 @@ class IncomingRequest:
         """
         raise NotImplementedError
 
-    def consume(self) -> IncomingBody:
+    def consume(self) -> Any:
         """
         Gives the `incoming-body` associated with this request. Will only
         return success at most once, and subsequent calls will return error.
@@ -492,9 +493,10 @@ class IncomingRequest:
         raise NotImplementedError
 
     def drop(self):
-        (_, func, args, _) = self.finalizer.detach()
-        self.handle = None
-        func(args[0], args[1])
+        """
+        Release this resource.
+        """
+        raise NotImplementedError
 
 
 class OutgoingRequest:
@@ -517,7 +519,7 @@ class OutgoingRequest:
         """
         raise NotImplementedError
 
-    def body(self) -> OutgoingBody:
+    def body(self) -> Any:
         """
         Returns the resource corresponding to the outgoing Body for this
         Request.
@@ -602,9 +604,10 @@ class OutgoingRequest:
         raise NotImplementedError
 
     def drop(self):
-        (_, func, args, _) = self.finalizer.detach()
-        self.handle = None
-        func(args[0], args[1])
+        """
+        Release this resource.
+        """
+        raise NotImplementedError
 
 
 class RequestOptions:
@@ -665,9 +668,10 @@ class RequestOptions:
         raise NotImplementedError
 
     def drop(self):
-        (_, func, args, _) = self.finalizer.detach()
-        self.handle = None
-        func(args[0], args[1])
+        """
+        Release this resource.
+        """
+        raise NotImplementedError
 
 
 class ResponseOutparam:
@@ -680,7 +684,7 @@ class ResponseOutparam:
     """
     
     @staticmethod
-    def set(param: ResponseOutparam, response: Result[OutgoingResponse, ErrorCode]) -> None:
+    def set(param: Any, response: Result[Any, ErrorCode]) -> None:
         """
         Set the value of the `response-outparam` to either send a response,
         or indicate an error.
@@ -695,9 +699,10 @@ class ResponseOutparam:
         raise NotImplementedError
 
     def drop(self):
-        (_, func, args, _) = self.finalizer.detach()
-        self.handle = None
-        func(args[0], args[1])
+        """
+        Release this resource.
+        """
+        raise NotImplementedError
 
 
 class IncomingResponse:
@@ -723,7 +728,7 @@ class IncomingResponse:
         """
         raise NotImplementedError
 
-    def consume(self) -> IncomingBody:
+    def consume(self) -> Any:
         """
         Returns the incoming body. May be called at most once. Returns error
         if called additional times.
@@ -731,9 +736,10 @@ class IncomingResponse:
         raise NotImplementedError
 
     def drop(self):
-        (_, func, args, _) = self.finalizer.detach()
-        self.handle = None
-        func(args[0], args[1])
+        """
+        Release this resource.
+        """
+        raise NotImplementedError
 
 
 class IncomingBody:
@@ -769,7 +775,7 @@ class IncomingBody:
         raise NotImplementedError
 
     @staticmethod
-    def finish(this: IncomingBody) -> FutureTrailers:
+    def finish(this: Any) -> Any:
         """
         Takes ownership of `incoming-body`, and returns a `future-trailers`.
         This function will trap if the `input-stream` child is still alive.
@@ -777,9 +783,10 @@ class IncomingBody:
         raise NotImplementedError
 
     def drop(self):
-        (_, func, args, _) = self.finalizer.detach()
-        self.handle = None
-        func(args[0], args[1])
+        """
+        Release this resource.
+        """
+        raise NotImplementedError
 
 
 class FutureTrailers:
@@ -824,9 +831,10 @@ class FutureTrailers:
         raise NotImplementedError
 
     def drop(self):
-        (_, func, args, _) = self.finalizer.detach()
-        self.handle = None
-        func(args[0], args[1])
+        """
+        Release this resource.
+        """
+        raise NotImplementedError
 
 
 class OutgoingResponse:
@@ -870,7 +878,7 @@ class OutgoingResponse:
         """
         raise NotImplementedError
 
-    def body(self) -> OutgoingBody:
+    def body(self) -> Any:
         """
         Returns the resource corresponding to the outgoing Body for this Response.
         
@@ -881,9 +889,10 @@ class OutgoingResponse:
         raise NotImplementedError
 
     def drop(self):
-        (_, func, args, _) = self.finalizer.detach()
-        self.handle = None
-        func(args[0], args[1])
+        """
+        Release this resource.
+        """
+        raise NotImplementedError
 
 
 class OutgoingBody:
@@ -921,7 +930,7 @@ class OutgoingBody:
         raise NotImplementedError
 
     @staticmethod
-    def finish(this: OutgoingBody, trailers: Optional[Fields]) -> None:
+    def finish(this: Any, trailers: Optional[Fields]) -> None:
         """
         Finalize an outgoing body, optionally providing trailers. This must be
         called to signal that the response is complete. If the `outgoing-body`
@@ -936,9 +945,10 @@ class OutgoingBody:
         raise NotImplementedError
 
     def drop(self):
-        (_, func, args, _) = self.finalizer.detach()
-        self.handle = None
-        func(args[0], args[1])
+        """
+        Release this resource.
+        """
+        raise NotImplementedError
 
 
 class FutureIncomingResponse:
@@ -978,9 +988,10 @@ class FutureIncomingResponse:
         raise NotImplementedError
 
     def drop(self):
-        (_, func, args, _) = self.finalizer.detach()
-        self.handle = None
-        func(args[0], args[1])
+        """
+        Release this resource.
+        """
+        raise NotImplementedError
 
 
 

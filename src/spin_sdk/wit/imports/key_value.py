@@ -1,4 +1,4 @@
-from typing import TypeVar, Generic, Union, Optional, Union, Protocol, Tuple, List, Any
+from typing import TypeVar, Generic, Union, Optional, Union, Protocol, Tuple, List, Any, Self
 from enum import Flag, Enum, auto
 from dataclasses import dataclass
 from abc import abstractmethod
@@ -7,13 +7,37 @@ import weakref
 from ..types import Result, Ok, Err, Some
 
 
+
+@dataclass
+class ErrorStoreTableFull:
+    pass
+
+
+@dataclass
+class ErrorNoSuchStore:
+    pass
+
+
+@dataclass
+class ErrorAccessDenied:
+    pass
+
+
+@dataclass
+class ErrorOther:
+    value: str
+
+
+# The set of errors which may be raised by functions in this interface
+Error = Union[ErrorStoreTableFull, ErrorNoSuchStore, ErrorAccessDenied, ErrorOther]
+
 class Store:
     """
     An open key-value store
     """
     
     @staticmethod
-    def open(label: str) -> Store:
+    def open(label: str) -> Any:
         """
         Open the store with the specified label.
         
@@ -58,33 +82,10 @@ class Store:
         raise NotImplementedError
 
     def drop(self):
-        (_, func, args, _) = self.finalizer.detach()
-        self.handle = None
-        func(args[0], args[1])
+        """
+        Release this resource.
+        """
+        raise NotImplementedError
 
-
-
-@dataclass
-class ErrorStoreTableFull:
-    pass
-
-
-@dataclass
-class ErrorNoSuchStore:
-    pass
-
-
-@dataclass
-class ErrorAccessDenied:
-    pass
-
-
-@dataclass
-class ErrorOther:
-    value: str
-
-
-# The set of errors which may be raised by functions in this interface
-Error = Union[ErrorStoreTableFull, ErrorNoSuchStore, ErrorAccessDenied, ErrorOther]
 
 

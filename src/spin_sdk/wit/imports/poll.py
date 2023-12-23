@@ -2,7 +2,7 @@
 A poll API intended to let users wait for I/O events on multiple handles
 at once.
 """
-from typing import TypeVar, Generic, Union, Optional, Union, Protocol, Tuple, List, Any
+from typing import TypeVar, Generic, Union, Optional, Union, Protocol, Tuple, List, Any, Self
 from enum import Flag, Enum, auto
 from dataclasses import dataclass
 from abc import abstractmethod
@@ -35,9 +35,10 @@ class Pollable:
         raise NotImplementedError
 
     def drop(self):
-        (_, func, args, _) = self.finalizer.detach()
-        self.handle = None
-        func(args[0], args[1])
+        """
+        Release this resource.
+        """
+        raise NotImplementedError
 
 
 
