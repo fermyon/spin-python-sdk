@@ -4,12 +4,12 @@
 
 - Python
 - `pip`
-- `componentize-py` 0.8.0
+- `componentize-py` 0.9.0
 
 Once you have `pip` installed, you can install `componentize-py` using:
 
 ```
-pip install componentize-py==0.8.0
+pip install componentize-py==0.9.0
 ```
 
 ### Generating the bindings
