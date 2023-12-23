@@ -14,6 +14,7 @@ keywords = [ "webassembly", "wasm", "component", "spin" ]
 
 [project.urls]
 repository = "https://github.com/dicej/experimental-spin-python-sdk"
+documentation = "https://dicej.github.io/experimental-spin-python-sdk"
 
 [tool.setuptools.packages.find]
 where = ["src"]
