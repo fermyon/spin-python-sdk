@@ -93,10 +93,8 @@ class IncomingHandler(exports.IncomingHandler):
             traceback.print_exc()
 
             response = OutgoingResponse(Fields())
-            response_body = response.body()
             response.set_status_code(500)
             ResponseOutparam.set(response_out, Ok(response))
-            OutgoingBody.finish(response_body, None)
             return
 
         response = OutgoingResponse(Fields.from_list(list(map(
