@@ -89,25 +89,6 @@ class IncomingHandler(exports.IncomingHandler):
                 dict(map(lambda pair: (pair[0], str(pair[1], "utf-8")), request.headers().entries())),
                 bytes(body)
             ))
-
-            response = OutgoingResponse(Fields.from_list(list(map(
-                lambda pair: (pair[0], bytes(pair[1], "utf-8")),
-                simple_response.headers.items()
-            ))))
-            response_body = response.body()
-            response.set_status_code(simple_response.status)
-            ResponseOutparam.set(response_out, Ok(response))
-            response_stream = response_body.write()
-            if simple_response.body is not None:
-                MAX_BLOCKING_WRITE_SIZE = 4096
-                offset = 0
-                while offset < len(simple_response.body):
-                    count = min(len(simple_response.body) - offset, MAX_BLOCKING_WRITE_SIZE)
-                    response_stream.blocking_write_and_flush(simple_response.body[offset:offset+count])
-                    offset += count
-            response_stream.drop()
-            OutgoingBody.finish(response_body, None)
-
         except:
             traceback.print_exc()
 
@@ -116,6 +97,25 @@ class IncomingHandler(exports.IncomingHandler):
             response.set_status_code(500)
             ResponseOutparam.set(response_out, Ok(response))
             OutgoingBody.finish(response_body, None)
+            return
+
+        response = OutgoingResponse(Fields.from_list(list(map(
+            lambda pair: (pair[0], bytes(pair[1], "utf-8")),
+            simple_response.headers.items()
+        ))))
+        response_body = response.body()
+        response.set_status_code(simple_response.status)
+        ResponseOutparam.set(response_out, Ok(response))
+        response_stream = response_body.write()
+        if simple_response.body is not None:
+            MAX_BLOCKING_WRITE_SIZE = 4096
+            offset = 0
+            while offset < len(simple_response.body):
+                count = min(len(simple_response.body) - offset, MAX_BLOCKING_WRITE_SIZE)
+                response_stream.blocking_write_and_flush(simple_response.body[offset:offset+count])
+                offset += count
+        response_stream.drop()
+        OutgoingBody.finish(response_body, None)
     
 def send(request: Request) -> Response:
     """Send an HTTP request and return a response or raise an error"""
