@@ -1,1 +1,1 @@
-recursive-include src/spin_sdk *.wit *.toml
+recursive-include src/spin_sdk *.wit *.toml py.typed

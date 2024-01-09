@@ -26,7 +26,7 @@ mv bindings/spin_all/* src/spin_sdk/wit/
 rm -r bindings
 ```
 
-## Updating docs
+### Updating docs
 
 Any time you regenerate the bindings or edit files by hand, you'll want to
 regenerate the HTML docs to match.  First, install `pdoc` using `pip install
@@ -38,3 +38,37 @@ rm -r docs
 mv src/html/spin_sdk docs
 rmdir src/html
 ```
+
+### Building the distribution
+
+First, make sure you have an up-to-date version of the `build` package installed:
+
+```
+pip install --upgrade build
+```
+
+Then, build the distribution:
+
+```
+rm -rf dist
+python -m build
+```
+
+### Publishing the distribution
+
+First, make sure you have an up-to-date version of the `twine` package installed:
+
+```
+pip install --upgrade twine
+```
+
+Then, publish the distribution:
+
+
+```
+twine upload dist/*
+```
+
+This first time you run that, it will ask for a username and password.  Enter
+`__token__` for the username and specify a valid PyPI token as the password.
+Contact Joel Dice for a token if you don't have one.
