@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
 <title>spin_sdk.key_value API documentation</title>
-<meta name="description" content="" />
+<meta name="description" content="Module for accessing Spin key-value stores" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -22,16 +22,48 @@
 <h1 class="title">Module <code>spin_sdk.key_value</code></h1>
 </header>
 <section id="section-intro">
+<p>Module for accessing Spin key-value stores</p>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">from spin_sdk.wit.imports.key_value import Store
+<pre><code class="python">&#34;&#34;&#34;Module for accessing Spin key-value stores&#34;&#34;&#34;
+
+from spin_sdk.wit.imports.key_value import Store
 
 def open(name: str) -&gt; Store:
+    &#34;&#34;&#34;
+    Open the store with the specified name.
+  
+    If `name` is &#34;default&#34;, the default store is opened.  Otherwise, `name` must
+    refer to a store defined and configured in a runtime configuration file
+    supplied with the application.
+
+    A `spin_sdk.wit.types.Err(spin_sdk.wit.imports.key_value.ErrorNoSuchStore)` will be raised if the `name` is not recognized.
+
+    A `spin_sdk.wit.types.Err(spin_sdk.wit.imports.key_value.ErrorAccessDenied)` will be raised if the requesting component does not have
+    access to the specified store.
+
+    A `spin_sdk.wit.types.Err(spin_sdk.wit.imports.key_value.ErrorStoreTableFull)` will be raised if too many stores have been opened simultaneously.
+    Closing one or more previously opened stores might address this using the `drop` method.
+    
+    A `spin_sdk.wit.types.Err(spin_sdk.wit.imports.key_value.ErrorOther(str))` will be raised if some implementation specific error has occured (e.g I/O)
+    &#34;&#34;&#34;
     return Store.open(name)
 
 def open_default() -&gt; Store:
+    &#34;&#34;&#34;
+    Open the default store.
+
+    A `spin_sdk.wit.types.Err(spin_sdk.wit.imports.key_value.ErrorAccessDenied)`
+    will be raised if the requesting component does not have access to the
+    default store.
+
+    A `spin_sdk.wit.types.Err(spin_sdk.wit.imports.key_value.ErrorStoreTableFull)` will be raised if too many stores have been opened simultaneously.
+    Closing one or more previously opened stores might address this using the `drop` method.
+
+    A `spin_sdk.wit.types.Err(spin_sdk.wit.imports.key_value.ErrorOther(str))` will be raised if some implementation specific error has occured (e.g I/O)
+    &#34;&#34;&#34;
     return Store.open(&#34;default&#34;)</code></pre>
 </details>
 </section>
@@ -46,12 +78,39 @@ def open_default() -&gt; Store:
 <span>def <span class="ident">open</span></span>(<span>name: str) ‑> <a title="spin_sdk.wit.imports.key_value.Store" href="wit/imports/key_value.html#spin_sdk.wit.imports.key_value.Store">Store</a></span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Open the store with the specified name.</p>
+<p>If <code>name</code> is "default", the default store is opened.
+Otherwise, <code>name</code> must
+refer to a store defined and configured in a runtime configuration file
+supplied with the application.</p>
+<p>A <code><a title="spin_sdk.wit.types.Err" href="wit/types.html#spin_sdk.wit.types.Err">Err</a>(<a title="spin_sdk.wit.imports.key_value.ErrorNoSuchStore" href="wit/imports/key_value.html#spin_sdk.wit.imports.key_value.ErrorNoSuchStore">ErrorNoSuchStore</a>)</code> will be raised if the <code>name</code> is not recognized.</p>
+<p>A <code><a title="spin_sdk.wit.types.Err" href="wit/types.html#spin_sdk.wit.types.Err">Err</a>(<a title="spin_sdk.wit.imports.key_value.ErrorAccessDenied" href="wit/imports/key_value.html#spin_sdk.wit.imports.key_value.ErrorAccessDenied">ErrorAccessDenied</a>)</code> will be raised if the requesting component does not have
+access to the specified store.</p>
+<p>A <code><a title="spin_sdk.wit.types.Err" href="wit/types.html#spin_sdk.wit.types.Err">Err</a>(<a title="spin_sdk.wit.imports.key_value.ErrorStoreTableFull" href="wit/imports/key_value.html#spin_sdk.wit.imports.key_value.ErrorStoreTableFull">ErrorStoreTableFull</a>)</code> will be raised if too many stores have been opened simultaneously.
+Closing one or more previously opened stores might address this using the <code>drop</code> method.</p>
+<p>A <code><a title="spin_sdk.wit.types.Err" href="wit/types.html#spin_sdk.wit.types.Err">Err</a>(<a title="spin_sdk.wit.imports.key_value.ErrorOther" href="wit/imports/key_value.html#spin_sdk.wit.imports.key_value.ErrorOther">ErrorOther</a>(str))</code> will be raised if some implementation specific error has occured (e.g I/O)</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def open(name: str) -&gt; Store:
+    &#34;&#34;&#34;
+    Open the store with the specified name.
+  
+    If `name` is &#34;default&#34;, the default store is opened.  Otherwise, `name` must
+    refer to a store defined and configured in a runtime configuration file
+    supplied with the application.
+
+    A `spin_sdk.wit.types.Err(spin_sdk.wit.imports.key_value.ErrorNoSuchStore)` will be raised if the `name` is not recognized.
+
+    A `spin_sdk.wit.types.Err(spin_sdk.wit.imports.key_value.ErrorAccessDenied)` will be raised if the requesting component does not have
+    access to the specified store.
+
+    A `spin_sdk.wit.types.Err(spin_sdk.wit.imports.key_value.ErrorStoreTableFull)` will be raised if too many stores have been opened simultaneously.
+    Closing one or more previously opened stores might address this using the `drop` method.
+    
+    A `spin_sdk.wit.types.Err(spin_sdk.wit.imports.key_value.ErrorOther(str))` will be raised if some implementation specific error has occured (e.g I/O)
+    &#34;&#34;&#34;
     return Store.open(name)</code></pre>
 </details>
 </dd>
@@ -59,12 +118,30 @@ def open_default() -&gt; Store:
 <span>def <span class="ident">open_default</span></span>(<span>) ‑> <a title="spin_sdk.wit.imports.key_value.Store" href="wit/imports/key_value.html#spin_sdk.wit.imports.key_value.Store">Store</a></span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Open the default store.</p>
+<p>A <code><a title="spin_sdk.wit.types.Err" href="wit/types.html#spin_sdk.wit.types.Err">Err</a>(<a title="spin_sdk.wit.imports.key_value.ErrorAccessDenied" href="wit/imports/key_value.html#spin_sdk.wit.imports.key_value.ErrorAccessDenied">ErrorAccessDenied</a>)</code>
+will be raised if the requesting component does not have access to the
+default store.</p>
+<p>A <code><a title="spin_sdk.wit.types.Err" href="wit/types.html#spin_sdk.wit.types.Err">Err</a>(<a title="spin_sdk.wit.imports.key_value.ErrorStoreTableFull" href="wit/imports/key_value.html#spin_sdk.wit.imports.key_value.ErrorStoreTableFull">ErrorStoreTableFull</a>)</code> will be raised if too many stores have been opened simultaneously.
+Closing one or more previously opened stores might address this using the <code>drop</code> method.</p>
+<p>A <code><a title="spin_sdk.wit.types.Err" href="wit/types.html#spin_sdk.wit.types.Err">Err</a>(<a title="spin_sdk.wit.imports.key_value.ErrorOther" href="wit/imports/key_value.html#spin_sdk.wit.imports.key_value.ErrorOther">ErrorOther</a>(str))</code> will be raised if some implementation specific error has occured (e.g I/O)</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def open_default() -&gt; Store:
+    &#34;&#34;&#34;
+    Open the default store.
+
+    A `spin_sdk.wit.types.Err(spin_sdk.wit.imports.key_value.ErrorAccessDenied)`
+    will be raised if the requesting component does not have access to the
+    default store.
+
+    A `spin_sdk.wit.types.Err(spin_sdk.wit.imports.key_value.ErrorStoreTableFull)` will be raised if too many stores have been opened simultaneously.
+    Closing one or more previously opened stores might address this using the `drop` method.
+
+    A `spin_sdk.wit.types.Err(spin_sdk.wit.imports.key_value.ErrorOther(str))` will be raised if some implementation specific error has occured (e.g I/O)
+    &#34;&#34;&#34;
     return Store.open(&#34;default&#34;)</code></pre>
 </details>
 </dd>

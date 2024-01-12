@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
 <title>spin_sdk.llm API documentation</title>
-<meta name="description" content="" />
+<meta name="description" content="Module for working with the Spin large language model API" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -22,11 +22,14 @@
 <h1 class="title">Module <code>spin_sdk.llm</code></h1>
 </header>
 <section id="section-intro">
+<p>Module for working with the Spin large language model API</p>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">from dataclasses import dataclass
+<pre><code class="python">&#34;&#34;&#34;Module for working with the Spin large language model API&#34;&#34;&#34;
+
+from dataclasses import dataclass
 from typing import Optional, Sequence
 from spin_sdk.wit.imports import llm as spin_llm
 
@@ -40,14 +43,35 @@ class LLMInferencingParams:
     top_p: float = 0.9
     
 
-def generate_embeddings(model: str, text: Sequence[str]):
+def generate_embeddings(model: str, text: Sequence[str]) -&gt; spin_llm.EmbeddingsResult:
+    &#34;&#34;&#34;
+    A `spin_sdk.wit.types.Err(spin_sdk.wit.imports.llm(ErrorModelNotSupported)` will be raised if the component does not have access to the specified model.
+    
+    A `spin_sdk.wit.types.Err(spin_sdk.wit.imports.llm(ErrorRuntimeError(str))` will be raised if there are any runtime errors.
+
+    A `spin_sdk.wit.types.Err(spin_sdk.wit.imports.llm(ErrorInvalidInput(str))` will be raised if an invalid input is provided.
+    &#34;&#34;&#34;
     return spin_llm.generate_embeddings(model, text)
 
-def infer_with_options(model: str, prompt: str, options: Optional[LLMInferencingParams]):
+def infer_with_options(model: str, prompt: str, options: Optional[LLMInferencingParams]) -&gt; spin_llm.InferencingResult:
+    &#34;&#34;&#34;
+    A `spin_sdk.wit.types.Err(spin_sdk.wit.imports.llm(ErrorModelNotSupported)` will be raised if the component does not have access to the specified model.
+    
+    A `spin_sdk.wit.types.Err(spin_sdk.wit.imports.llm(ErrorRuntimeError(str))` will be raised if there are any runtime errors.
+
+    A `spin_sdk.wit.types.Err(spin_sdk.wit.imports.llm(ErrorInvalidInput(str))` will be raised if an invalid input is provided.
+    &#34;&#34;&#34;
     options = options or LLMInferencingParams
     return spin_llm.infer(model, prompt, options)
 
-def infer(model: str, prompt: str):
+def infer(model: str, prompt: str) -&gt; spin_llm.InferencingResult:
+    &#34;&#34;&#34;
+    A `spin_sdk.wit.types.Err(spin_sdk.wit.imports.llm(ErrorModelNotSupported)` will be raised if the component does not have access to the specified model.
+    
+    A `spin_sdk.wit.types.Err(spin_sdk.wit.imports.llm(ErrorRuntimeError(str))` will be raised if there are any runtime errors.
+
+    A `spin_sdk.wit.types.Err(spin_sdk.wit.imports.llm(ErrorInvalidInput(str))` will be raised if an invalid input is provided.
+    &#34;&#34;&#34;
     options = LLMInferencingParams
     return spin_llm.infer(model, prompt, options)</code></pre>
 </details>
@@ -60,42 +84,69 @@ def infer(model: str, prompt: str):
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
 <dt id="spin_sdk.llm.generate_embeddings"><code class="name flex">
-<span>def <span class="ident">generate_embeddings</span></span>(<span>model: str, text: Sequence[str])</span>
+<span>def <span class="ident">generate_embeddings</span></span>(<span>model: str, text: Sequence[str]) ‑> <a title="spin_sdk.wit.imports.llm.EmbeddingsResult" href="wit/imports/llm.html#spin_sdk.wit.imports.llm.EmbeddingsResult">EmbeddingsResult</a></span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>A <code><a title="spin_sdk.wit.types.Err" href="wit/types.html#spin_sdk.wit.types.Err">Err</a>(<a title="spin_sdk.wit.imports.llm" href="wit/imports/llm.html">spin_sdk.wit.imports.llm</a>(ErrorModelNotSupported)</code> will be raised if the component does not have access to the specified model.</p>
+<p>A <code><a title="spin_sdk.wit.types.Err" href="wit/types.html#spin_sdk.wit.types.Err">Err</a>(<a title="spin_sdk.wit.imports.llm" href="wit/imports/llm.html">spin_sdk.wit.imports.llm</a>(ErrorRuntimeError(str))</code> will be raised if there are any runtime errors.</p>
+<p>A <code><a title="spin_sdk.wit.types.Err" href="wit/types.html#spin_sdk.wit.types.Err">Err</a>(<a title="spin_sdk.wit.imports.llm" href="wit/imports/llm.html">spin_sdk.wit.imports.llm</a>(ErrorInvalidInput(str))</code> will be raised if an invalid input is provided.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def generate_embeddings(model: str, text: Sequence[str]):
+<pre><code class="python">def generate_embeddings(model: str, text: Sequence[str]) -&gt; spin_llm.EmbeddingsResult:
+    &#34;&#34;&#34;
+    A `spin_sdk.wit.types.Err(spin_sdk.wit.imports.llm(ErrorModelNotSupported)` will be raised if the component does not have access to the specified model.
+    
+    A `spin_sdk.wit.types.Err(spin_sdk.wit.imports.llm(ErrorRuntimeError(str))` will be raised if there are any runtime errors.
+
+    A `spin_sdk.wit.types.Err(spin_sdk.wit.imports.llm(ErrorInvalidInput(str))` will be raised if an invalid input is provided.
+    &#34;&#34;&#34;
     return spin_llm.generate_embeddings(model, text)</code></pre>
 </details>
 </dd>
 <dt id="spin_sdk.llm.infer"><code class="name flex">
-<span>def <span class="ident">infer</span></span>(<span>model: str, prompt: str)</span>
+<span>def <span class="ident">infer</span></span>(<span>model: str, prompt: str) ‑> <a title="spin_sdk.wit.imports.llm.InferencingResult" href="wit/imports/llm.html#spin_sdk.wit.imports.llm.InferencingResult">InferencingResult</a></span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>A <code><a title="spin_sdk.wit.types.Err" href="wit/types.html#spin_sdk.wit.types.Err">Err</a>(<a title="spin_sdk.wit.imports.llm" href="wit/imports/llm.html">spin_sdk.wit.imports.llm</a>(ErrorModelNotSupported)</code> will be raised if the component does not have access to the specified model.</p>
+<p>A <code><a title="spin_sdk.wit.types.Err" href="wit/types.html#spin_sdk.wit.types.Err">Err</a>(<a title="spin_sdk.wit.imports.llm" href="wit/imports/llm.html">spin_sdk.wit.imports.llm</a>(ErrorRuntimeError(str))</code> will be raised if there are any runtime errors.</p>
+<p>A <code><a title="spin_sdk.wit.types.Err" href="wit/types.html#spin_sdk.wit.types.Err">Err</a>(<a title="spin_sdk.wit.imports.llm" href="wit/imports/llm.html">spin_sdk.wit.imports.llm</a>(ErrorInvalidInput(str))</code> will be raised if an invalid input is provided.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def infer(model: str, prompt: str):
+<pre><code class="python">def infer(model: str, prompt: str) -&gt; spin_llm.InferencingResult:
+    &#34;&#34;&#34;
+    A `spin_sdk.wit.types.Err(spin_sdk.wit.imports.llm(ErrorModelNotSupported)` will be raised if the component does not have access to the specified model.
+    
+    A `spin_sdk.wit.types.Err(spin_sdk.wit.imports.llm(ErrorRuntimeError(str))` will be raised if there are any runtime errors.
+
+    A `spin_sdk.wit.types.Err(spin_sdk.wit.imports.llm(ErrorInvalidInput(str))` will be raised if an invalid input is provided.
+    &#34;&#34;&#34;
     options = LLMInferencingParams
     return spin_llm.infer(model, prompt, options)</code></pre>
 </details>
 </dd>
 <dt id="spin_sdk.llm.infer_with_options"><code class="name flex">
-<span>def <span class="ident">infer_with_options</span></span>(<span>model: str, prompt: str, options: Optional[<a title="spin_sdk.llm.LLMInferencingParams" href="#spin_sdk.llm.LLMInferencingParams">LLMInferencingParams</a>])</span>
+<span>def <span class="ident">infer_with_options</span></span>(<span>model: str, prompt: str, options: Optional[<a title="spin_sdk.llm.LLMInferencingParams" href="#spin_sdk.llm.LLMInferencingParams">LLMInferencingParams</a>]) ‑> <a title="spin_sdk.wit.imports.llm.InferencingResult" href="wit/imports/llm.html#spin_sdk.wit.imports.llm.InferencingResult">InferencingResult</a></span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>A <code><a title="spin_sdk.wit.types.Err" href="wit/types.html#spin_sdk.wit.types.Err">Err</a>(<a title="spin_sdk.wit.imports.llm" href="wit/imports/llm.html">spin_sdk.wit.imports.llm</a>(ErrorModelNotSupported)</code> will be raised if the component does not have access to the specified model.</p>
+<p>A <code><a title="spin_sdk.wit.types.Err" href="wit/types.html#spin_sdk.wit.types.Err">Err</a>(<a title="spin_sdk.wit.imports.llm" href="wit/imports/llm.html">spin_sdk.wit.imports.llm</a>(ErrorRuntimeError(str))</code> will be raised if there are any runtime errors.</p>
+<p>A <code><a title="spin_sdk.wit.types.Err" href="wit/types.html#spin_sdk.wit.types.Err">Err</a>(<a title="spin_sdk.wit.imports.llm" href="wit/imports/llm.html">spin_sdk.wit.imports.llm</a>(ErrorInvalidInput(str))</code> will be raised if an invalid input is provided.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def infer_with_options(model: str, prompt: str, options: Optional[LLMInferencingParams]):
+<pre><code class="python">def infer_with_options(model: str, prompt: str, options: Optional[LLMInferencingParams]) -&gt; spin_llm.InferencingResult:
+    &#34;&#34;&#34;
+    A `spin_sdk.wit.types.Err(spin_sdk.wit.imports.llm(ErrorModelNotSupported)` will be raised if the component does not have access to the specified model.
+    
+    A `spin_sdk.wit.types.Err(spin_sdk.wit.imports.llm(ErrorRuntimeError(str))` will be raised if there are any runtime errors.
+
+    A `spin_sdk.wit.types.Err(spin_sdk.wit.imports.llm(ErrorInvalidInput(str))` will be raised if an invalid input is provided.
+    &#34;&#34;&#34;
     options = options or LLMInferencingParams
     return spin_llm.infer(model, prompt, options)</code></pre>
 </details>

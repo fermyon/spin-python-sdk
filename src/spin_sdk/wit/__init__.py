@@ -1,3 +1,5 @@
+""" Module with the bindings generated from the wit by componentize-py """
+
 from typing import TypeVar, Generic, Union, Optional, Union, Protocol, Tuple, List, Any, Self
 from enum import Flag, Enum, auto
 from dataclasses import dataclass

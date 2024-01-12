@@ -8,7 +8,7 @@
 
 Once you have `pip` installed, you can install `componentize-py` using:
 
-```
+```bash
 pip install componentize-py==0.9.0
 ```
 
@@ -19,7 +19,7 @@ The bindings are generated from
 [src/spin_sdk/wit/deps](./src/spin_sdk/wit/deps) directory was copied from
 https://github.com/bytecodealliance/wasmtime/tree/v16.0.0/crates/wasi/wit/deps
 
-```
+```bash
 componentize-py -d src/spin_sdk/wit -w spin-all bindings bindings
 rm -r src/spin_sdk/wit/imports src/spin_sdk/wit/exports
 mv bindings/spin_all/* src/spin_sdk/wit/
@@ -32,24 +32,21 @@ Any time you regenerate the bindings or edit files by hand, you'll want to
 regenerate the HTML docs to match.  First, install `pdoc` using `pip install
 pdoc3`.  Then, update the docs using:
 
-```
-rm -r docs
-(cd src && pdoc --html spin_sdk)
-mv src/html/spin_sdk docs
-rmdir src/html
+```bash
+./scripts/generate_docs.py
 ```
 
 ### Building the distribution
 
 First, make sure you have an up-to-date version of the `build` package installed:
 
-```
+```bash
 pip install --upgrade build
 ```
 
 Then, build the distribution:
 
-```
+```bash
 rm -rf dist
 python -m build
 ```
@@ -58,14 +55,13 @@ python -m build
 
 First, make sure you have an up-to-date version of the `twine` package installed:
 
-```
+```bash
 pip install --upgrade twine
 ```
 
 Then, publish the distribution:
 
-
-```
+```bash
 twine upload dist/*
 ```
 

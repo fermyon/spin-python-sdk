@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
 <title>spin_sdk.sqlite API documentation</title>
-<meta name="description" content="" />
+<meta name="description" content="Module for interacting with an SQLite database" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -22,17 +22,38 @@
 <h1 class="title">Module <code>spin_sdk.sqlite</code></h1>
 </header>
 <section id="section-intro">
+<p>Module for interacting with an SQLite database</p>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">from typing import List
+<pre><code class="python">&#34;&#34;&#34;Module for interacting with an SQLite database&#34;&#34;&#34;
+
+from typing import List
 from spin_sdk.wit.imports.sqlite import Connection
 
 def open(name: str) -&gt; Connection:
+    &#34;&#34;&#34;Open a connection to a named database instance.
+
+    If `database` is &#34;default&#34;, the default instance is opened.
+
+    A `spin_sdk.wit.types.Err(spin_sdk.wit.imports.sqlite(ErrorAccessDenied)` will be raised when the component does not have access to the specified database.
+
+    A `spin_sdk.wit.types.Err(spin_sdk.wit.imports.sqlite(ErrorNoSuchDatabase)` will be raised when the host does not recognize the database name requested.
+    
+    A `spin_sdk.wit.types.Err(spin_sdk.wit.imports.sqlite(ErrorInvalidConnection)` will be raised when the provided connection string is not valid.
+    
+    A `spin_sdk.wit.types.Err(spin_sdk.wit.imports.sqlite(ErrorIo(str))` will be raised when implementation-specific error occured (e.g. I/O)
+    &#34;&#34;&#34;
     return Connection.open(name)
 
 def open_default() -&gt; Connection:
+    &#34;&#34;&#34;Open the default store.
+
+    A `spin_sdk.wit.types.Err(spin_sdk.wit.imports.sqlite(ErrorAccessDenied)` will be raised when the component does not have access to the default database.
+
+    A `spin_sdk.wit.types.Err(spin_sdk.wit.imports.sqlite(ErrorIo(str))` will be raised when implementation-specific error occured (e.g. I/O)
+    &#34;&#34;&#34;
     return Connection.open(&#34;default&#34;)</code></pre>
 </details>
 </section>
@@ -47,12 +68,29 @@ def open_default() -&gt; Connection:
 <span>def <span class="ident">open</span></span>(<span>name: str) ‑> <a title="spin_sdk.wit.imports.sqlite.Connection" href="wit/imports/sqlite.html#spin_sdk.wit.imports.sqlite.Connection">Connection</a></span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Open a connection to a named database instance.</p>
+<p>If <code>database</code> is "default", the default instance is opened.</p>
+<p>A <code><a title="spin_sdk.wit.types.Err" href="wit/types.html#spin_sdk.wit.types.Err">Err</a>(<a title="spin_sdk.wit.imports.sqlite" href="wit/imports/sqlite.html">spin_sdk.wit.imports.sqlite</a>(ErrorAccessDenied)</code> will be raised when the component does not have access to the specified database.</p>
+<p>A <code><a title="spin_sdk.wit.types.Err" href="wit/types.html#spin_sdk.wit.types.Err">Err</a>(<a title="spin_sdk.wit.imports.sqlite" href="wit/imports/sqlite.html">spin_sdk.wit.imports.sqlite</a>(ErrorNoSuchDatabase)</code> will be raised when the host does not recognize the database name requested.</p>
+<p>A <code><a title="spin_sdk.wit.types.Err" href="wit/types.html#spin_sdk.wit.types.Err">Err</a>(<a title="spin_sdk.wit.imports.sqlite" href="wit/imports/sqlite.html">spin_sdk.wit.imports.sqlite</a>(ErrorInvalidConnection)</code> will be raised when the provided connection string is not valid.</p>
+<p>A <code><a title="spin_sdk.wit.types.Err" href="wit/types.html#spin_sdk.wit.types.Err">Err</a>(<a title="spin_sdk.wit.imports.sqlite" href="wit/imports/sqlite.html">spin_sdk.wit.imports.sqlite</a>(ErrorIo(str))</code> will be raised when implementation-specific error occured (e.g. I/O)</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def open(name: str) -&gt; Connection:
+    &#34;&#34;&#34;Open a connection to a named database instance.
+
+    If `database` is &#34;default&#34;, the default instance is opened.
+
+    A `spin_sdk.wit.types.Err(spin_sdk.wit.imports.sqlite(ErrorAccessDenied)` will be raised when the component does not have access to the specified database.
+
+    A `spin_sdk.wit.types.Err(spin_sdk.wit.imports.sqlite(ErrorNoSuchDatabase)` will be raised when the host does not recognize the database name requested.
+    
+    A `spin_sdk.wit.types.Err(spin_sdk.wit.imports.sqlite(ErrorInvalidConnection)` will be raised when the provided connection string is not valid.
+    
+    A `spin_sdk.wit.types.Err(spin_sdk.wit.imports.sqlite(ErrorIo(str))` will be raised when implementation-specific error occured (e.g. I/O)
+    &#34;&#34;&#34;
     return Connection.open(name)</code></pre>
 </details>
 </dd>
@@ -60,12 +98,20 @@ def open_default() -&gt; Connection:
 <span>def <span class="ident">open_default</span></span>(<span>) ‑> <a title="spin_sdk.wit.imports.sqlite.Connection" href="wit/imports/sqlite.html#spin_sdk.wit.imports.sqlite.Connection">Connection</a></span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Open the default store.</p>
+<p>A <code><a title="spin_sdk.wit.types.Err" href="wit/types.html#spin_sdk.wit.types.Err">Err</a>(<a title="spin_sdk.wit.imports.sqlite" href="wit/imports/sqlite.html">spin_sdk.wit.imports.sqlite</a>(ErrorAccessDenied)</code> will be raised when the component does not have access to the default database.</p>
+<p>A <code><a title="spin_sdk.wit.types.Err" href="wit/types.html#spin_sdk.wit.types.Err">Err</a>(<a title="spin_sdk.wit.imports.sqlite" href="wit/imports/sqlite.html">spin_sdk.wit.imports.sqlite</a>(ErrorIo(str))</code> will be raised when implementation-specific error occured (e.g. I/O)</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def open_default() -&gt; Connection:
+    &#34;&#34;&#34;Open the default store.
+
+    A `spin_sdk.wit.types.Err(spin_sdk.wit.imports.sqlite(ErrorAccessDenied)` will be raised when the component does not have access to the default database.
+
+    A `spin_sdk.wit.types.Err(spin_sdk.wit.imports.sqlite(ErrorIo(str))` will be raised when implementation-specific error occured (e.g. I/O)
+    &#34;&#34;&#34;
     return Connection.open(&#34;default&#34;)</code></pre>
 </details>
 </dd>
