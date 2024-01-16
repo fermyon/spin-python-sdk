@@ -8,8 +8,8 @@ def opem(connection_string: str) -> Connection:
     
     The connection_string is the MySQL URL connection string.
 
-    A `spin_sdk.wit.types.Err(spin_sdk.wit.imports.postgres(ErrorConnectionFailed(str))` when a connection fails.
+    A `spin_sdk.wit.types.Err(spin_sdk.wit.imports.rdbms_types.ErrorConnectionFailed(str))` when a connection fails.
     
-    A `spin_sdk.wit.types.Err(spin_sdk.wit.imports.postgres(ErrorOther(str))` when some other error occurs.
+    A `spin_sdk.wit.types.Err(spin_sdk.wit.import.rdbms_types.ErrorOther(str))` when some other error occurs.
     """
     return Connection.open(connection_string)
