@@ -33,8 +33,11 @@ class ErrorOther:
     value: str
 
 
-# Errors related to interacting with a database.
 Error = Union[ErrorConnectionFailed, ErrorBadParameter, ErrorQueryFailed, ErrorValueConversionFailed, ErrorOther]
+"""
+Errors related to interacting with a database.
+"""
+
 
 class DbDataType(Enum):
     """
@@ -131,8 +134,11 @@ class DbValueUnsupported:
     pass
 
 
-# Database values
 DbValue = Union[DbValueBoolean, DbValueInt8, DbValueInt16, DbValueInt32, DbValueInt64, DbValueUint8, DbValueUint16, DbValueUint32, DbValueUint64, DbValueFloating32, DbValueFloating64, DbValueStr, DbValueBinary, DbValueDbNull, DbValueUnsupported]
+"""
+Database values
+"""
+
 
 
 @dataclass
@@ -205,8 +211,11 @@ class ParameterValueDbNull:
     pass
 
 
-# Values used in parameterized queries
 ParameterValue = Union[ParameterValueBoolean, ParameterValueInt8, ParameterValueInt16, ParameterValueInt32, ParameterValueInt64, ParameterValueUint8, ParameterValueUint16, ParameterValueUint32, ParameterValueUint64, ParameterValueFloating32, ParameterValueFloating64, ParameterValueStr, ParameterValueBinary, ParameterValueDbNull]
+"""
+Values used in parameterized queries
+"""
+
 
 @dataclass
 class Column:

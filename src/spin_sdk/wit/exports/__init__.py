@@ -7,6 +7,16 @@ import weakref
 from ..types import Result, Ok, Err, Some
 from ..imports import types
 
+class InboundRedis(Protocol):
+
+    @abstractmethod
+    def handle_message(self, message: bytes) -> None:
+        """
+        Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.inbound_redis.Error)`
+        """
+        raise NotImplementedError
+
+
 class IncomingHandler(Protocol):
 
     @abstractmethod
@@ -23,13 +33,6 @@ class IncomingHandler(Protocol):
         `response-outparam` before returning, or else the caller will respond
         with an error on its behalf.
         """
-        raise NotImplementedError
-
-
-class InboundRedis(Protocol):
-
-    @abstractmethod
-    def handle_message(self, message: bytes) -> None:
         raise NotImplementedError
 
 

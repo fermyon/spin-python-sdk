@@ -28,8 +28,11 @@ class ErrorOther:
     value: str
 
 
-# Errors related to interacting with Redis
 Error = Union[ErrorInvalidAddress, ErrorTooManyConnections, ErrorTypeError, ErrorOther]
+"""
+Errors related to interacting with Redis
+"""
+
 
 
 @dataclass
@@ -42,8 +45,11 @@ class RedisParameterBinary:
     value: bytes
 
 
-# A parameter type for the general-purpose `execute` function.
 RedisParameter = Union[RedisParameterInt64, RedisParameterBinary]
+"""
+A parameter type for the general-purpose `execute` function.
+"""
+
 
 
 @dataclass
@@ -66,27 +72,36 @@ class RedisResultBinary:
     value: bytes
 
 
-# A return type for the general-purpose `execute` function.
 RedisResult = Union[RedisResultNil, RedisResultStatus, RedisResultInt64, RedisResultBinary]
+"""
+A return type for the general-purpose `execute` function.
+"""
+
 
 class Connection:
     
-    @staticmethod
-    def open(address: str) -> Any:
+    @classmethod
+    def open(cls, address: str) -> Self:
         """
         Open a connection to the Redis instance at `address`.
+        
+        Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.redis.Error)`
         """
         raise NotImplementedError
 
     def publish(self, channel: str, payload: bytes) -> None:
         """
         Publish a Redis message to the specified channel.
+        
+        Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.redis.Error)`
         """
         raise NotImplementedError
 
     def get(self, key: str) -> Optional[bytes]:
         """
         Get the value of a key.
+        
+        Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.redis.Error)`
         """
         raise NotImplementedError
 
@@ -95,6 +110,8 @@ class Connection:
         Set key to value.
         
         If key already holds a value, it is overwritten.
+        
+        Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.redis.Error)`
         """
         raise NotImplementedError
 
@@ -105,6 +122,8 @@ class Connection:
         If the key does not exist, it is set to 0 before performing the operation.
         An `error::type-error` is returned if the key contains a value of the wrong type
         or contains a string that can not be represented as integer.
+        
+        Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.redis.Error)`
         """
         raise NotImplementedError
 
@@ -113,34 +132,48 @@ class Connection:
         Removes the specified keys.
         
         A key is ignored if it does not exist. Returns the number of keys deleted.
+        
+        Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.redis.Error)`
         """
         raise NotImplementedError
 
     def sadd(self, key: str, values: List[str]) -> int:
         """
         Add the specified `values` to the set named `key`, returning the number of newly-added values.
+        
+        Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.redis.Error)`
         """
         raise NotImplementedError
 
     def smembers(self, key: str) -> List[str]:
         """
         Retrieve the contents of the set named `key`.
+        
+        Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.redis.Error)`
         """
         raise NotImplementedError
 
     def srem(self, key: str, values: List[str]) -> int:
         """
         Remove the specified `values` from the set named `key`, returning the number of newly-removed values.
+        
+        Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.redis.Error)`
         """
         raise NotImplementedError
 
     def execute(self, command: str, arguments: List[RedisParameter]) -> List[RedisResult]:
         """
         Execute an arbitrary Redis command and receive the result.
+        
+        Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.redis.Error)`
         """
         raise NotImplementedError
 
-    def drop(self):
+    def __enter__(self):
+        """Returns self"""
+        return self
+                                                                    
+    def __exit__(self, *args):
         """
         Release this resource.
         """

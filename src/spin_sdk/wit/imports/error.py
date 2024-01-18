@@ -42,7 +42,11 @@ class Error:
         """
         raise NotImplementedError
 
-    def drop(self):
+    def __enter__(self):
+        """Returns self"""
+        return self
+                                                                    
+    def __exit__(self, *args):
         """
         Release this resource.
         """
