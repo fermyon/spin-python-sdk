@@ -13,7 +13,7 @@ world spin-imports {
 
 world spin-redis {
   include spin-imports;
-  export inbound-redis;
+  export fermyon:spin/inbound-redis;
 }
 
 world spin-http {

@@ -1,8 +1,0 @@
-interface inbound-redis {
-  variant error {
-    success,
-    error,
-  }
-
-  handle-message: func(message: list<u8>) -> result<_, error>;
-}
