@@ -31,7 +31,7 @@ async def send(request: OutgoingRequest) -> IncomingResponse:
         if response is None:
             await register(cast(PollLoop, asyncio.get_event_loop()), future.subscribe())
         else:
-            future.drop()
+            future.__exit__()
             
             if isinstance(response, Ok):
                 if isinstance(response.value, Ok):
@@ -65,7 +65,7 @@ class Stream:
             except Err as e:
                 if isinstance(e.value, StreamErrorClosed):
                     if self.stream is not None:
-                        self.stream.drop()
+                        self.stream.__exit__()
                         self.stream = None
                     if self.body is not None:
                         IncomingBody.finish(self.body)
@@ -104,7 +104,7 @@ class Sink:
     def close(self):
         """Close the stream, indicating no further data will be written."""
 
-        self.stream.drop()
+        self.stream.__exit__()
         self.stream = None
         OutgoingBody.finish(self.body, None)
         self.body = None
@@ -142,7 +142,7 @@ class PollLoop(asyncio.AbstractEventLoop):
                 
                 for (ready, pollable), waker in zip(zip(ready, pollables), wakers):
                     if ready:
-                        pollable.drop()
+                        pollable.__exit__()
                         waker.set_result(None)
                     else:
                         new_wakers.append((pollable, waker))
