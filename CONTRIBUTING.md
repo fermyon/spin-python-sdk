@@ -20,9 +20,9 @@ The bindings are generated from
 https://github.com/bytecodealliance/wasmtime/tree/v16.0.0/crates/wasi/wit/deps
 
 ```bash
-componentize-py -d src/spin_sdk/wit -w spin-all bindings bindings
+componentize-py -d src/spin_sdk/wit -w spin-all bindings bindings --world-module spin_sdk.wit
 rm -r src/spin_sdk/wit/imports src/spin_sdk/wit/exports
-mv bindings/spin_all/* src/spin_sdk/wit/
+mv bindings/spin_sdk/wit/* src/spin_sdk/wit/
 rm -r bindings
 ```
 
