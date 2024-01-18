@@ -56,8 +56,11 @@ class ErrorOther:
     value: str
 
 
-# The set of errors which may be raised by functions in this interface.
 Error = Union[ErrorInvalidName, ErrorUndefined, ErrorProvider, ErrorOther]
+&#34;&#34;&#34;
+The set of errors which may be raised by functions in this interface.
+&#34;&#34;&#34;
+
 
 
 def get(name: str) -&gt; str:
@@ -65,6 +68,8 @@ def get(name: str) -&gt; str:
     Get an application variable value for the current component.
     
     The name must match one defined in in the component manifest.
+    
+    Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.variables.Error)`
     &#34;&#34;&#34;
     raise NotImplementedError</code></pre>
 </details>
@@ -72,6 +77,13 @@ def get(name: str) -&gt; str:
 <section>
 </section>
 <section>
+<h2 class="section-title" id="header-variables">Global variables</h2>
+<dl>
+<dt id="spin_sdk.wit.imports.variables.Error"><code class="name">var <span class="ident">Error</span></code></dt>
+<dd>
+<div class="desc"><p>The set of errors which may be raised by functions in this interface.</p></div>
+</dd>
+</dl>
 </section>
 <section>
 <h2 class="section-title" id="header-functions">Functions</h2>
@@ -81,7 +93,8 @@ def get(name: str) -&gt; str:
 </code></dt>
 <dd>
 <div class="desc"><p>Get an application variable value for the current component.</p>
-<p>The name must match one defined in in the component manifest.</p></div>
+<p>The name must match one defined in in the component manifest.</p>
+<p>Raises: <code><a title="spin_sdk.wit.types.Err" href="../types.html#spin_sdk.wit.types.Err">Err</a>(<a title="spin_sdk.wit.imports.variables.Error" href="#spin_sdk.wit.imports.variables.Error">Error</a>)</code></p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -91,6 +104,8 @@ def get(name: str) -&gt; str:
     Get an application variable value for the current component.
     
     The name must match one defined in in the component manifest.
+    
+    Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.variables.Error)`
     &#34;&#34;&#34;
     raise NotImplementedError</code></pre>
 </details>
@@ -200,6 +215,11 @@ class ErrorUndefined:
 <li><h3>Super-module</h3>
 <ul>
 <li><code><a title="spin_sdk.wit.imports" href="index.html">spin_sdk.wit.imports</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-variables">Global variables</a></h3>
+<ul class="">
+<li><code><a title="spin_sdk.wit.imports.variables.Error" href="#spin_sdk.wit.imports.variables.Error">Error</a></code></li>
 </ul>
 </li>
 <li><h3><a href="#header-functions">Functions</a></h3>

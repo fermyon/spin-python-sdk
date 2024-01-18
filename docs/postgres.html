@@ -37,9 +37,9 @@ def open(connection_string: str) -&gt; Connection:
     
     The connection_string is the Postgres URL connection string.
 
-    A `spin_sdk.wit.types.Err(spin_sdk.wit.imports.postgres(ErrorConnectionFailed(str))` when a connection fails.
+    A `spin_sdk.wit.types.Err(spin_sdk.wit.imports.rdbms_types.ErrorConnectionFailed(str))` when a connection fails.
     
-    A `spin_sdk.wit.types.Err(spin_sdk.wit.imports.postgres(ErrorOther(str))` when some other error occurs.
+    A `spin_sdk.wit.types.Err(spin_sdk.wit.imports.rdbms_types.ErrorOther(str))` when some other error occurs.
     &#34;&#34;&#34;
     return Connection.open(connection_string)</code></pre>
 </details>
@@ -57,8 +57,8 @@ def open(connection_string: str) -&gt; Connection:
 <dd>
 <div class="desc"><p>Open a connection with a Postgres database.</p>
 <p>The connection_string is the Postgres URL connection string.</p>
-<p>A <code><a title="spin_sdk.wit.types.Err" href="wit/types.html#spin_sdk.wit.types.Err">Err</a>(<a title="spin_sdk.wit.imports.postgres" href="wit/imports/postgres.html">spin_sdk.wit.imports.postgres</a>(ErrorConnectionFailed(str))</code> when a connection fails.</p>
-<p>A <code><a title="spin_sdk.wit.types.Err" href="wit/types.html#spin_sdk.wit.types.Err">Err</a>(<a title="spin_sdk.wit.imports.postgres" href="wit/imports/postgres.html">spin_sdk.wit.imports.postgres</a>(ErrorOther(str))</code> when some other error occurs.</p></div>
+<p>A <code><a title="spin_sdk.wit.types.Err" href="wit/types.html#spin_sdk.wit.types.Err">Err</a>(<a title="spin_sdk.wit.imports.rdbms_types.ErrorConnectionFailed" href="wit/imports/rdbms_types.html#spin_sdk.wit.imports.rdbms_types.ErrorConnectionFailed">ErrorConnectionFailed</a>(str))</code> when a connection fails.</p>
+<p>A <code><a title="spin_sdk.wit.types.Err" href="wit/types.html#spin_sdk.wit.types.Err">Err</a>(<a title="spin_sdk.wit.imports.rdbms_types.ErrorOther" href="wit/imports/rdbms_types.html#spin_sdk.wit.imports.rdbms_types.ErrorOther">ErrorOther</a>(str))</code> when some other error occurs.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -69,9 +69,9 @@ def open(connection_string: str) -&gt; Connection:
     
     The connection_string is the Postgres URL connection string.
 
-    A `spin_sdk.wit.types.Err(spin_sdk.wit.imports.postgres(ErrorConnectionFailed(str))` when a connection fails.
+    A `spin_sdk.wit.types.Err(spin_sdk.wit.imports.rdbms_types.ErrorConnectionFailed(str))` when a connection fails.
     
-    A `spin_sdk.wit.types.Err(spin_sdk.wit.imports.postgres(ErrorOther(str))` when some other error occurs.
+    A `spin_sdk.wit.types.Err(spin_sdk.wit.imports.rdbms_types.ErrorOther(str))` when some other error occurs.
     &#34;&#34;&#34;
     return Connection.open(connection_string)</code></pre>
 </details>
