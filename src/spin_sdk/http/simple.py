@@ -70,7 +70,7 @@ class IncomingHandler(exports.IncomingHandler):
                 body += request_stream.blocking_read(16 * 1024)
             except Err as e:
                 if isinstance(e.value, StreamErrorClosed):
-                    request_stream.drop()
+                    request_stream.__exit__()
                     IncomingBody.finish(request_body)
                     break
                 else:
@@ -112,7 +112,7 @@ class IncomingHandler(exports.IncomingHandler):
                 count = min(len(simple_response.body) - offset, MAX_BLOCKING_WRITE_SIZE)
                 response_stream.blocking_write_and_flush(simple_response.body[offset:offset+count])
                 offset += count
-        response_stream.drop()
+        response_stream.__exit__()
         OutgoingBody.finish(response_body, None)
     
 def send(request: Request) -> Response:
@@ -170,8 +170,8 @@ def send(request: Request) -> Response:
         if response is None:
             pollable.block()
         else:
-            pollable.drop()
-            future.drop()
+            pollable.__exit__()
+            future.__exit__()
             
             if isinstance(response, Ok):
                 if isinstance(response.value, Ok):
@@ -184,7 +184,7 @@ def send(request: Request) -> Response:
                             body += response_stream.blocking_read(16 * 1024)
                         except Err as e:
                             if isinstance(e.value, StreamErrorClosed):
-                                response_stream.drop()
+                                response_stream.__exit__()
                                 IncomingBody.finish(response_body)
                                 simple_response = Response(
                                     response_value.status(),
@@ -194,7 +194,7 @@ def send(request: Request) -> Response:
                                     )),
                                     bytes(body)
                                 )
-                                response_value.drop()
+                                response_value.__exit__()
                                 return simple_response
                             else:
                                 raise e

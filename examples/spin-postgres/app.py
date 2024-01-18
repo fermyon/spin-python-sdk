@@ -4,8 +4,9 @@ from spin_sdk import postgres
 
 class IncomingHandler(simple.IncomingHandler):
     def handle_request(self, request: Request) -> Response:
-        db = postgres.connect("user=postgres dbname=spin_dev host=127.0.0.1")
-        print(db.query("select * from test", []))
+        with postgres.open("user=postgres dbname=spin_dev host=127.0.0.1") as db:
+            print(db.query("select * from test", []))
+        
         return Response(
             200,
             {"content-type": "text/plain"},

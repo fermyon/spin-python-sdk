@@ -4,8 +4,9 @@ from spin_sdk import redis
 
 class IncomingHandler(simple.IncomingHandler):
     def handle_request(self, request: Request) -> Response:
-        db = redis.connect("redis://localhost:6379")
-        print(db.get("test"))
+        with redis.open("redis://localhost:6379") as db:
+            print(db.get("test"))
+            
         return Response(
             200,
             {"content-type": "text/plain"},

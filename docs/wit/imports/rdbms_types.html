@@ -61,8 +61,11 @@ class ErrorOther:
     value: str
 
 
-# Errors related to interacting with a database.
 Error = Union[ErrorConnectionFailed, ErrorBadParameter, ErrorQueryFailed, ErrorValueConversionFailed, ErrorOther]
+&#34;&#34;&#34;
+Errors related to interacting with a database.
+&#34;&#34;&#34;
+
 
 class DbDataType(Enum):
     &#34;&#34;&#34;
@@ -159,8 +162,11 @@ class DbValueUnsupported:
     pass
 
 
-# Database values
 DbValue = Union[DbValueBoolean, DbValueInt8, DbValueInt16, DbValueInt32, DbValueInt64, DbValueUint8, DbValueUint16, DbValueUint32, DbValueUint64, DbValueFloating32, DbValueFloating64, DbValueStr, DbValueBinary, DbValueDbNull, DbValueUnsupported]
+&#34;&#34;&#34;
+Database values
+&#34;&#34;&#34;
+
 
 
 @dataclass
@@ -233,8 +239,11 @@ class ParameterValueDbNull:
     pass
 
 
-# Values used in parameterized queries
 ParameterValue = Union[ParameterValueBoolean, ParameterValueInt8, ParameterValueInt16, ParameterValueInt32, ParameterValueInt64, ParameterValueUint8, ParameterValueUint16, ParameterValueUint32, ParameterValueUint64, ParameterValueFloating32, ParameterValueFloating64, ParameterValueStr, ParameterValueBinary, ParameterValueDbNull]
+&#34;&#34;&#34;
+Values used in parameterized queries
+&#34;&#34;&#34;
+
 
 @dataclass
 class Column:
@@ -256,6 +265,21 @@ class RowSet:
 <section>
 </section>
 <section>
+<h2 class="section-title" id="header-variables">Global variables</h2>
+<dl>
+<dt id="spin_sdk.wit.imports.rdbms_types.DbValue"><code class="name">var <span class="ident">DbValue</span></code></dt>
+<dd>
+<div class="desc"><p>Database values</p></div>
+</dd>
+<dt id="spin_sdk.wit.imports.rdbms_types.Error"><code class="name">var <span class="ident">Error</span></code></dt>
+<dd>
+<div class="desc"><p>Errors related to interacting with a database.</p></div>
+</dd>
+<dt id="spin_sdk.wit.imports.rdbms_types.ParameterValue"><code class="name">var <span class="ident">ParameterValue</span></code></dt>
+<dd>
+<div class="desc"><p>Values used in parameterized queries</p></div>
+</dd>
+</dl>
 </section>
 <section>
 </section>
@@ -1151,6 +1175,13 @@ class RowSet:
 <li><h3>Super-module</h3>
 <ul>
 <li><code><a title="spin_sdk.wit.imports" href="index.html">spin_sdk.wit.imports</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-variables">Global variables</a></h3>
+<ul class="">
+<li><code><a title="spin_sdk.wit.imports.rdbms_types.DbValue" href="#spin_sdk.wit.imports.rdbms_types.DbValue">DbValue</a></code></li>
+<li><code><a title="spin_sdk.wit.imports.rdbms_types.Error" href="#spin_sdk.wit.imports.rdbms_types.Error">Error</a></code></li>
+<li><code><a title="spin_sdk.wit.imports.rdbms_types.ParameterValue" href="#spin_sdk.wit.imports.rdbms_types.ParameterValue">ParameterValue</a></code></li>
 </ul>
 </li>
 <li><h3><a href="#header-classes">Classes</a></h3>

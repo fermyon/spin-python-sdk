@@ -43,8 +43,8 @@ from abc import abstractmethod
 import weakref
 
 from ..types import Result, Ok, Err, Some
-from ..imports import streams
 from ..imports import poll
+from ..imports import streams
 from ..imports import error
 
 
@@ -98,8 +98,11 @@ class MethodOther:
     value: str
 
 
-# This type corresponds to HTTP standard Methods.
 Method = Union[MethodGet, MethodHead, MethodPost, MethodPut, MethodDelete, MethodConnect, MethodOptions, MethodTrace, MethodPatch, MethodOther]
+&#34;&#34;&#34;
+This type corresponds to HTTP standard Methods.
+&#34;&#34;&#34;
+
 
 
 @dataclass
@@ -117,8 +120,11 @@ class SchemeOther:
     value: str
 
 
-# This type corresponds to HTTP standard Related Schemes.
 Scheme = Union[SchemeHttp, SchemeHttps, SchemeOther]
+&#34;&#34;&#34;
+This type corresponds to HTTP standard Related Schemes.
+&#34;&#34;&#34;
+
 
 @dataclass
 class DnsErrorPayload:
@@ -340,9 +346,12 @@ class ErrorCodeInternalError:
     value: Optional[str]
 
 
-# These cases are inspired by the IANA HTTP Proxy Error Types:
-# https://www.iana.org/assignments/http-proxy-status/http-proxy-status.xhtml#table-http-proxy-error-types
 ErrorCode = Union[ErrorCodeDnsTimeout, ErrorCodeDnsError, ErrorCodeDestinationNotFound, ErrorCodeDestinationUnavailable, ErrorCodeDestinationIpProhibited, ErrorCodeDestinationIpUnroutable, ErrorCodeConnectionRefused, ErrorCodeConnectionTerminated, ErrorCodeConnectionTimeout, ErrorCodeConnectionReadTimeout, ErrorCodeConnectionWriteTimeout, ErrorCodeConnectionLimitReached, ErrorCodeTlsProtocolError, ErrorCodeTlsCertificateError, ErrorCodeTlsAlertReceived, ErrorCodeHttpRequestDenied, ErrorCodeHttpRequestLengthRequired, ErrorCodeHttpRequestBodySize, ErrorCodeHttpRequestMethodInvalid, ErrorCodeHttpRequestUriInvalid, ErrorCodeHttpRequestUriTooLong, ErrorCodeHttpRequestHeaderSectionSize, ErrorCodeHttpRequestHeaderSize, ErrorCodeHttpRequestTrailerSectionSize, ErrorCodeHttpRequestTrailerSize, ErrorCodeHttpResponseIncomplete, ErrorCodeHttpResponseHeaderSectionSize, ErrorCodeHttpResponseHeaderSize, ErrorCodeHttpResponseBodySize, ErrorCodeHttpResponseTrailerSectionSize, ErrorCodeHttpResponseTrailerSize, ErrorCodeHttpResponseTransferCoding, ErrorCodeHttpResponseContentCoding, ErrorCodeHttpResponseTimeout, ErrorCodeHttpUpgradeFailed, ErrorCodeHttpProtocolError, ErrorCodeLoopDetected, ErrorCodeConfigurationError, ErrorCodeInternalError]
+&#34;&#34;&#34;
+These cases are inspired by the IANA HTTP Proxy Error Types:
+https://www.iana.org/assignments/http-proxy-status/http-proxy-status.xhtml#table-http-proxy-error-types
+&#34;&#34;&#34;
+
 
 
 @dataclass
@@ -360,9 +369,12 @@ class HeaderErrorImmutable:
     pass
 
 
-# This type enumerates the different kinds of errors that may occur when
-# setting or appending to a `fields` resource.
 HeaderError = Union[HeaderErrorInvalidSyntax, HeaderErrorForbidden, HeaderErrorImmutable]
+&#34;&#34;&#34;
+This type enumerates the different kinds of errors that may occur when
+setting or appending to a `fields` resource.
+&#34;&#34;&#34;
+
 
 class Fields:
     &#34;&#34;&#34;
@@ -386,8 +398,8 @@ class Fields:
         &#34;&#34;&#34;
         raise NotImplementedError
 
-    @staticmethod
-    def from_list(entries: List[Tuple[str, bytes]]) -&gt; Any:
+    @classmethod
+    def from_list(cls, entries: List[Tuple[str, bytes]]) -&gt; Self:
         &#34;&#34;&#34;
         Construct an HTTP Fields.
         
@@ -404,6 +416,8 @@ class Fields:
         
         An error result will be returned if any header or value was
         syntactically invalid, or if a header was forbidden.
+        
+        Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.types.HeaderError)`
         &#34;&#34;&#34;
         raise NotImplementedError
 
@@ -429,6 +443,8 @@ class Fields:
         key, if they have been set.
         
         Fails with `header-error.immutable` if the `fields` are immutable.
+        
+        Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.types.HeaderError)`
         &#34;&#34;&#34;
         raise NotImplementedError
 
@@ -438,6 +454,8 @@ class Fields:
         exist.
         
         Fails with `header-error.immutable` if the `fields` are immutable.
+        
+        Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.types.HeaderError)`
         &#34;&#34;&#34;
         raise NotImplementedError
 
@@ -447,6 +465,8 @@ class Fields:
         values for that key.
         
         Fails with `header-error.immutable` if the `fields` are immutable.
+        
+        Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.types.HeaderError)`
         &#34;&#34;&#34;
         raise NotImplementedError
 
@@ -469,7 +489,116 @@ class Fields:
         &#34;&#34;&#34;
         raise NotImplementedError
 
-    def drop(self):
+    def __enter__(self):
+        &#34;&#34;&#34;Returns self&#34;&#34;&#34;
+        return self
+                                                                    
+    def __exit__(self, *args):
+        &#34;&#34;&#34;
+        Release this resource.
+        &#34;&#34;&#34;
+        raise NotImplementedError
+
+
+class FutureTrailers:
+    &#34;&#34;&#34;
+    Represents a future which may eventaully return trailers, or an error.
+    
+    In the case that the incoming HTTP Request or Response did not have any
+    trailers, this future will resolve to the empty set of trailers once the
+    complete Request or Response body has been received.
+    &#34;&#34;&#34;
+    
+    def subscribe(self) -&gt; poll.Pollable:
+        &#34;&#34;&#34;
+        Returns a pollable which becomes ready when either the trailers have
+        been received, or an error has occured. When this pollable is ready,
+        the `get` method will return `some`.
+        &#34;&#34;&#34;
+        raise NotImplementedError
+
+    def get(self) -&gt; Optional[Result[Result[Optional[Fields], ErrorCode], None]]:
+        &#34;&#34;&#34;
+        Returns the contents of the trailers, or an error which occured,
+        once the future is ready.
+        
+        The outer `option` represents future readiness. Users can wait on this
+        `option` to become `some` using the `subscribe` method.
+        
+        The outer `result` is used to retrieve the trailers or error at most
+        once. It will be success on the first call in which the outer option
+        is `some`, and error on subsequent calls.
+        
+        The inner `result` represents that either the HTTP Request or Response
+        body, as well as any trailers, were received successfully, or that an
+        error occured receiving them. The optional `trailers` indicates whether
+        or not trailers were present in the body.
+        
+        When some `trailers` are returned by this method, the `trailers`
+        resource is immutable, and a child. Use of the `set`, `append`, or
+        `delete` methods will return an error, and the resource must be
+        dropped before the parent `future-trailers` is dropped.
+        &#34;&#34;&#34;
+        raise NotImplementedError
+
+    def __enter__(self):
+        &#34;&#34;&#34;Returns self&#34;&#34;&#34;
+        return self
+                                                                    
+    def __exit__(self, *args):
+        &#34;&#34;&#34;
+        Release this resource.
+        &#34;&#34;&#34;
+        raise NotImplementedError
+
+
+class IncomingBody:
+    &#34;&#34;&#34;
+    Represents an incoming HTTP Request or Response&#39;s Body.
+    
+    A body has both its contents - a stream of bytes - and a (possibly
+    empty) set of trailers, indicating that the full contents of the
+    body have been received. This resource represents the contents as
+    an `input-stream` and the delivery of trailers as a `future-trailers`,
+    and ensures that the user of this interface may only be consuming either
+    the body contents or waiting on trailers at any given time.
+    &#34;&#34;&#34;
+    
+    def stream(self) -&gt; streams.InputStream:
+        &#34;&#34;&#34;
+        Returns the contents of the body, as a stream of bytes.
+        
+        Returns success on first call: the stream representing the contents
+        can be retrieved at most once. Subsequent calls will return error.
+        
+        The returned `input-stream` resource is a child: it must be dropped
+        before the parent `incoming-body` is dropped, or consumed by
+        `incoming-body.finish`.
+        
+        This invariant ensures that the implementation can determine whether
+        the user is consuming the contents of the body, waiting on the
+        `future-trailers` to be ready, or neither. This allows for network
+        backpressure is to be applied when the user is consuming the body,
+        and for that backpressure to not inhibit delivery of the trailers if
+        the user does not read the entire body.
+        
+        Raises: `spin_sdk.wit.types.Err(None)`
+        &#34;&#34;&#34;
+        raise NotImplementedError
+
+    @classmethod
+    def finish(cls, this: Self) -&gt; FutureTrailers:
+        &#34;&#34;&#34;
+        Takes ownership of `incoming-body`, and returns a `future-trailers`.
+        This function will trap if the `input-stream` child is still alive.
+        &#34;&#34;&#34;
+        raise NotImplementedError
+
+    def __enter__(self):
+        &#34;&#34;&#34;Returns self&#34;&#34;&#34;
+        return self
+                                                                    
+    def __exit__(self, *args):
         &#34;&#34;&#34;
         Release this resource.
         &#34;&#34;&#34;
@@ -518,410 +647,20 @@ class IncomingRequest:
         &#34;&#34;&#34;
         raise NotImplementedError
 
-    def consume(self) -&gt; Any:
+    def consume(self) -&gt; IncomingBody:
         &#34;&#34;&#34;
         Gives the `incoming-body` associated with this request. Will only
         return success at most once, and subsequent calls will return error.
-        &#34;&#34;&#34;
-        raise NotImplementedError
-
-    def drop(self):
-        &#34;&#34;&#34;
-        Release this resource.
-        &#34;&#34;&#34;
-        raise NotImplementedError
-
-
-class OutgoingRequest:
-    &#34;&#34;&#34;
-    Represents an outgoing HTTP Request.
-    &#34;&#34;&#34;
-    
-    def __init__(self, headers: Fields):
-        &#34;&#34;&#34;
-        Construct a new `outgoing-request` with a default `method` of `GET`, and
-        `none` values for `path-with-query`, `scheme`, and `authority`.
         
-        * `headers` is the HTTP Headers for the Request.
-        
-        It is possible to construct, or manipulate with the accessor functions
-        below, an `outgoing-request` with an invalid combination of `scheme`
-        and `authority`, or `headers` which are not permitted to be sent.
-        It is the obligation of the `outgoing-handler.handle` implementation
-        to reject invalid constructions of `outgoing-request`.
+        Raises: `spin_sdk.wit.types.Err(None)`
         &#34;&#34;&#34;
         raise NotImplementedError
 
-    def body(self) -&gt; Any:
-        &#34;&#34;&#34;
-        Returns the resource corresponding to the outgoing Body for this
-        Request.
-        
-        Returns success on the first call: the `outgoing-body` resource for
-        this `outgoing-request` can be retrieved at most once. Subsequent
-        calls will return error.
-        &#34;&#34;&#34;
-        raise NotImplementedError
-
-    def method(self) -&gt; Method:
-        &#34;&#34;&#34;
-        Get the Method for the Request.
-        &#34;&#34;&#34;
-        raise NotImplementedError
-
-    def set_method(self, method: Method) -&gt; None:
-        &#34;&#34;&#34;
-        Set the Method for the Request. Fails if the string present in a
-        `method.other` argument is not a syntactically valid method.
-        &#34;&#34;&#34;
-        raise NotImplementedError
-
-    def path_with_query(self) -&gt; Optional[str]:
-        &#34;&#34;&#34;
-        Get the combination of the HTTP Path and Query for the Request.
-        When `none`, this represents an empty Path and empty Query.
-        &#34;&#34;&#34;
-        raise NotImplementedError
-
-    def set_path_with_query(self, path_with_query: Optional[str]) -&gt; None:
-        &#34;&#34;&#34;
-        Set the combination of the HTTP Path and Query for the Request.
-        When `none`, this represents an empty Path and empty Query. Fails is the
-        string given is not a syntactically valid path and query uri component.
-        &#34;&#34;&#34;
-        raise NotImplementedError
-
-    def scheme(self) -&gt; Optional[Scheme]:
-        &#34;&#34;&#34;
-        Get the HTTP Related Scheme for the Request. When `none`, the
-        implementation may choose an appropriate default scheme.
-        &#34;&#34;&#34;
-        raise NotImplementedError
-
-    def set_scheme(self, scheme: Optional[Scheme]) -&gt; None:
-        &#34;&#34;&#34;
-        Set the HTTP Related Scheme for the Request. When `none`, the
-        implementation may choose an appropriate default scheme. Fails if the
-        string given is not a syntactically valid uri scheme.
-        &#34;&#34;&#34;
-        raise NotImplementedError
-
-    def authority(self) -&gt; Optional[str]:
-        &#34;&#34;&#34;
-        Get the HTTP Authority for the Request. A value of `none` may be used
-        with Related Schemes which do not require an Authority. The HTTP and
-        HTTPS schemes always require an authority.
-        &#34;&#34;&#34;
-        raise NotImplementedError
-
-    def set_authority(self, authority: Optional[str]) -&gt; None:
-        &#34;&#34;&#34;
-        Set the HTTP Authority for the Request. A value of `none` may be used
-        with Related Schemes which do not require an Authority. The HTTP and
-        HTTPS schemes always require an authority. Fails if the string given is
-        not a syntactically valid uri authority.
-        &#34;&#34;&#34;
-        raise NotImplementedError
-
-    def headers(self) -&gt; Fields:
-        &#34;&#34;&#34;
-        Get the headers associated with the Request.
-        
-        The returned `headers` resource is immutable: `set`, `append`, and
-        `delete` operations will fail with `header-error.immutable`.
-        
-        This headers resource is a child: it must be dropped before the parent
-        `outgoing-request` is dropped, or its ownership is transfered to
-        another component by e.g. `outgoing-handler.handle`.
-        &#34;&#34;&#34;
-        raise NotImplementedError
-
-    def drop(self):
-        &#34;&#34;&#34;
-        Release this resource.
-        &#34;&#34;&#34;
-        raise NotImplementedError
-
-
-class RequestOptions:
-    &#34;&#34;&#34;
-    Parameters for making an HTTP Request. Each of these parameters is
-    currently an optional timeout applicable to the transport layer of the
-    HTTP protocol.
-    
-    These timeouts are separate from any the user may use to bound a
-    blocking call to `wasi:io/poll.poll`.
-    &#34;&#34;&#34;
-    
-    def __init__(self):
-        &#34;&#34;&#34;
-        Construct a default `request-options` value.
-        &#34;&#34;&#34;
-        raise NotImplementedError
-
-    def connect_timeout(self) -&gt; Optional[int]:
-        &#34;&#34;&#34;
-        The timeout for the initial connect to the HTTP Server.
-        &#34;&#34;&#34;
-        raise NotImplementedError
-
-    def set_connect_timeout(self, duration: Optional[int]) -&gt; None:
-        &#34;&#34;&#34;
-        Set the timeout for the initial connect to the HTTP Server. An error
-        return value indicates that this timeout is not supported.
-        &#34;&#34;&#34;
-        raise NotImplementedError
-
-    def first_byte_timeout(self) -&gt; Optional[int]:
-        &#34;&#34;&#34;
-        The timeout for receiving the first byte of the Response body.
-        &#34;&#34;&#34;
-        raise NotImplementedError
-
-    def set_first_byte_timeout(self, duration: Optional[int]) -&gt; None:
-        &#34;&#34;&#34;
-        Set the timeout for receiving the first byte of the Response body. An
-        error return value indicates that this timeout is not supported.
-        &#34;&#34;&#34;
-        raise NotImplementedError
-
-    def between_bytes_timeout(self) -&gt; Optional[int]:
-        &#34;&#34;&#34;
-        The timeout for receiving subsequent chunks of bytes in the Response
-        body stream.
-        &#34;&#34;&#34;
-        raise NotImplementedError
-
-    def set_between_bytes_timeout(self, duration: Optional[int]) -&gt; None:
-        &#34;&#34;&#34;
-        Set the timeout for receiving subsequent chunks of bytes in the Response
-        body stream. An error return value indicates that this timeout is not
-        supported.
-        &#34;&#34;&#34;
-        raise NotImplementedError
-
-    def drop(self):
-        &#34;&#34;&#34;
-        Release this resource.
-        &#34;&#34;&#34;
-        raise NotImplementedError
-
-
-class ResponseOutparam:
-    &#34;&#34;&#34;
-    Represents the ability to send an HTTP Response.
-    
-    This resource is used by the `wasi:http/incoming-handler` interface to
-    allow a Response to be sent corresponding to the Request provided as the
-    other argument to `incoming-handler.handle`.
-    &#34;&#34;&#34;
-    
-    @staticmethod
-    def set(param: Any, response: Result[Any, ErrorCode]) -&gt; None:
-        &#34;&#34;&#34;
-        Set the value of the `response-outparam` to either send a response,
-        or indicate an error.
-        
-        This method consumes the `response-outparam` to ensure that it is
-        called at most once. If it is never called, the implementation
-        will respond with an error.
-        
-        The user may provide an `error` to `response` to allow the
-        implementation determine how to respond with an HTTP error response.
-        &#34;&#34;&#34;
-        raise NotImplementedError
-
-    def drop(self):
-        &#34;&#34;&#34;
-        Release this resource.
-        &#34;&#34;&#34;
-        raise NotImplementedError
-
-
-class IncomingResponse:
-    &#34;&#34;&#34;
-    Represents an incoming HTTP Response.
-    &#34;&#34;&#34;
-    
-    def status(self) -&gt; int:
-        &#34;&#34;&#34;
-        Returns the status code from the incoming response.
-        &#34;&#34;&#34;
-        raise NotImplementedError
-
-    def headers(self) -&gt; Fields:
-        &#34;&#34;&#34;
-        Returns the headers from the incoming response.
-        
-        The returned `headers` resource is immutable: `set`, `append`, and
-        `delete` operations will fail with `header-error.immutable`.
-        
-        This headers resource is a child: it must be dropped before the parent
-        `incoming-response` is dropped.
-        &#34;&#34;&#34;
-        raise NotImplementedError
-
-    def consume(self) -&gt; Any:
-        &#34;&#34;&#34;
-        Returns the incoming body. May be called at most once. Returns error
-        if called additional times.
-        &#34;&#34;&#34;
-        raise NotImplementedError
-
-    def drop(self):
-        &#34;&#34;&#34;
-        Release this resource.
-        &#34;&#34;&#34;
-        raise NotImplementedError
-
-
-class IncomingBody:
-    &#34;&#34;&#34;
-    Represents an incoming HTTP Request or Response&#39;s Body.
-    
-    A body has both its contents - a stream of bytes - and a (possibly
-    empty) set of trailers, indicating that the full contents of the
-    body have been received. This resource represents the contents as
-    an `input-stream` and the delivery of trailers as a `future-trailers`,
-    and ensures that the user of this interface may only be consuming either
-    the body contents or waiting on trailers at any given time.
-    &#34;&#34;&#34;
-    
-    def stream(self) -&gt; streams.InputStream:
-        &#34;&#34;&#34;
-        Returns the contents of the body, as a stream of bytes.
-        
-        Returns success on first call: the stream representing the contents
-        can be retrieved at most once. Subsequent calls will return error.
-        
-        The returned `input-stream` resource is a child: it must be dropped
-        before the parent `incoming-body` is dropped, or consumed by
-        `incoming-body.finish`.
-        
-        This invariant ensures that the implementation can determine whether
-        the user is consuming the contents of the body, waiting on the
-        `future-trailers` to be ready, or neither. This allows for network
-        backpressure is to be applied when the user is consuming the body,
-        and for that backpressure to not inhibit delivery of the trailers if
-        the user does not read the entire body.
-        &#34;&#34;&#34;
-        raise NotImplementedError
-
-    @staticmethod
-    def finish(this: Any) -&gt; Any:
-        &#34;&#34;&#34;
-        Takes ownership of `incoming-body`, and returns a `future-trailers`.
-        This function will trap if the `input-stream` child is still alive.
-        &#34;&#34;&#34;
-        raise NotImplementedError
-
-    def drop(self):
-        &#34;&#34;&#34;
-        Release this resource.
-        &#34;&#34;&#34;
-        raise NotImplementedError
-
-
-class FutureTrailers:
-    &#34;&#34;&#34;
-    Represents a future which may eventaully return trailers, or an error.
-    
-    In the case that the incoming HTTP Request or Response did not have any
-    trailers, this future will resolve to the empty set of trailers once the
-    complete Request or Response body has been received.
-    &#34;&#34;&#34;
-    
-    def subscribe(self) -&gt; poll.Pollable:
-        &#34;&#34;&#34;
-        Returns a pollable which becomes ready when either the trailers have
-        been received, or an error has occured. When this pollable is ready,
-        the `get` method will return `some`.
-        &#34;&#34;&#34;
-        raise NotImplementedError
-
-    def get(self) -&gt; Optional[Result[Result[Optional[Fields], ErrorCode], None]]:
-        &#34;&#34;&#34;
-        Returns the contents of the trailers, or an error which occured,
-        once the future is ready.
-        
-        The outer `option` represents future readiness. Users can wait on this
-        `option` to become `some` using the `subscribe` method.
-        
-        The outer `result` is used to retrieve the trailers or error at most
-        once. It will be success on the first call in which the outer option
-        is `some`, and error on subsequent calls.
-        
-        The inner `result` represents that either the HTTP Request or Response
-        body, as well as any trailers, were received successfully, or that an
-        error occured receiving them. The optional `trailers` indicates whether
-        or not trailers were present in the body.
-        
-        When some `trailers` are returned by this method, the `trailers`
-        resource is immutable, and a child. Use of the `set`, `append`, or
-        `delete` methods will return an error, and the resource must be
-        dropped before the parent `future-trailers` is dropped.
-        &#34;&#34;&#34;
-        raise NotImplementedError
-
-    def drop(self):
-        &#34;&#34;&#34;
-        Release this resource.
-        &#34;&#34;&#34;
-        raise NotImplementedError
-
-
-class OutgoingResponse:
-    &#34;&#34;&#34;
-    Represents an outgoing HTTP Response.
-    &#34;&#34;&#34;
-    
-    def __init__(self, headers: Fields):
-        &#34;&#34;&#34;
-        Construct an `outgoing-response`, with a default `status-code` of `200`.
-        If a different `status-code` is needed, it must be set via the
-        `set-status-code` method.
-        
-        * `headers` is the HTTP Headers for the Response.
-        &#34;&#34;&#34;
-        raise NotImplementedError
-
-    def status_code(self) -&gt; int:
-        &#34;&#34;&#34;
-        Get the HTTP Status Code for the Response.
-        &#34;&#34;&#34;
-        raise NotImplementedError
-
-    def set_status_code(self, status_code: int) -&gt; None:
-        &#34;&#34;&#34;
-        Set the HTTP Status Code for the Response. Fails if the status-code
-        given is not a valid http status code.
-        &#34;&#34;&#34;
-        raise NotImplementedError
-
-    def headers(self) -&gt; Fields:
-        &#34;&#34;&#34;
-        Get the headers associated with the Request.
-        
-        The returned `headers` resource is immutable: `set`, `append`, and
-        `delete` operations will fail with `header-error.immutable`.
-        
-        This headers resource is a child: it must be dropped before the parent
-        `outgoing-request` is dropped, or its ownership is transfered to
-        another component by e.g. `outgoing-handler.handle`.
-        &#34;&#34;&#34;
-        raise NotImplementedError
-
-    def body(self) -&gt; Any:
-        &#34;&#34;&#34;
-        Returns the resource corresponding to the outgoing Body for this Response.
-        
-        Returns success on the first call: the `outgoing-body` resource for
-        this `outgoing-response` can be retrieved at most once. Subsequent
-        calls will return error.
-        &#34;&#34;&#34;
-        raise NotImplementedError
-
-    def drop(self):
+    def __enter__(self):
+        &#34;&#34;&#34;Returns self&#34;&#34;&#34;
+        return self
+                                                                    
+    def __exit__(self, *args):
         &#34;&#34;&#34;
         Release this resource.
         &#34;&#34;&#34;
@@ -959,11 +698,13 @@ class OutgoingBody:
         Returns success on the first call: the `output-stream` resource for
         this `outgoing-body` may be retrieved at most once. Subsequent calls
         will return error.
+        
+        Raises: `spin_sdk.wit.types.Err(None)`
         &#34;&#34;&#34;
         raise NotImplementedError
 
-    @staticmethod
-    def finish(this: Any, trailers: Optional[Fields]) -&gt; None:
+    @classmethod
+    def finish(cls, this: Self, trailers: Optional[Fields]) -&gt; None:
         &#34;&#34;&#34;
         Finalize an outgoing body, optionally providing trailers. This must be
         called to signal that the response is complete. If the `outgoing-body`
@@ -974,10 +715,359 @@ class OutgoingBody:
         constructed with a Content-Length header, and the contents written
         to the body (via `write`) does not match the value given in the
         Content-Length.
+        
+        Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.types.ErrorCode)`
         &#34;&#34;&#34;
         raise NotImplementedError
 
-    def drop(self):
+    def __enter__(self):
+        &#34;&#34;&#34;Returns self&#34;&#34;&#34;
+        return self
+                                                                    
+    def __exit__(self, *args):
+        &#34;&#34;&#34;
+        Release this resource.
+        &#34;&#34;&#34;
+        raise NotImplementedError
+
+
+class OutgoingRequest:
+    &#34;&#34;&#34;
+    Represents an outgoing HTTP Request.
+    &#34;&#34;&#34;
+    
+    def __init__(self, headers: Fields):
+        &#34;&#34;&#34;
+        Construct a new `outgoing-request` with a default `method` of `GET`, and
+        `none` values for `path-with-query`, `scheme`, and `authority`.
+        
+        * `headers` is the HTTP Headers for the Request.
+        
+        It is possible to construct, or manipulate with the accessor functions
+        below, an `outgoing-request` with an invalid combination of `scheme`
+        and `authority`, or `headers` which are not permitted to be sent.
+        It is the obligation of the `outgoing-handler.handle` implementation
+        to reject invalid constructions of `outgoing-request`.
+        &#34;&#34;&#34;
+        raise NotImplementedError
+
+    def body(self) -&gt; OutgoingBody:
+        &#34;&#34;&#34;
+        Returns the resource corresponding to the outgoing Body for this
+        Request.
+        
+        Returns success on the first call: the `outgoing-body` resource for
+        this `outgoing-request` can be retrieved at most once. Subsequent
+        calls will return error.
+        
+        Raises: `spin_sdk.wit.types.Err(None)`
+        &#34;&#34;&#34;
+        raise NotImplementedError
+
+    def method(self) -&gt; Method:
+        &#34;&#34;&#34;
+        Get the Method for the Request.
+        &#34;&#34;&#34;
+        raise NotImplementedError
+
+    def set_method(self, method: Method) -&gt; None:
+        &#34;&#34;&#34;
+        Set the Method for the Request. Fails if the string present in a
+        `method.other` argument is not a syntactically valid method.
+        
+        Raises: `spin_sdk.wit.types.Err(None)`
+        &#34;&#34;&#34;
+        raise NotImplementedError
+
+    def path_with_query(self) -&gt; Optional[str]:
+        &#34;&#34;&#34;
+        Get the combination of the HTTP Path and Query for the Request.
+        When `none`, this represents an empty Path and empty Query.
+        &#34;&#34;&#34;
+        raise NotImplementedError
+
+    def set_path_with_query(self, path_with_query: Optional[str]) -&gt; None:
+        &#34;&#34;&#34;
+        Set the combination of the HTTP Path and Query for the Request.
+        When `none`, this represents an empty Path and empty Query. Fails is the
+        string given is not a syntactically valid path and query uri component.
+        
+        Raises: `spin_sdk.wit.types.Err(None)`
+        &#34;&#34;&#34;
+        raise NotImplementedError
+
+    def scheme(self) -&gt; Optional[Scheme]:
+        &#34;&#34;&#34;
+        Get the HTTP Related Scheme for the Request. When `none`, the
+        implementation may choose an appropriate default scheme.
+        &#34;&#34;&#34;
+        raise NotImplementedError
+
+    def set_scheme(self, scheme: Optional[Scheme]) -&gt; None:
+        &#34;&#34;&#34;
+        Set the HTTP Related Scheme for the Request. When `none`, the
+        implementation may choose an appropriate default scheme. Fails if the
+        string given is not a syntactically valid uri scheme.
+        
+        Raises: `spin_sdk.wit.types.Err(None)`
+        &#34;&#34;&#34;
+        raise NotImplementedError
+
+    def authority(self) -&gt; Optional[str]:
+        &#34;&#34;&#34;
+        Get the HTTP Authority for the Request. A value of `none` may be used
+        with Related Schemes which do not require an Authority. The HTTP and
+        HTTPS schemes always require an authority.
+        &#34;&#34;&#34;
+        raise NotImplementedError
+
+    def set_authority(self, authority: Optional[str]) -&gt; None:
+        &#34;&#34;&#34;
+        Set the HTTP Authority for the Request. A value of `none` may be used
+        with Related Schemes which do not require an Authority. The HTTP and
+        HTTPS schemes always require an authority. Fails if the string given is
+        not a syntactically valid uri authority.
+        
+        Raises: `spin_sdk.wit.types.Err(None)`
+        &#34;&#34;&#34;
+        raise NotImplementedError
+
+    def headers(self) -&gt; Fields:
+        &#34;&#34;&#34;
+        Get the headers associated with the Request.
+        
+        The returned `headers` resource is immutable: `set`, `append`, and
+        `delete` operations will fail with `header-error.immutable`.
+        
+        This headers resource is a child: it must be dropped before the parent
+        `outgoing-request` is dropped, or its ownership is transfered to
+        another component by e.g. `outgoing-handler.handle`.
+        &#34;&#34;&#34;
+        raise NotImplementedError
+
+    def __enter__(self):
+        &#34;&#34;&#34;Returns self&#34;&#34;&#34;
+        return self
+                                                                    
+    def __exit__(self, *args):
+        &#34;&#34;&#34;
+        Release this resource.
+        &#34;&#34;&#34;
+        raise NotImplementedError
+
+
+class RequestOptions:
+    &#34;&#34;&#34;
+    Parameters for making an HTTP Request. Each of these parameters is
+    currently an optional timeout applicable to the transport layer of the
+    HTTP protocol.
+    
+    These timeouts are separate from any the user may use to bound a
+    blocking call to `wasi:io/poll.poll`.
+    &#34;&#34;&#34;
+    
+    def __init__(self):
+        &#34;&#34;&#34;
+        Construct a default `request-options` value.
+        &#34;&#34;&#34;
+        raise NotImplementedError
+
+    def connect_timeout(self) -&gt; Optional[int]:
+        &#34;&#34;&#34;
+        The timeout for the initial connect to the HTTP Server.
+        &#34;&#34;&#34;
+        raise NotImplementedError
+
+    def set_connect_timeout(self, duration: Optional[int]) -&gt; None:
+        &#34;&#34;&#34;
+        Set the timeout for the initial connect to the HTTP Server. An error
+        return value indicates that this timeout is not supported.
+        
+        Raises: `spin_sdk.wit.types.Err(None)`
+        &#34;&#34;&#34;
+        raise NotImplementedError
+
+    def first_byte_timeout(self) -&gt; Optional[int]:
+        &#34;&#34;&#34;
+        The timeout for receiving the first byte of the Response body.
+        &#34;&#34;&#34;
+        raise NotImplementedError
+
+    def set_first_byte_timeout(self, duration: Optional[int]) -&gt; None:
+        &#34;&#34;&#34;
+        Set the timeout for receiving the first byte of the Response body. An
+        error return value indicates that this timeout is not supported.
+        
+        Raises: `spin_sdk.wit.types.Err(None)`
+        &#34;&#34;&#34;
+        raise NotImplementedError
+
+    def between_bytes_timeout(self) -&gt; Optional[int]:
+        &#34;&#34;&#34;
+        The timeout for receiving subsequent chunks of bytes in the Response
+        body stream.
+        &#34;&#34;&#34;
+        raise NotImplementedError
+
+    def set_between_bytes_timeout(self, duration: Optional[int]) -&gt; None:
+        &#34;&#34;&#34;
+        Set the timeout for receiving subsequent chunks of bytes in the Response
+        body stream. An error return value indicates that this timeout is not
+        supported.
+        
+        Raises: `spin_sdk.wit.types.Err(None)`
+        &#34;&#34;&#34;
+        raise NotImplementedError
+
+    def __enter__(self):
+        &#34;&#34;&#34;Returns self&#34;&#34;&#34;
+        return self
+                                                                    
+    def __exit__(self, *args):
+        &#34;&#34;&#34;
+        Release this resource.
+        &#34;&#34;&#34;
+        raise NotImplementedError
+
+
+class OutgoingResponse:
+    &#34;&#34;&#34;
+    Represents an outgoing HTTP Response.
+    &#34;&#34;&#34;
+    
+    def __init__(self, headers: Fields):
+        &#34;&#34;&#34;
+        Construct an `outgoing-response`, with a default `status-code` of `200`.
+        If a different `status-code` is needed, it must be set via the
+        `set-status-code` method.
+        
+        * `headers` is the HTTP Headers for the Response.
+        &#34;&#34;&#34;
+        raise NotImplementedError
+
+    def status_code(self) -&gt; int:
+        &#34;&#34;&#34;
+        Get the HTTP Status Code for the Response.
+        &#34;&#34;&#34;
+        raise NotImplementedError
+
+    def set_status_code(self, status_code: int) -&gt; None:
+        &#34;&#34;&#34;
+        Set the HTTP Status Code for the Response. Fails if the status-code
+        given is not a valid http status code.
+        
+        Raises: `spin_sdk.wit.types.Err(None)`
+        &#34;&#34;&#34;
+        raise NotImplementedError
+
+    def headers(self) -&gt; Fields:
+        &#34;&#34;&#34;
+        Get the headers associated with the Request.
+        
+        The returned `headers` resource is immutable: `set`, `append`, and
+        `delete` operations will fail with `header-error.immutable`.
+        
+        This headers resource is a child: it must be dropped before the parent
+        `outgoing-request` is dropped, or its ownership is transfered to
+        another component by e.g. `outgoing-handler.handle`.
+        &#34;&#34;&#34;
+        raise NotImplementedError
+
+    def body(self) -&gt; OutgoingBody:
+        &#34;&#34;&#34;
+        Returns the resource corresponding to the outgoing Body for this Response.
+        
+        Returns success on the first call: the `outgoing-body` resource for
+        this `outgoing-response` can be retrieved at most once. Subsequent
+        calls will return error.
+        
+        Raises: `spin_sdk.wit.types.Err(None)`
+        &#34;&#34;&#34;
+        raise NotImplementedError
+
+    def __enter__(self):
+        &#34;&#34;&#34;Returns self&#34;&#34;&#34;
+        return self
+                                                                    
+    def __exit__(self, *args):
+        &#34;&#34;&#34;
+        Release this resource.
+        &#34;&#34;&#34;
+        raise NotImplementedError
+
+
+class ResponseOutparam:
+    &#34;&#34;&#34;
+    Represents the ability to send an HTTP Response.
+    
+    This resource is used by the `wasi:http/incoming-handler` interface to
+    allow a Response to be sent corresponding to the Request provided as the
+    other argument to `incoming-handler.handle`.
+    &#34;&#34;&#34;
+    
+    @classmethod
+    def set(cls, param: Self, response: Result[OutgoingResponse, ErrorCode]) -&gt; None:
+        &#34;&#34;&#34;
+        Set the value of the `response-outparam` to either send a response,
+        or indicate an error.
+        
+        This method consumes the `response-outparam` to ensure that it is
+        called at most once. If it is never called, the implementation
+        will respond with an error.
+        
+        The user may provide an `error` to `response` to allow the
+        implementation determine how to respond with an HTTP error response.
+        &#34;&#34;&#34;
+        raise NotImplementedError
+
+    def __enter__(self):
+        &#34;&#34;&#34;Returns self&#34;&#34;&#34;
+        return self
+                                                                    
+    def __exit__(self, *args):
+        &#34;&#34;&#34;
+        Release this resource.
+        &#34;&#34;&#34;
+        raise NotImplementedError
+
+
+class IncomingResponse:
+    &#34;&#34;&#34;
+    Represents an incoming HTTP Response.
+    &#34;&#34;&#34;
+    
+    def status(self) -&gt; int:
+        &#34;&#34;&#34;
+        Returns the status code from the incoming response.
+        &#34;&#34;&#34;
+        raise NotImplementedError
+
+    def headers(self) -&gt; Fields:
+        &#34;&#34;&#34;
+        Returns the headers from the incoming response.
+        
+        The returned `headers` resource is immutable: `set`, `append`, and
+        `delete` operations will fail with `header-error.immutable`.
+        
+        This headers resource is a child: it must be dropped before the parent
+        `incoming-response` is dropped.
+        &#34;&#34;&#34;
+        raise NotImplementedError
+
+    def consume(self) -&gt; IncomingBody:
+        &#34;&#34;&#34;
+        Returns the incoming body. May be called at most once. Returns error
+        if called additional times.
+        
+        Raises: `spin_sdk.wit.types.Err(None)`
+        &#34;&#34;&#34;
+        raise NotImplementedError
+
+    def __enter__(self):
+        &#34;&#34;&#34;Returns self&#34;&#34;&#34;
+        return self
+                                                                    
+    def __exit__(self, *args):
         &#34;&#34;&#34;
         Release this resource.
         &#34;&#34;&#34;
@@ -1020,7 +1110,11 @@ class FutureIncomingResponse:
         &#34;&#34;&#34;
         raise NotImplementedError
 
-    def drop(self):
+    def __enter__(self):
+        &#34;&#34;&#34;Returns self&#34;&#34;&#34;
+        return self
+                                                                    
+    def __exit__(self, *args):
         &#34;&#34;&#34;
         Release this resource.
         &#34;&#34;&#34;
@@ -1048,6 +1142,27 @@ def http_error_code(err: error.Error) -&gt; Optional[ErrorCode]:
 <section>
 </section>
 <section>
+<h2 class="section-title" id="header-variables">Global variables</h2>
+<dl>
+<dt id="spin_sdk.wit.imports.types.ErrorCode"><code class="name">var <span class="ident">ErrorCode</span></code></dt>
+<dd>
+<div class="desc"><p>These cases are inspired by the IANA HTTP Proxy Error Types:
+<a href="https://www.iana.org/assignments/http-proxy-status/http-proxy-status.xhtml#table-http-proxy-error-types">https://www.iana.org/assignments/http-proxy-status/http-proxy-status.xhtml#table-http-proxy-error-types</a></p></div>
+</dd>
+<dt id="spin_sdk.wit.imports.types.HeaderError"><code class="name">var <span class="ident">HeaderError</span></code></dt>
+<dd>
+<div class="desc"><p>This type enumerates the different kinds of errors that may occur when
+setting or appending to a <code>fields</code> resource.</p></div>
+</dd>
+<dt id="spin_sdk.wit.imports.types.Method"><code class="name">var <span class="ident">Method</span></code></dt>
+<dd>
+<div class="desc"><p>This type corresponds to HTTP standard Methods.</p></div>
+</dd>
+<dt id="spin_sdk.wit.imports.types.Scheme"><code class="name">var <span class="ident">Scheme</span></code></dt>
+<dd>
+<div class="desc"><p>This type corresponds to HTTP standard Related Schemes.</p></div>
+</dd>
+</dl>
 </section>
 <section>
 <h2 class="section-title" id="header-functions">Functions</h2>
@@ -1858,8 +1973,8 @@ operations will fail with <code>header-error.immutable</code>.</p>
         &#34;&#34;&#34;
         raise NotImplementedError
 
-    @staticmethod
-    def from_list(entries: List[Tuple[str, bytes]]) -&gt; Any:
+    @classmethod
+    def from_list(cls, entries: List[Tuple[str, bytes]]) -&gt; Self:
         &#34;&#34;&#34;
         Construct an HTTP Fields.
         
@@ -1876,6 +1991,8 @@ operations will fail with <code>header-error.immutable</code>.</p>
         
         An error result will be returned if any header or value was
         syntactically invalid, or if a header was forbidden.
+        
+        Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.types.HeaderError)`
         &#34;&#34;&#34;
         raise NotImplementedError
 
@@ -1901,6 +2018,8 @@ operations will fail with <code>header-error.immutable</code>.</p>
         key, if they have been set.
         
         Fails with `header-error.immutable` if the `fields` are immutable.
+        
+        Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.types.HeaderError)`
         &#34;&#34;&#34;
         raise NotImplementedError
 
@@ -1910,6 +2029,8 @@ operations will fail with <code>header-error.immutable</code>.</p>
         exist.
         
         Fails with `header-error.immutable` if the `fields` are immutable.
+        
+        Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.types.HeaderError)`
         &#34;&#34;&#34;
         raise NotImplementedError
 
@@ -1919,6 +2040,8 @@ operations will fail with <code>header-error.immutable</code>.</p>
         values for that key.
         
         Fails with `header-error.immutable` if the `fields` are immutable.
+        
+        Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.types.HeaderError)`
         &#34;&#34;&#34;
         raise NotImplementedError
 
@@ -1941,7 +2064,11 @@ operations will fail with <code>header-error.immutable</code>.</p>
         &#34;&#34;&#34;
         raise NotImplementedError
 
-    def drop(self):
+    def __enter__(self):
+        &#34;&#34;&#34;Returns self&#34;&#34;&#34;
+        return self
+                                                                    
+    def __exit__(self, *args):
         &#34;&#34;&#34;
         Release this resource.
         &#34;&#34;&#34;
@@ -1950,7 +2077,7 @@ operations will fail with <code>header-error.immutable</code>.</p>
 <h3>Static methods</h3>
 <dl>
 <dt id="spin_sdk.wit.imports.types.Fields.from_list"><code class="name flex">
-<span>def <span class="ident">from_list</span></span>(<span>entries: List[Tuple[str, bytes]]) ‑> Any</span>
+<span>def <span class="ident">from_list</span></span>(<span>entries: List[Tuple[str, bytes]]) ‑> Self</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Construct an HTTP Fields.</p>
@@ -1963,13 +2090,14 @@ Value, represented as a list of bytes. In a valid Fields, all keys
 and values are valid UTF-8 strings. However, values are not always
 well-formed, so they are represented as a raw list of bytes.</p>
 <p>An error result will be returned if any header or value was
-syntactically invalid, or if a header was forbidden.</p></div>
+syntactically invalid, or if a header was forbidden.</p>
+<p>Raises: <code><a title="spin_sdk.wit.types.Err" href="../types.html#spin_sdk.wit.types.Err">Err</a>(<a title="spin_sdk.wit.imports.types.HeaderError" href="#spin_sdk.wit.imports.types.HeaderError">HeaderError</a>)</code></p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">@staticmethod
-def from_list(entries: List[Tuple[str, bytes]]) -&gt; Any:
+<pre><code class="python">@classmethod
+def from_list(cls, entries: List[Tuple[str, bytes]]) -&gt; Self:
     &#34;&#34;&#34;
     Construct an HTTP Fields.
     
@@ -1986,6 +2114,8 @@ def from_list(entries: List[Tuple[str, bytes]]) -&gt; Any:
     
     An error result will be returned if any header or value was
     syntactically invalid, or if a header was forbidden.
+    
+    Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.types.HeaderError)`
     &#34;&#34;&#34;
     raise NotImplementedError</code></pre>
 </details>
@@ -1999,7 +2129,8 @@ def from_list(entries: List[Tuple[str, bytes]]) -&gt; Any:
 <dd>
 <div class="desc"><p>Append a value for a key. Does not change or delete any existing
 values for that key.</p>
-<p>Fails with <code>header-error.immutable</code> if the <code>fields</code> are immutable.</p></div>
+<p>Fails with <code>header-error.immutable</code> if the <code>fields</code> are immutable.</p>
+<p>Raises: <code><a title="spin_sdk.wit.types.Err" href="../types.html#spin_sdk.wit.types.Err">Err</a>(<a title="spin_sdk.wit.imports.types.HeaderError" href="#spin_sdk.wit.imports.types.HeaderError">HeaderError</a>)</code></p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -2010,6 +2141,8 @@ values for that key.</p>
     values for that key.
     
     Fails with `header-error.immutable` if the `fields` are immutable.
+    
+    Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.types.HeaderError)`
     &#34;&#34;&#34;
     raise NotImplementedError</code></pre>
 </details>
@@ -2040,7 +2173,8 @@ values for that key.</p>
 <dd>
 <div class="desc"><p>Delete all values for a key. Does nothing if no values for the key
 exist.</p>
-<p>Fails with <code>header-error.immutable</code> if the <code>fields</code> are immutable.</p></div>
+<p>Fails with <code>header-error.immutable</code> if the <code>fields</code> are immutable.</p>
+<p>Raises: <code><a title="spin_sdk.wit.types.Err" href="../types.html#spin_sdk.wit.types.Err">Err</a>(<a title="spin_sdk.wit.imports.types.HeaderError" href="#spin_sdk.wit.imports.types.HeaderError">HeaderError</a>)</code></p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -2051,22 +2185,8 @@ exist.</p>
     exist.
     
     Fails with `header-error.immutable` if the `fields` are immutable.
-    &#34;&#34;&#34;
-    raise NotImplementedError</code></pre>
-</details>
-</dd>
-<dt id="spin_sdk.wit.imports.types.Fields.drop"><code class="name flex">
-<span>def <span class="ident">drop</span></span>(<span>self)</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Release this resource.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def drop(self):
-    &#34;&#34;&#34;
-    Release this resource.
+    
+    Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.types.HeaderError)`
     &#34;&#34;&#34;
     raise NotImplementedError</code></pre>
 </details>
@@ -2142,7 +2262,8 @@ syntactically invalid, <code>false</code> is returned.</p></div>
 <dd>
 <div class="desc"><p>Set all of the values for a key. Clears any existing values for that
 key, if they have been set.</p>
-<p>Fails with <code>header-error.immutable</code> if the <code>fields</code> are immutable.</p></div>
+<p>Fails with <code>header-error.immutable</code> if the <code>fields</code> are immutable.</p>
+<p>Raises: <code><a title="spin_sdk.wit.types.Err" href="../types.html#spin_sdk.wit.types.Err">Err</a>(<a title="spin_sdk.wit.imports.types.HeaderError" href="#spin_sdk.wit.imports.types.HeaderError">HeaderError</a>)</code></p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -2153,6 +2274,8 @@ key, if they have been set.</p>
     key, if they have been set.
     
     Fails with `header-error.immutable` if the `fields` are immutable.
+    
+    Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.types.HeaderError)`
     &#34;&#34;&#34;
     raise NotImplementedError</code></pre>
 </details>
@@ -2207,7 +2330,11 @@ provide the HTTP Response corresponding to the sent Request.</p></div>
         &#34;&#34;&#34;
         raise NotImplementedError
 
-    def drop(self):
+    def __enter__(self):
+        &#34;&#34;&#34;Returns self&#34;&#34;&#34;
+        return self
+                                                                    
+    def __exit__(self, *args):
         &#34;&#34;&#34;
         Release this resource.
         &#34;&#34;&#34;
@@ -2215,22 +2342,6 @@ provide the HTTP Response corresponding to the sent Request.</p></div>
 </details>
 <h3>Methods</h3>
 <dl>
-<dt id="spin_sdk.wit.imports.types.FutureIncomingResponse.drop"><code class="name flex">
-<span>def <span class="ident">drop</span></span>(<span>self)</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Release this resource.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def drop(self):
-    &#34;&#34;&#34;
-    Release this resource.
-    &#34;&#34;&#34;
-    raise NotImplementedError</code></pre>
-</details>
-</dd>
 <dt id="spin_sdk.wit.imports.types.FutureIncomingResponse.get"><code class="name flex">
 <span>def <span class="ident">get</span></span>(<span>self) ‑> Union[<a title="spin_sdk.wit.types.Ok" href="../types.html#spin_sdk.wit.types.Ok">Ok</a>[Union[<a title="spin_sdk.wit.types.Ok" href="../types.html#spin_sdk.wit.types.Ok">Ok</a>[<a title="spin_sdk.wit.imports.types.IncomingResponse" href="#spin_sdk.wit.imports.types.IncomingResponse">IncomingResponse</a>], <a title="spin_sdk.wit.types.Err" href="../types.html#spin_sdk.wit.types.Err">Err</a>[Union[<a title="spin_sdk.wit.imports.types.ErrorCodeDnsTimeout" href="#spin_sdk.wit.imports.types.ErrorCodeDnsTimeout">ErrorCodeDnsTimeout</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeDnsError" href="#spin_sdk.wit.imports.types.ErrorCodeDnsError">ErrorCodeDnsError</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeDestinationNotFound" href="#spin_sdk.wit.imports.types.ErrorCodeDestinationNotFound">ErrorCodeDestinationNotFound</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeDestinationUnavailable" href="#spin_sdk.wit.imports.types.ErrorCodeDestinationUnavailable">ErrorCodeDestinationUnavailable</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeDestinationIpProhibited" href="#spin_sdk.wit.imports.types.ErrorCodeDestinationIpProhibited">ErrorCodeDestinationIpProhibited</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeDestinationIpUnroutable" href="#spin_sdk.wit.imports.types.ErrorCodeDestinationIpUnroutable">ErrorCodeDestinationIpUnroutable</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeConnectionRefused" href="#spin_sdk.wit.imports.types.ErrorCodeConnectionRefused">ErrorCodeConnectionRefused</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeConnectionTerminated" href="#spin_sdk.wit.imports.types.ErrorCodeConnectionTerminated">ErrorCodeConnectionTerminated</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeConnectionTimeout" href="#spin_sdk.wit.imports.types.ErrorCodeConnectionTimeout">ErrorCodeConnectionTimeout</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeConnectionReadTimeout" href="#spin_sdk.wit.imports.types.ErrorCodeConnectionReadTimeout">ErrorCodeConnectionReadTimeout</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeConnectionWriteTimeout" href="#spin_sdk.wit.imports.types.ErrorCodeConnectionWriteTimeout">ErrorCodeConnectionWriteTimeout</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeConnectionLimitReached" href="#spin_sdk.wit.imports.types.ErrorCodeConnectionLimitReached">ErrorCodeConnectionLimitReached</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeTlsProtocolError" href="#spin_sdk.wit.imports.types.ErrorCodeTlsProtocolError">ErrorCodeTlsProtocolError</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeTlsCertificateError" href="#spin_sdk.wit.imports.types.ErrorCodeTlsCertificateError">ErrorCodeTlsCertificateError</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeTlsAlertReceived" href="#spin_sdk.wit.imports.types.ErrorCodeTlsAlertReceived">ErrorCodeTlsAlertReceived</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeHttpRequestDenied" href="#spin_sdk.wit.imports.types.ErrorCodeHttpRequestDenied">ErrorCodeHttpRequestDenied</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeHttpRequestLengthRequired" href="#spin_sdk.wit.imports.types.ErrorCodeHttpRequestLengthRequired">ErrorCodeHttpRequestLengthRequired</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeHttpRequestBodySize" href="#spin_sdk.wit.imports.types.ErrorCodeHttpRequestBodySize">ErrorCodeHttpRequestBodySize</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeHttpRequestMethodInvalid" href="#spin_sdk.wit.imports.types.ErrorCodeHttpRequestMethodInvalid">ErrorCodeHttpRequestMethodInvalid</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeHttpRequestUriInvalid" href="#spin_sdk.wit.imports.types.ErrorCodeHttpRequestUriInvalid">ErrorCodeHttpRequestUriInvalid</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeHttpRequestUriTooLong" href="#spin_sdk.wit.imports.types.ErrorCodeHttpRequestUriTooLong">ErrorCodeHttpRequestUriTooLong</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeHttpRequestHeaderSectionSize" href="#spin_sdk.wit.imports.types.ErrorCodeHttpRequestHeaderSectionSize">ErrorCodeHttpRequestHeaderSectionSize</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeHttpRequestHeaderSize" href="#spin_sdk.wit.imports.types.ErrorCodeHttpRequestHeaderSize">ErrorCodeHttpRequestHeaderSize</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeHttpRequestTrailerSectionSize" href="#spin_sdk.wit.imports.types.ErrorCodeHttpRequestTrailerSectionSize">ErrorCodeHttpRequestTrailerSectionSize</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeHttpRequestTrailerSize" href="#spin_sdk.wit.imports.types.ErrorCodeHttpRequestTrailerSize">ErrorCodeHttpRequestTrailerSize</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeHttpResponseIncomplete" href="#spin_sdk.wit.imports.types.ErrorCodeHttpResponseIncomplete">ErrorCodeHttpResponseIncomplete</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeHttpResponseHeaderSectionSize" href="#spin_sdk.wit.imports.types.ErrorCodeHttpResponseHeaderSectionSize">ErrorCodeHttpResponseHeaderSectionSize</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeHttpResponseHeaderSize" href="#spin_sdk.wit.imports.types.ErrorCodeHttpResponseHeaderSize">ErrorCodeHttpResponseHeaderSize</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeHttpResponseBodySize" href="#spin_sdk.wit.imports.types.ErrorCodeHttpResponseBodySize">ErrorCodeHttpResponseBodySize</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeHttpResponseTrailerSectionSize" href="#spin_sdk.wit.imports.types.ErrorCodeHttpResponseTrailerSectionSize">ErrorCodeHttpResponseTrailerSectionSize</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeHttpResponseTrailerSize" href="#spin_sdk.wit.imports.types.ErrorCodeHttpResponseTrailerSize">ErrorCodeHttpResponseTrailerSize</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeHttpResponseTransferCoding" href="#spin_sdk.wit.imports.types.ErrorCodeHttpResponseTransferCoding">ErrorCodeHttpResponseTransferCoding</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeHttpResponseContentCoding" href="#spin_sdk.wit.imports.types.ErrorCodeHttpResponseContentCoding">ErrorCodeHttpResponseContentCoding</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeHttpResponseTimeout" href="#spin_sdk.wit.imports.types.ErrorCodeHttpResponseTimeout">ErrorCodeHttpResponseTimeout</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeHttpUpgradeFailed" href="#spin_sdk.wit.imports.types.ErrorCodeHttpUpgradeFailed">ErrorCodeHttpUpgradeFailed</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeHttpProtocolError" href="#spin_sdk.wit.imports.types.ErrorCodeHttpProtocolError">ErrorCodeHttpProtocolError</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeLoopDetected" href="#spin_sdk.wit.imports.types.ErrorCodeLoopDetected">ErrorCodeLoopDetected</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeConfigurationError" href="#spin_sdk.wit.imports.types.ErrorCodeConfigurationError">ErrorCodeConfigurationError</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeInternalError" href="#spin_sdk.wit.imports.types.ErrorCodeInternalError">ErrorCodeInternalError</a>]]]], <a title="spin_sdk.wit.types.Err" href="../types.html#spin_sdk.wit.types.Err">Err</a>[None], ForwardRef(None)]</span>
 </code></dt>
@@ -2345,7 +2456,11 @@ complete Request or Response body has been received.</p></div>
         &#34;&#34;&#34;
         raise NotImplementedError
 
-    def drop(self):
+    def __enter__(self):
+        &#34;&#34;&#34;Returns self&#34;&#34;&#34;
+        return self
+                                                                    
+    def __exit__(self, *args):
         &#34;&#34;&#34;
         Release this resource.
         &#34;&#34;&#34;
@@ -2353,22 +2468,6 @@ complete Request or Response body has been received.</p></div>
 </details>
 <h3>Methods</h3>
 <dl>
-<dt id="spin_sdk.wit.imports.types.FutureTrailers.drop"><code class="name flex">
-<span>def <span class="ident">drop</span></span>(<span>self)</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Release this resource.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def drop(self):
-    &#34;&#34;&#34;
-    Release this resource.
-    &#34;&#34;&#34;
-    raise NotImplementedError</code></pre>
-</details>
-</dd>
 <dt id="spin_sdk.wit.imports.types.FutureTrailers.get"><code class="name flex">
 <span>def <span class="ident">get</span></span>(<span>self) ‑> Union[<a title="spin_sdk.wit.types.Ok" href="../types.html#spin_sdk.wit.types.Ok">Ok</a>[Union[<a title="spin_sdk.wit.types.Ok" href="../types.html#spin_sdk.wit.types.Ok">Ok</a>[Optional[<a title="spin_sdk.wit.imports.types.Fields" href="#spin_sdk.wit.imports.types.Fields">Fields</a>]], <a title="spin_sdk.wit.types.Err" href="../types.html#spin_sdk.wit.types.Err">Err</a>[Union[<a title="spin_sdk.wit.imports.types.ErrorCodeDnsTimeout" href="#spin_sdk.wit.imports.types.ErrorCodeDnsTimeout">ErrorCodeDnsTimeout</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeDnsError" href="#spin_sdk.wit.imports.types.ErrorCodeDnsError">ErrorCodeDnsError</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeDestinationNotFound" href="#spin_sdk.wit.imports.types.ErrorCodeDestinationNotFound">ErrorCodeDestinationNotFound</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeDestinationUnavailable" href="#spin_sdk.wit.imports.types.ErrorCodeDestinationUnavailable">ErrorCodeDestinationUnavailable</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeDestinationIpProhibited" href="#spin_sdk.wit.imports.types.ErrorCodeDestinationIpProhibited">ErrorCodeDestinationIpProhibited</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeDestinationIpUnroutable" href="#spin_sdk.wit.imports.types.ErrorCodeDestinationIpUnroutable">ErrorCodeDestinationIpUnroutable</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeConnectionRefused" href="#spin_sdk.wit.imports.types.ErrorCodeConnectionRefused">ErrorCodeConnectionRefused</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeConnectionTerminated" href="#spin_sdk.wit.imports.types.ErrorCodeConnectionTerminated">ErrorCodeConnectionTerminated</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeConnectionTimeout" href="#spin_sdk.wit.imports.types.ErrorCodeConnectionTimeout">ErrorCodeConnectionTimeout</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeConnectionReadTimeout" href="#spin_sdk.wit.imports.types.ErrorCodeConnectionReadTimeout">ErrorCodeConnectionReadTimeout</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeConnectionWriteTimeout" href="#spin_sdk.wit.imports.types.ErrorCodeConnectionWriteTimeout">ErrorCodeConnectionWriteTimeout</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeConnectionLimitReached" href="#spin_sdk.wit.imports.types.ErrorCodeConnectionLimitReached">ErrorCodeConnectionLimitReached</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeTlsProtocolError" href="#spin_sdk.wit.imports.types.ErrorCodeTlsProtocolError">ErrorCodeTlsProtocolError</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeTlsCertificateError" href="#spin_sdk.wit.imports.types.ErrorCodeTlsCertificateError">ErrorCodeTlsCertificateError</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeTlsAlertReceived" href="#spin_sdk.wit.imports.types.ErrorCodeTlsAlertReceived">ErrorCodeTlsAlertReceived</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeHttpRequestDenied" href="#spin_sdk.wit.imports.types.ErrorCodeHttpRequestDenied">ErrorCodeHttpRequestDenied</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeHttpRequestLengthRequired" href="#spin_sdk.wit.imports.types.ErrorCodeHttpRequestLengthRequired">ErrorCodeHttpRequestLengthRequired</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeHttpRequestBodySize" href="#spin_sdk.wit.imports.types.ErrorCodeHttpRequestBodySize">ErrorCodeHttpRequestBodySize</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeHttpRequestMethodInvalid" href="#spin_sdk.wit.imports.types.ErrorCodeHttpRequestMethodInvalid">ErrorCodeHttpRequestMethodInvalid</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeHttpRequestUriInvalid" href="#spin_sdk.wit.imports.types.ErrorCodeHttpRequestUriInvalid">ErrorCodeHttpRequestUriInvalid</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeHttpRequestUriTooLong" href="#spin_sdk.wit.imports.types.ErrorCodeHttpRequestUriTooLong">ErrorCodeHttpRequestUriTooLong</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeHttpRequestHeaderSectionSize" href="#spin_sdk.wit.imports.types.ErrorCodeHttpRequestHeaderSectionSize">ErrorCodeHttpRequestHeaderSectionSize</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeHttpRequestHeaderSize" href="#spin_sdk.wit.imports.types.ErrorCodeHttpRequestHeaderSize">ErrorCodeHttpRequestHeaderSize</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeHttpRequestTrailerSectionSize" href="#spin_sdk.wit.imports.types.ErrorCodeHttpRequestTrailerSectionSize">ErrorCodeHttpRequestTrailerSectionSize</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeHttpRequestTrailerSize" href="#spin_sdk.wit.imports.types.ErrorCodeHttpRequestTrailerSize">ErrorCodeHttpRequestTrailerSize</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeHttpResponseIncomplete" href="#spin_sdk.wit.imports.types.ErrorCodeHttpResponseIncomplete">ErrorCodeHttpResponseIncomplete</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeHttpResponseHeaderSectionSize" href="#spin_sdk.wit.imports.types.ErrorCodeHttpResponseHeaderSectionSize">ErrorCodeHttpResponseHeaderSectionSize</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeHttpResponseHeaderSize" href="#spin_sdk.wit.imports.types.ErrorCodeHttpResponseHeaderSize">ErrorCodeHttpResponseHeaderSize</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeHttpResponseBodySize" href="#spin_sdk.wit.imports.types.ErrorCodeHttpResponseBodySize">ErrorCodeHttpResponseBodySize</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeHttpResponseTrailerSectionSize" href="#spin_sdk.wit.imports.types.ErrorCodeHttpResponseTrailerSectionSize">ErrorCodeHttpResponseTrailerSectionSize</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeHttpResponseTrailerSize" href="#spin_sdk.wit.imports.types.ErrorCodeHttpResponseTrailerSize">ErrorCodeHttpResponseTrailerSize</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeHttpResponseTransferCoding" href="#spin_sdk.wit.imports.types.ErrorCodeHttpResponseTransferCoding">ErrorCodeHttpResponseTransferCoding</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeHttpResponseContentCoding" href="#spin_sdk.wit.imports.types.ErrorCodeHttpResponseContentCoding">ErrorCodeHttpResponseContentCoding</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeHttpResponseTimeout" href="#spin_sdk.wit.imports.types.ErrorCodeHttpResponseTimeout">ErrorCodeHttpResponseTimeout</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeHttpUpgradeFailed" href="#spin_sdk.wit.imports.types.ErrorCodeHttpUpgradeFailed">ErrorCodeHttpUpgradeFailed</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeHttpProtocolError" href="#spin_sdk.wit.imports.types.ErrorCodeHttpProtocolError">ErrorCodeHttpProtocolError</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeLoopDetected" href="#spin_sdk.wit.imports.types.ErrorCodeLoopDetected">ErrorCodeLoopDetected</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeConfigurationError" href="#spin_sdk.wit.imports.types.ErrorCodeConfigurationError">ErrorCodeConfigurationError</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeInternalError" href="#spin_sdk.wit.imports.types.ErrorCodeInternalError">ErrorCodeInternalError</a>]]]], <a title="spin_sdk.wit.types.Err" href="../types.html#spin_sdk.wit.types.Err">Err</a>[None], ForwardRef(None)]</span>
 </code></dt>
@@ -2525,18 +2624,24 @@ the body contents or waiting on trailers at any given time.</p></div>
         backpressure is to be applied when the user is consuming the body,
         and for that backpressure to not inhibit delivery of the trailers if
         the user does not read the entire body.
+        
+        Raises: `spin_sdk.wit.types.Err(None)`
         &#34;&#34;&#34;
         raise NotImplementedError
 
-    @staticmethod
-    def finish(this: Any) -&gt; Any:
+    @classmethod
+    def finish(cls, this: Self) -&gt; FutureTrailers:
         &#34;&#34;&#34;
         Takes ownership of `incoming-body`, and returns a `future-trailers`.
         This function will trap if the `input-stream` child is still alive.
         &#34;&#34;&#34;
         raise NotImplementedError
 
-    def drop(self):
+    def __enter__(self):
+        &#34;&#34;&#34;Returns self&#34;&#34;&#34;
+        return self
+                                                                    
+    def __exit__(self, *args):
         &#34;&#34;&#34;
         Release this resource.
         &#34;&#34;&#34;
@@ -2545,7 +2650,7 @@ the body contents or waiting on trailers at any given time.</p></div>
 <h3>Static methods</h3>
 <dl>
 <dt id="spin_sdk.wit.imports.types.IncomingBody.finish"><code class="name flex">
-<span>def <span class="ident">finish</span></span>(<span>this: Any) ‑> Any</span>
+<span>def <span class="ident">finish</span></span>(<span>this: Self) ‑> <a title="spin_sdk.wit.imports.types.FutureTrailers" href="#spin_sdk.wit.imports.types.FutureTrailers">FutureTrailers</a></span>
 </code></dt>
 <dd>
 <div class="desc"><p>Takes ownership of <code>incoming-body</code>, and returns a <code>future-trailers</code>.
@@ -2554,8 +2659,8 @@ This function will trap if the <code>input-stream</code> child is still alive.</
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">@staticmethod
-def finish(this: Any) -&gt; Any:
+<pre><code class="python">@classmethod
+def finish(cls, this: Self) -&gt; FutureTrailers:
     &#34;&#34;&#34;
     Takes ownership of `incoming-body`, and returns a `future-trailers`.
     This function will trap if the `input-stream` child is still alive.
@@ -2566,22 +2671,6 @@ def finish(this: Any) -&gt; Any:
 </dl>
 <h3>Methods</h3>
 <dl>
-<dt id="spin_sdk.wit.imports.types.IncomingBody.drop"><code class="name flex">
-<span>def <span class="ident">drop</span></span>(<span>self)</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Release this resource.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def drop(self):
-    &#34;&#34;&#34;
-    Release this resource.
-    &#34;&#34;&#34;
-    raise NotImplementedError</code></pre>
-</details>
-</dd>
 <dt id="spin_sdk.wit.imports.types.IncomingBody.stream"><code class="name flex">
 <span>def <span class="ident">stream</span></span>(<span>self) ‑> <a title="spin_sdk.wit.imports.streams.InputStream" href="streams.html#spin_sdk.wit.imports.streams.InputStream">InputStream</a></span>
 </code></dt>
@@ -2597,7 +2686,8 @@ the user is consuming the contents of the body, waiting on the
 <code>future-trailers</code> to be ready, or neither. This allows for network
 backpressure is to be applied when the user is consuming the body,
 and for that backpressure to not inhibit delivery of the trailers if
-the user does not read the entire body.</p></div>
+the user does not read the entire body.</p>
+<p>Raises: <code><a title="spin_sdk.wit.types.Err" href="../types.html#spin_sdk.wit.types.Err">Err</a>(None)</code></p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -2619,6 +2709,8 @@ the user does not read the entire body.</p></div>
     backpressure is to be applied when the user is consuming the body,
     and for that backpressure to not inhibit delivery of the trailers if
     the user does not read the entire body.
+    
+    Raises: `spin_sdk.wit.types.Err(None)`
     &#34;&#34;&#34;
     raise NotImplementedError</code></pre>
 </details>
@@ -2676,14 +2768,20 @@ the user does not read the entire body.</p></div>
         &#34;&#34;&#34;
         raise NotImplementedError
 
-    def consume(self) -&gt; Any:
+    def consume(self) -&gt; IncomingBody:
         &#34;&#34;&#34;
         Gives the `incoming-body` associated with this request. Will only
         return success at most once, and subsequent calls will return error.
+        
+        Raises: `spin_sdk.wit.types.Err(None)`
         &#34;&#34;&#34;
         raise NotImplementedError
 
-    def drop(self):
+    def __enter__(self):
+        &#34;&#34;&#34;Returns self&#34;&#34;&#34;
+        return self
+                                                                    
+    def __exit__(self, *args):
         &#34;&#34;&#34;
         Release this resource.
         &#34;&#34;&#34;
@@ -2708,35 +2806,22 @@ the user does not read the entire body.</p></div>
 </details>
 </dd>
 <dt id="spin_sdk.wit.imports.types.IncomingRequest.consume"><code class="name flex">
-<span>def <span class="ident">consume</span></span>(<span>self) ‑> Any</span>
+<span>def <span class="ident">consume</span></span>(<span>self) ‑> <a title="spin_sdk.wit.imports.types.IncomingBody" href="#spin_sdk.wit.imports.types.IncomingBody">IncomingBody</a></span>
 </code></dt>
 <dd>
 <div class="desc"><p>Gives the <code>incoming-body</code> associated with this request. Will only
-return success at most once, and subsequent calls will return error.</p></div>
+return success at most once, and subsequent calls will return error.</p>
+<p>Raises: <code><a title="spin_sdk.wit.types.Err" href="../types.html#spin_sdk.wit.types.Err">Err</a>(None)</code></p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def consume(self) -&gt; Any:
+<pre><code class="python">def consume(self) -&gt; IncomingBody:
     &#34;&#34;&#34;
     Gives the `incoming-body` associated with this request. Will only
     return success at most once, and subsequent calls will return error.
-    &#34;&#34;&#34;
-    raise NotImplementedError</code></pre>
-</details>
-</dd>
-<dt id="spin_sdk.wit.imports.types.IncomingRequest.drop"><code class="name flex">
-<span>def <span class="ident">drop</span></span>(<span>self)</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Release this resource.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def drop(self):
-    &#34;&#34;&#34;
-    Release this resource.
+    
+    Raises: `spin_sdk.wit.types.Err(None)`
     &#34;&#34;&#34;
     raise NotImplementedError</code></pre>
 </details>
@@ -2851,14 +2936,20 @@ the parent <code>incoming-request</code> is dropped. Dropping this
         &#34;&#34;&#34;
         raise NotImplementedError
 
-    def consume(self) -&gt; Any:
+    def consume(self) -&gt; IncomingBody:
         &#34;&#34;&#34;
         Returns the incoming body. May be called at most once. Returns error
         if called additional times.
+        
+        Raises: `spin_sdk.wit.types.Err(None)`
         &#34;&#34;&#34;
         raise NotImplementedError
 
-    def drop(self):
+    def __enter__(self):
+        &#34;&#34;&#34;Returns self&#34;&#34;&#34;
+        return self
+                                                                    
+    def __exit__(self, *args):
         &#34;&#34;&#34;
         Release this resource.
         &#34;&#34;&#34;
@@ -2867,35 +2958,22 @@ the parent <code>incoming-request</code> is dropped. Dropping this
 <h3>Methods</h3>
 <dl>
 <dt id="spin_sdk.wit.imports.types.IncomingResponse.consume"><code class="name flex">
-<span>def <span class="ident">consume</span></span>(<span>self) ‑> Any</span>
+<span>def <span class="ident">consume</span></span>(<span>self) ‑> <a title="spin_sdk.wit.imports.types.IncomingBody" href="#spin_sdk.wit.imports.types.IncomingBody">IncomingBody</a></span>
 </code></dt>
 <dd>
 <div class="desc"><p>Returns the incoming body. May be called at most once. Returns error
-if called additional times.</p></div>
+if called additional times.</p>
+<p>Raises: <code><a title="spin_sdk.wit.types.Err" href="../types.html#spin_sdk.wit.types.Err">Err</a>(None)</code></p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def consume(self) -&gt; Any:
+<pre><code class="python">def consume(self) -&gt; IncomingBody:
     &#34;&#34;&#34;
     Returns the incoming body. May be called at most once. Returns error
     if called additional times.
-    &#34;&#34;&#34;
-    raise NotImplementedError</code></pre>
-</details>
-</dd>
-<dt id="spin_sdk.wit.imports.types.IncomingResponse.drop"><code class="name flex">
-<span>def <span class="ident">drop</span></span>(<span>self)</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Release this resource.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def drop(self):
-    &#34;&#34;&#34;
-    Release this resource.
+    
+    Raises: `spin_sdk.wit.types.Err(None)`
     &#34;&#34;&#34;
     raise NotImplementedError</code></pre>
 </details>
@@ -3145,11 +3223,13 @@ Request, or sending a late status code for the Response.</p></div>
         Returns success on the first call: the `output-stream` resource for
         this `outgoing-body` may be retrieved at most once. Subsequent calls
         will return error.
+        
+        Raises: `spin_sdk.wit.types.Err(None)`
         &#34;&#34;&#34;
         raise NotImplementedError
 
-    @staticmethod
-    def finish(this: Any, trailers: Optional[Fields]) -&gt; None:
+    @classmethod
+    def finish(cls, this: Self, trailers: Optional[Fields]) -&gt; None:
         &#34;&#34;&#34;
         Finalize an outgoing body, optionally providing trailers. This must be
         called to signal that the response is complete. If the `outgoing-body`
@@ -3160,10 +3240,16 @@ Request, or sending a late status code for the Response.</p></div>
         constructed with a Content-Length header, and the contents written
         to the body (via `write`) does not match the value given in the
         Content-Length.
+        
+        Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.types.ErrorCode)`
         &#34;&#34;&#34;
         raise NotImplementedError
 
-    def drop(self):
+    def __enter__(self):
+        &#34;&#34;&#34;Returns self&#34;&#34;&#34;
+        return self
+                                                                    
+    def __exit__(self, *args):
         &#34;&#34;&#34;
         Release this resource.
         &#34;&#34;&#34;
@@ -3172,7 +3258,7 @@ Request, or sending a late status code for the Response.</p></div>
 <h3>Static methods</h3>
 <dl>
 <dt id="spin_sdk.wit.imports.types.OutgoingBody.finish"><code class="name flex">
-<span>def <span class="ident">finish</span></span>(<span>this: Any, trailers: Optional[<a title="spin_sdk.wit.imports.types.Fields" href="#spin_sdk.wit.imports.types.Fields">Fields</a>]) ‑> None</span>
+<span>def <span class="ident">finish</span></span>(<span>this: Self, trailers: Optional[<a title="spin_sdk.wit.imports.types.Fields" href="#spin_sdk.wit.imports.types.Fields">Fields</a>]) ‑> None</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Finalize an outgoing body, optionally providing trailers. This must be
@@ -3182,13 +3268,14 @@ should treat the body as corrupted.</p>
 <p>Fails if the body's <code>outgoing-request</code> or <code>outgoing-response</code> was
 constructed with a Content-Length header, and the contents written
 to the body (via <code>write</code>) does not match the value given in the
-Content-Length.</p></div>
+Content-Length.</p>
+<p>Raises: <code><a title="spin_sdk.wit.types.Err" href="../types.html#spin_sdk.wit.types.Err">Err</a>(<a title="spin_sdk.wit.imports.types.ErrorCode" href="#spin_sdk.wit.imports.types.ErrorCode">ErrorCode</a>)</code></p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">@staticmethod
-def finish(this: Any, trailers: Optional[Fields]) -&gt; None:
+<pre><code class="python">@classmethod
+def finish(cls, this: Self, trailers: Optional[Fields]) -&gt; None:
     &#34;&#34;&#34;
     Finalize an outgoing body, optionally providing trailers. This must be
     called to signal that the response is complete. If the `outgoing-body`
@@ -3199,6 +3286,8 @@ def finish(this: Any, trailers: Optional[Fields]) -&gt; None:
     constructed with a Content-Length header, and the contents written
     to the body (via `write`) does not match the value given in the
     Content-Length.
+    
+    Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.types.ErrorCode)`
     &#34;&#34;&#34;
     raise NotImplementedError</code></pre>
 </details>
@@ -3206,22 +3295,6 @@ def finish(this: Any, trailers: Optional[Fields]) -&gt; None:
 </dl>
 <h3>Methods</h3>
 <dl>
-<dt id="spin_sdk.wit.imports.types.OutgoingBody.drop"><code class="name flex">
-<span>def <span class="ident">drop</span></span>(<span>self)</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Release this resource.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def drop(self):
-    &#34;&#34;&#34;
-    Release this resource.
-    &#34;&#34;&#34;
-    raise NotImplementedError</code></pre>
-</details>
-</dd>
 <dt id="spin_sdk.wit.imports.types.OutgoingBody.write"><code class="name flex">
 <span>def <span class="ident">write</span></span>(<span>self) ‑> <a title="spin_sdk.wit.imports.streams.OutputStream" href="streams.html#spin_sdk.wit.imports.streams.OutputStream">OutputStream</a></span>
 </code></dt>
@@ -3232,7 +3305,8 @@ before the parent <code>outgoing-body</code> resource is dropped (or finished),
 otherwise the <code>outgoing-body</code> drop or <code>finish</code> will trap.</p>
 <p>Returns success on the first call: the <code>output-stream</code> resource for
 this <code>outgoing-body</code> may be retrieved at most once. Subsequent calls
-will return error.</p></div>
+will return error.</p>
+<p>Raises: <code><a title="spin_sdk.wit.types.Err" href="../types.html#spin_sdk.wit.types.Err">Err</a>(None)</code></p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -3248,6 +3322,8 @@ will return error.</p></div>
     Returns success on the first call: the `output-stream` resource for
     this `outgoing-body` may be retrieved at most once. Subsequent calls
     will return error.
+    
+    Raises: `spin_sdk.wit.types.Err(None)`
     &#34;&#34;&#34;
     raise NotImplementedError</code></pre>
 </details>
@@ -3294,7 +3370,7 @@ to reject invalid constructions of <code>outgoing-request</code>.</p></div>
         &#34;&#34;&#34;
         raise NotImplementedError
 
-    def body(self) -&gt; Any:
+    def body(self) -&gt; OutgoingBody:
         &#34;&#34;&#34;
         Returns the resource corresponding to the outgoing Body for this
         Request.
@@ -3302,6 +3378,8 @@ to reject invalid constructions of <code>outgoing-request</code>.</p></div>
         Returns success on the first call: the `outgoing-body` resource for
         this `outgoing-request` can be retrieved at most once. Subsequent
         calls will return error.
+        
+        Raises: `spin_sdk.wit.types.Err(None)`
         &#34;&#34;&#34;
         raise NotImplementedError
 
@@ -3315,6 +3393,8 @@ to reject invalid constructions of <code>outgoing-request</code>.</p></div>
         &#34;&#34;&#34;
         Set the Method for the Request. Fails if the string present in a
         `method.other` argument is not a syntactically valid method.
+        
+        Raises: `spin_sdk.wit.types.Err(None)`
         &#34;&#34;&#34;
         raise NotImplementedError
 
@@ -3330,6 +3410,8 @@ to reject invalid constructions of <code>outgoing-request</code>.</p></div>
         Set the combination of the HTTP Path and Query for the Request.
         When `none`, this represents an empty Path and empty Query. Fails is the
         string given is not a syntactically valid path and query uri component.
+        
+        Raises: `spin_sdk.wit.types.Err(None)`
         &#34;&#34;&#34;
         raise NotImplementedError
 
@@ -3345,6 +3427,8 @@ to reject invalid constructions of <code>outgoing-request</code>.</p></div>
         Set the HTTP Related Scheme for the Request. When `none`, the
         implementation may choose an appropriate default scheme. Fails if the
         string given is not a syntactically valid uri scheme.
+        
+        Raises: `spin_sdk.wit.types.Err(None)`
         &#34;&#34;&#34;
         raise NotImplementedError
 
@@ -3362,6 +3446,8 @@ to reject invalid constructions of <code>outgoing-request</code>.</p></div>
         with Related Schemes which do not require an Authority. The HTTP and
         HTTPS schemes always require an authority. Fails if the string given is
         not a syntactically valid uri authority.
+        
+        Raises: `spin_sdk.wit.types.Err(None)`
         &#34;&#34;&#34;
         raise NotImplementedError
 
@@ -3378,7 +3464,11 @@ to reject invalid constructions of <code>outgoing-request</code>.</p></div>
         &#34;&#34;&#34;
         raise NotImplementedError
 
-    def drop(self):
+    def __enter__(self):
+        &#34;&#34;&#34;Returns self&#34;&#34;&#34;
+        return self
+                                                                    
+    def __exit__(self, *args):
         &#34;&#34;&#34;
         Release this resource.
         &#34;&#34;&#34;
@@ -3407,19 +3497,20 @@ HTTPS schemes always require an authority.</p></div>
 </details>
 </dd>
 <dt id="spin_sdk.wit.imports.types.OutgoingRequest.body"><code class="name flex">
-<span>def <span class="ident">body</span></span>(<span>self) ‑> Any</span>
+<span>def <span class="ident">body</span></span>(<span>self) ‑> <a title="spin_sdk.wit.imports.types.OutgoingBody" href="#spin_sdk.wit.imports.types.OutgoingBody">OutgoingBody</a></span>
 </code></dt>
 <dd>
 <div class="desc"><p>Returns the resource corresponding to the outgoing Body for this
 Request.</p>
 <p>Returns success on the first call: the <code>outgoing-body</code> resource for
 this <code>outgoing-request</code> can be retrieved at most once. Subsequent
-calls will return error.</p></div>
+calls will return error.</p>
+<p>Raises: <code><a title="spin_sdk.wit.types.Err" href="../types.html#spin_sdk.wit.types.Err">Err</a>(None)</code></p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def body(self) -&gt; Any:
+<pre><code class="python">def body(self) -&gt; OutgoingBody:
     &#34;&#34;&#34;
     Returns the resource corresponding to the outgoing Body for this
     Request.
@@ -3427,22 +3518,8 @@ calls will return error.</p></div>
     Returns success on the first call: the `outgoing-body` resource for
     this `outgoing-request` can be retrieved at most once. Subsequent
     calls will return error.
-    &#34;&#34;&#34;
-    raise NotImplementedError</code></pre>
-</details>
-</dd>
-<dt id="spin_sdk.wit.imports.types.OutgoingRequest.drop"><code class="name flex">
-<span>def <span class="ident">drop</span></span>(<span>self)</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Release this resource.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def drop(self):
-    &#34;&#34;&#34;
-    Release this resource.
+    
+    Raises: `spin_sdk.wit.types.Err(None)`
     &#34;&#34;&#34;
     raise NotImplementedError</code></pre>
 </details>
@@ -3534,7 +3611,8 @@ implementation may choose an appropriate default scheme.</p></div>
 <div class="desc"><p>Set the HTTP Authority for the Request. A value of <code>none</code> may be used
 with Related Schemes which do not require an Authority. The HTTP and
 HTTPS schemes always require an authority. Fails if the string given is
-not a syntactically valid uri authority.</p></div>
+not a syntactically valid uri authority.</p>
+<p>Raises: <code><a title="spin_sdk.wit.types.Err" href="../types.html#spin_sdk.wit.types.Err">Err</a>(None)</code></p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -3545,6 +3623,8 @@ not a syntactically valid uri authority.</p></div>
     with Related Schemes which do not require an Authority. The HTTP and
     HTTPS schemes always require an authority. Fails if the string given is
     not a syntactically valid uri authority.
+    
+    Raises: `spin_sdk.wit.types.Err(None)`
     &#34;&#34;&#34;
     raise NotImplementedError</code></pre>
 </details>
@@ -3554,7 +3634,8 @@ not a syntactically valid uri authority.</p></div>
 </code></dt>
 <dd>
 <div class="desc"><p>Set the Method for the Request. Fails if the string present in a
-<code>method.other</code> argument is not a syntactically valid method.</p></div>
+<code>method.other</code> argument is not a syntactically valid method.</p>
+<p>Raises: <code><a title="spin_sdk.wit.types.Err" href="../types.html#spin_sdk.wit.types.Err">Err</a>(None)</code></p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -3563,6 +3644,8 @@ not a syntactically valid uri authority.</p></div>
     &#34;&#34;&#34;
     Set the Method for the Request. Fails if the string present in a
     `method.other` argument is not a syntactically valid method.
+    
+    Raises: `spin_sdk.wit.types.Err(None)`
     &#34;&#34;&#34;
     raise NotImplementedError</code></pre>
 </details>
@@ -3573,7 +3656,8 @@ not a syntactically valid uri authority.</p></div>
 <dd>
 <div class="desc"><p>Set the combination of the HTTP Path and Query for the Request.
 When <code>none</code>, this represents an empty Path and empty Query. Fails is the
-string given is not a syntactically valid path and query uri component.</p></div>
+string given is not a syntactically valid path and query uri component.</p>
+<p>Raises: <code><a title="spin_sdk.wit.types.Err" href="../types.html#spin_sdk.wit.types.Err">Err</a>(None)</code></p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -3583,6 +3667,8 @@ string given is not a syntactically valid path and query uri component.</p></div
     Set the combination of the HTTP Path and Query for the Request.
     When `none`, this represents an empty Path and empty Query. Fails is the
     string given is not a syntactically valid path and query uri component.
+    
+    Raises: `spin_sdk.wit.types.Err(None)`
     &#34;&#34;&#34;
     raise NotImplementedError</code></pre>
 </details>
@@ -3593,7 +3679,8 @@ string given is not a syntactically valid path and query uri component.</p></div
 <dd>
 <div class="desc"><p>Set the HTTP Related Scheme for the Request. When <code>none</code>, the
 implementation may choose an appropriate default scheme. Fails if the
-string given is not a syntactically valid uri scheme.</p></div>
+string given is not a syntactically valid uri scheme.</p>
+<p>Raises: <code><a title="spin_sdk.wit.types.Err" href="../types.html#spin_sdk.wit.types.Err">Err</a>(None)</code></p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -3603,6 +3690,8 @@ string given is not a syntactically valid uri scheme.</p></div>
     Set the HTTP Related Scheme for the Request. When `none`, the
     implementation may choose an appropriate default scheme. Fails if the
     string given is not a syntactically valid uri scheme.
+    
+    Raises: `spin_sdk.wit.types.Err(None)`
     &#34;&#34;&#34;
     raise NotImplementedError</code></pre>
 </details>
@@ -3650,6 +3739,8 @@ If a different <code>status-code</code> is needed, it must be set via the
         &#34;&#34;&#34;
         Set the HTTP Status Code for the Response. Fails if the status-code
         given is not a valid http status code.
+        
+        Raises: `spin_sdk.wit.types.Err(None)`
         &#34;&#34;&#34;
         raise NotImplementedError
 
@@ -3666,17 +3757,23 @@ If a different <code>status-code</code> is needed, it must be set via the
         &#34;&#34;&#34;
         raise NotImplementedError
 
-    def body(self) -&gt; Any:
+    def body(self) -&gt; OutgoingBody:
         &#34;&#34;&#34;
         Returns the resource corresponding to the outgoing Body for this Response.
         
         Returns success on the first call: the `outgoing-body` resource for
         this `outgoing-response` can be retrieved at most once. Subsequent
         calls will return error.
+        
+        Raises: `spin_sdk.wit.types.Err(None)`
         &#34;&#34;&#34;
         raise NotImplementedError
 
-    def drop(self):
+    def __enter__(self):
+        &#34;&#34;&#34;Returns self&#34;&#34;&#34;
+        return self
+                                                                    
+    def __exit__(self, *args):
         &#34;&#34;&#34;
         Release this resource.
         &#34;&#34;&#34;
@@ -3685,40 +3782,27 @@ If a different <code>status-code</code> is needed, it must be set via the
 <h3>Methods</h3>
 <dl>
 <dt id="spin_sdk.wit.imports.types.OutgoingResponse.body"><code class="name flex">
-<span>def <span class="ident">body</span></span>(<span>self) ‑> Any</span>
+<span>def <span class="ident">body</span></span>(<span>self) ‑> <a title="spin_sdk.wit.imports.types.OutgoingBody" href="#spin_sdk.wit.imports.types.OutgoingBody">OutgoingBody</a></span>
 </code></dt>
 <dd>
 <div class="desc"><p>Returns the resource corresponding to the outgoing Body for this Response.</p>
 <p>Returns success on the first call: the <code>outgoing-body</code> resource for
 this <code>outgoing-response</code> can be retrieved at most once. Subsequent
-calls will return error.</p></div>
+calls will return error.</p>
+<p>Raises: <code><a title="spin_sdk.wit.types.Err" href="../types.html#spin_sdk.wit.types.Err">Err</a>(None)</code></p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def body(self) -&gt; Any:
+<pre><code class="python">def body(self) -&gt; OutgoingBody:
     &#34;&#34;&#34;
     Returns the resource corresponding to the outgoing Body for this Response.
     
     Returns success on the first call: the `outgoing-body` resource for
     this `outgoing-response` can be retrieved at most once. Subsequent
     calls will return error.
-    &#34;&#34;&#34;
-    raise NotImplementedError</code></pre>
-</details>
-</dd>
-<dt id="spin_sdk.wit.imports.types.OutgoingResponse.drop"><code class="name flex">
-<span>def <span class="ident">drop</span></span>(<span>self)</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Release this resource.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def drop(self):
-    &#34;&#34;&#34;
-    Release this resource.
+    
+    Raises: `spin_sdk.wit.types.Err(None)`
     &#34;&#34;&#34;
     raise NotImplementedError</code></pre>
 </details>
@@ -3756,7 +3840,8 @@ another component by e.g. <code>outgoing-handler.handle</code>.</p></div>
 </code></dt>
 <dd>
 <div class="desc"><p>Set the HTTP Status Code for the Response. Fails if the status-code
-given is not a valid http status code.</p></div>
+given is not a valid http status code.</p>
+<p>Raises: <code><a title="spin_sdk.wit.types.Err" href="../types.html#spin_sdk.wit.types.Err">Err</a>(None)</code></p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -3765,6 +3850,8 @@ given is not a valid http status code.</p></div>
     &#34;&#34;&#34;
     Set the HTTP Status Code for the Response. Fails if the status-code
     given is not a valid http status code.
+    
+    Raises: `spin_sdk.wit.types.Err(None)`
     &#34;&#34;&#34;
     raise NotImplementedError</code></pre>
 </details>
@@ -3827,6 +3914,8 @@ blocking call to <code>wasi:io/poll.poll</code>.</p>
         &#34;&#34;&#34;
         Set the timeout for the initial connect to the HTTP Server. An error
         return value indicates that this timeout is not supported.
+        
+        Raises: `spin_sdk.wit.types.Err(None)`
         &#34;&#34;&#34;
         raise NotImplementedError
 
@@ -3840,6 +3929,8 @@ blocking call to <code>wasi:io/poll.poll</code>.</p>
         &#34;&#34;&#34;
         Set the timeout for receiving the first byte of the Response body. An
         error return value indicates that this timeout is not supported.
+        
+        Raises: `spin_sdk.wit.types.Err(None)`
         &#34;&#34;&#34;
         raise NotImplementedError
 
@@ -3855,10 +3946,16 @@ blocking call to <code>wasi:io/poll.poll</code>.</p>
         Set the timeout for receiving subsequent chunks of bytes in the Response
         body stream. An error return value indicates that this timeout is not
         supported.
+        
+        Raises: `spin_sdk.wit.types.Err(None)`
         &#34;&#34;&#34;
         raise NotImplementedError
 
-    def drop(self):
+    def __enter__(self):
+        &#34;&#34;&#34;Returns self&#34;&#34;&#34;
+        return self
+                                                                    
+    def __exit__(self, *args):
         &#34;&#34;&#34;
         Release this resource.
         &#34;&#34;&#34;
@@ -3900,22 +3997,6 @@ body stream.</p></div>
     raise NotImplementedError</code></pre>
 </details>
 </dd>
-<dt id="spin_sdk.wit.imports.types.RequestOptions.drop"><code class="name flex">
-<span>def <span class="ident">drop</span></span>(<span>self)</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Release this resource.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def drop(self):
-    &#34;&#34;&#34;
-    Release this resource.
-    &#34;&#34;&#34;
-    raise NotImplementedError</code></pre>
-</details>
-</dd>
 <dt id="spin_sdk.wit.imports.types.RequestOptions.first_byte_timeout"><code class="name flex">
 <span>def <span class="ident">first_byte_timeout</span></span>(<span>self) ‑> Optional[int]</span>
 </code></dt>
@@ -3938,7 +4019,8 @@ body stream.</p></div>
 <dd>
 <div class="desc"><p>Set the timeout for receiving subsequent chunks of bytes in the Response
 body stream. An error return value indicates that this timeout is not
-supported.</p></div>
+supported.</p>
+<p>Raises: <code><a title="spin_sdk.wit.types.Err" href="../types.html#spin_sdk.wit.types.Err">Err</a>(None)</code></p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -3948,6 +4030,8 @@ supported.</p></div>
     Set the timeout for receiving subsequent chunks of bytes in the Response
     body stream. An error return value indicates that this timeout is not
     supported.
+    
+    Raises: `spin_sdk.wit.types.Err(None)`
     &#34;&#34;&#34;
     raise NotImplementedError</code></pre>
 </details>
@@ -3957,7 +4041,8 @@ supported.</p></div>
 </code></dt>
 <dd>
 <div class="desc"><p>Set the timeout for the initial connect to the HTTP Server. An error
-return value indicates that this timeout is not supported.</p></div>
+return value indicates that this timeout is not supported.</p>
+<p>Raises: <code><a title="spin_sdk.wit.types.Err" href="../types.html#spin_sdk.wit.types.Err">Err</a>(None)</code></p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -3966,6 +4051,8 @@ return value indicates that this timeout is not supported.</p></div>
     &#34;&#34;&#34;
     Set the timeout for the initial connect to the HTTP Server. An error
     return value indicates that this timeout is not supported.
+    
+    Raises: `spin_sdk.wit.types.Err(None)`
     &#34;&#34;&#34;
     raise NotImplementedError</code></pre>
 </details>
@@ -3975,7 +4062,8 @@ return value indicates that this timeout is not supported.</p></div>
 </code></dt>
 <dd>
 <div class="desc"><p>Set the timeout for receiving the first byte of the Response body. An
-error return value indicates that this timeout is not supported.</p></div>
+error return value indicates that this timeout is not supported.</p>
+<p>Raises: <code><a title="spin_sdk.wit.types.Err" href="../types.html#spin_sdk.wit.types.Err">Err</a>(None)</code></p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -3984,6 +4072,8 @@ error return value indicates that this timeout is not supported.</p></div>
     &#34;&#34;&#34;
     Set the timeout for receiving the first byte of the Response body. An
     error return value indicates that this timeout is not supported.
+    
+    Raises: `spin_sdk.wit.types.Err(None)`
     &#34;&#34;&#34;
     raise NotImplementedError</code></pre>
 </details>
@@ -4011,8 +4101,8 @@ other argument to <code>incoming-handler.handle</code>.</p></div>
     other argument to `incoming-handler.handle`.
     &#34;&#34;&#34;
     
-    @staticmethod
-    def set(param: Any, response: Result[Any, ErrorCode]) -&gt; None:
+    @classmethod
+    def set(cls, param: Self, response: Result[OutgoingResponse, ErrorCode]) -&gt; None:
         &#34;&#34;&#34;
         Set the value of the `response-outparam` to either send a response,
         or indicate an error.
@@ -4026,7 +4116,11 @@ other argument to <code>incoming-handler.handle</code>.</p></div>
         &#34;&#34;&#34;
         raise NotImplementedError
 
-    def drop(self):
+    def __enter__(self):
+        &#34;&#34;&#34;Returns self&#34;&#34;&#34;
+        return self
+                                                                    
+    def __exit__(self, *args):
         &#34;&#34;&#34;
         Release this resource.
         &#34;&#34;&#34;
@@ -4035,7 +4129,7 @@ other argument to <code>incoming-handler.handle</code>.</p></div>
 <h3>Static methods</h3>
 <dl>
 <dt id="spin_sdk.wit.imports.types.ResponseOutparam.set"><code class="name flex">
-<span>def <span class="ident">set</span></span>(<span>param: Any, response: Union[<a title="spin_sdk.wit.types.Ok" href="../types.html#spin_sdk.wit.types.Ok">Ok</a>[Any], <a title="spin_sdk.wit.types.Err" href="../types.html#spin_sdk.wit.types.Err">Err</a>[Union[<a title="spin_sdk.wit.imports.types.ErrorCodeDnsTimeout" href="#spin_sdk.wit.imports.types.ErrorCodeDnsTimeout">ErrorCodeDnsTimeout</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeDnsError" href="#spin_sdk.wit.imports.types.ErrorCodeDnsError">ErrorCodeDnsError</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeDestinationNotFound" href="#spin_sdk.wit.imports.types.ErrorCodeDestinationNotFound">ErrorCodeDestinationNotFound</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeDestinationUnavailable" href="#spin_sdk.wit.imports.types.ErrorCodeDestinationUnavailable">ErrorCodeDestinationUnavailable</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeDestinationIpProhibited" href="#spin_sdk.wit.imports.types.ErrorCodeDestinationIpProhibited">ErrorCodeDestinationIpProhibited</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeDestinationIpUnroutable" href="#spin_sdk.wit.imports.types.ErrorCodeDestinationIpUnroutable">ErrorCodeDestinationIpUnroutable</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeConnectionRefused" href="#spin_sdk.wit.imports.types.ErrorCodeConnectionRefused">ErrorCodeConnectionRefused</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeConnectionTerminated" href="#spin_sdk.wit.imports.types.ErrorCodeConnectionTerminated">ErrorCodeConnectionTerminated</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeConnectionTimeout" href="#spin_sdk.wit.imports.types.ErrorCodeConnectionTimeout">ErrorCodeConnectionTimeout</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeConnectionReadTimeout" href="#spin_sdk.wit.imports.types.ErrorCodeConnectionReadTimeout">ErrorCodeConnectionReadTimeout</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeConnectionWriteTimeout" href="#spin_sdk.wit.imports.types.ErrorCodeConnectionWriteTimeout">ErrorCodeConnectionWriteTimeout</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeConnectionLimitReached" href="#spin_sdk.wit.imports.types.ErrorCodeConnectionLimitReached">ErrorCodeConnectionLimitReached</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeTlsProtocolError" href="#spin_sdk.wit.imports.types.ErrorCodeTlsProtocolError">ErrorCodeTlsProtocolError</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeTlsCertificateError" href="#spin_sdk.wit.imports.types.ErrorCodeTlsCertificateError">ErrorCodeTlsCertificateError</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeTlsAlertReceived" href="#spin_sdk.wit.imports.types.ErrorCodeTlsAlertReceived">ErrorCodeTlsAlertReceived</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeHttpRequestDenied" href="#spin_sdk.wit.imports.types.ErrorCodeHttpRequestDenied">ErrorCodeHttpRequestDenied</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeHttpRequestLengthRequired" href="#spin_sdk.wit.imports.types.ErrorCodeHttpRequestLengthRequired">ErrorCodeHttpRequestLengthRequired</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeHttpRequestBodySize" href="#spin_sdk.wit.imports.types.ErrorCodeHttpRequestBodySize">ErrorCodeHttpRequestBodySize</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeHttpRequestMethodInvalid" href="#spin_sdk.wit.imports.types.ErrorCodeHttpRequestMethodInvalid">ErrorCodeHttpRequestMethodInvalid</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeHttpRequestUriInvalid" href="#spin_sdk.wit.imports.types.ErrorCodeHttpRequestUriInvalid">ErrorCodeHttpRequestUriInvalid</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeHttpRequestUriTooLong" href="#spin_sdk.wit.imports.types.ErrorCodeHttpRequestUriTooLong">ErrorCodeHttpRequestUriTooLong</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeHttpRequestHeaderSectionSize" href="#spin_sdk.wit.imports.types.ErrorCodeHttpRequestHeaderSectionSize">ErrorCodeHttpRequestHeaderSectionSize</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeHttpRequestHeaderSize" href="#spin_sdk.wit.imports.types.ErrorCodeHttpRequestHeaderSize">ErrorCodeHttpRequestHeaderSize</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeHttpRequestTrailerSectionSize" href="#spin_sdk.wit.imports.types.ErrorCodeHttpRequestTrailerSectionSize">ErrorCodeHttpRequestTrailerSectionSize</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeHttpRequestTrailerSize" href="#spin_sdk.wit.imports.types.ErrorCodeHttpRequestTrailerSize">ErrorCodeHttpRequestTrailerSize</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeHttpResponseIncomplete" href="#spin_sdk.wit.imports.types.ErrorCodeHttpResponseIncomplete">ErrorCodeHttpResponseIncomplete</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeHttpResponseHeaderSectionSize" href="#spin_sdk.wit.imports.types.ErrorCodeHttpResponseHeaderSectionSize">ErrorCodeHttpResponseHeaderSectionSize</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeHttpResponseHeaderSize" href="#spin_sdk.wit.imports.types.ErrorCodeHttpResponseHeaderSize">ErrorCodeHttpResponseHeaderSize</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeHttpResponseBodySize" href="#spin_sdk.wit.imports.types.ErrorCodeHttpResponseBodySize">ErrorCodeHttpResponseBodySize</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeHttpResponseTrailerSectionSize" href="#spin_sdk.wit.imports.types.ErrorCodeHttpResponseTrailerSectionSize">ErrorCodeHttpResponseTrailerSectionSize</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeHttpResponseTrailerSize" href="#spin_sdk.wit.imports.types.ErrorCodeHttpResponseTrailerSize">ErrorCodeHttpResponseTrailerSize</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeHttpResponseTransferCoding" href="#spin_sdk.wit.imports.types.ErrorCodeHttpResponseTransferCoding">ErrorCodeHttpResponseTransferCoding</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeHttpResponseContentCoding" href="#spin_sdk.wit.imports.types.ErrorCodeHttpResponseContentCoding">ErrorCodeHttpResponseContentCoding</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeHttpResponseTimeout" href="#spin_sdk.wit.imports.types.ErrorCodeHttpResponseTimeout">ErrorCodeHttpResponseTimeout</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeHttpUpgradeFailed" href="#spin_sdk.wit.imports.types.ErrorCodeHttpUpgradeFailed">ErrorCodeHttpUpgradeFailed</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeHttpProtocolError" href="#spin_sdk.wit.imports.types.ErrorCodeHttpProtocolError">ErrorCodeHttpProtocolError</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeLoopDetected" href="#spin_sdk.wit.imports.types.ErrorCodeLoopDetected">ErrorCodeLoopDetected</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeConfigurationError" href="#spin_sdk.wit.imports.types.ErrorCodeConfigurationError">ErrorCodeConfigurationError</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeInternalError" href="#spin_sdk.wit.imports.types.ErrorCodeInternalError">ErrorCodeInternalError</a>]]]) ‑> None</span>
+<span>def <span class="ident">set</span></span>(<span>param: Self, response: Union[<a title="spin_sdk.wit.types.Ok" href="../types.html#spin_sdk.wit.types.Ok">Ok</a>[<a title="spin_sdk.wit.imports.types.OutgoingResponse" href="#spin_sdk.wit.imports.types.OutgoingResponse">OutgoingResponse</a>], <a title="spin_sdk.wit.types.Err" href="../types.html#spin_sdk.wit.types.Err">Err</a>[Union[<a title="spin_sdk.wit.imports.types.ErrorCodeDnsTimeout" href="#spin_sdk.wit.imports.types.ErrorCodeDnsTimeout">ErrorCodeDnsTimeout</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeDnsError" href="#spin_sdk.wit.imports.types.ErrorCodeDnsError">ErrorCodeDnsError</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeDestinationNotFound" href="#spin_sdk.wit.imports.types.ErrorCodeDestinationNotFound">ErrorCodeDestinationNotFound</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeDestinationUnavailable" href="#spin_sdk.wit.imports.types.ErrorCodeDestinationUnavailable">ErrorCodeDestinationUnavailable</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeDestinationIpProhibited" href="#spin_sdk.wit.imports.types.ErrorCodeDestinationIpProhibited">ErrorCodeDestinationIpProhibited</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeDestinationIpUnroutable" href="#spin_sdk.wit.imports.types.ErrorCodeDestinationIpUnroutable">ErrorCodeDestinationIpUnroutable</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeConnectionRefused" href="#spin_sdk.wit.imports.types.ErrorCodeConnectionRefused">ErrorCodeConnectionRefused</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeConnectionTerminated" href="#spin_sdk.wit.imports.types.ErrorCodeConnectionTerminated">ErrorCodeConnectionTerminated</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeConnectionTimeout" href="#spin_sdk.wit.imports.types.ErrorCodeConnectionTimeout">ErrorCodeConnectionTimeout</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeConnectionReadTimeout" href="#spin_sdk.wit.imports.types.ErrorCodeConnectionReadTimeout">ErrorCodeConnectionReadTimeout</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeConnectionWriteTimeout" href="#spin_sdk.wit.imports.types.ErrorCodeConnectionWriteTimeout">ErrorCodeConnectionWriteTimeout</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeConnectionLimitReached" href="#spin_sdk.wit.imports.types.ErrorCodeConnectionLimitReached">ErrorCodeConnectionLimitReached</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeTlsProtocolError" href="#spin_sdk.wit.imports.types.ErrorCodeTlsProtocolError">ErrorCodeTlsProtocolError</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeTlsCertificateError" href="#spin_sdk.wit.imports.types.ErrorCodeTlsCertificateError">ErrorCodeTlsCertificateError</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeTlsAlertReceived" href="#spin_sdk.wit.imports.types.ErrorCodeTlsAlertReceived">ErrorCodeTlsAlertReceived</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeHttpRequestDenied" href="#spin_sdk.wit.imports.types.ErrorCodeHttpRequestDenied">ErrorCodeHttpRequestDenied</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeHttpRequestLengthRequired" href="#spin_sdk.wit.imports.types.ErrorCodeHttpRequestLengthRequired">ErrorCodeHttpRequestLengthRequired</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeHttpRequestBodySize" href="#spin_sdk.wit.imports.types.ErrorCodeHttpRequestBodySize">ErrorCodeHttpRequestBodySize</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeHttpRequestMethodInvalid" href="#spin_sdk.wit.imports.types.ErrorCodeHttpRequestMethodInvalid">ErrorCodeHttpRequestMethodInvalid</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeHttpRequestUriInvalid" href="#spin_sdk.wit.imports.types.ErrorCodeHttpRequestUriInvalid">ErrorCodeHttpRequestUriInvalid</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeHttpRequestUriTooLong" href="#spin_sdk.wit.imports.types.ErrorCodeHttpRequestUriTooLong">ErrorCodeHttpRequestUriTooLong</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeHttpRequestHeaderSectionSize" href="#spin_sdk.wit.imports.types.ErrorCodeHttpRequestHeaderSectionSize">ErrorCodeHttpRequestHeaderSectionSize</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeHttpRequestHeaderSize" href="#spin_sdk.wit.imports.types.ErrorCodeHttpRequestHeaderSize">ErrorCodeHttpRequestHeaderSize</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeHttpRequestTrailerSectionSize" href="#spin_sdk.wit.imports.types.ErrorCodeHttpRequestTrailerSectionSize">ErrorCodeHttpRequestTrailerSectionSize</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeHttpRequestTrailerSize" href="#spin_sdk.wit.imports.types.ErrorCodeHttpRequestTrailerSize">ErrorCodeHttpRequestTrailerSize</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeHttpResponseIncomplete" href="#spin_sdk.wit.imports.types.ErrorCodeHttpResponseIncomplete">ErrorCodeHttpResponseIncomplete</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeHttpResponseHeaderSectionSize" href="#spin_sdk.wit.imports.types.ErrorCodeHttpResponseHeaderSectionSize">ErrorCodeHttpResponseHeaderSectionSize</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeHttpResponseHeaderSize" href="#spin_sdk.wit.imports.types.ErrorCodeHttpResponseHeaderSize">ErrorCodeHttpResponseHeaderSize</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeHttpResponseBodySize" href="#spin_sdk.wit.imports.types.ErrorCodeHttpResponseBodySize">ErrorCodeHttpResponseBodySize</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeHttpResponseTrailerSectionSize" href="#spin_sdk.wit.imports.types.ErrorCodeHttpResponseTrailerSectionSize">ErrorCodeHttpResponseTrailerSectionSize</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeHttpResponseTrailerSize" href="#spin_sdk.wit.imports.types.ErrorCodeHttpResponseTrailerSize">ErrorCodeHttpResponseTrailerSize</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeHttpResponseTransferCoding" href="#spin_sdk.wit.imports.types.ErrorCodeHttpResponseTransferCoding">ErrorCodeHttpResponseTransferCoding</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeHttpResponseContentCoding" href="#spin_sdk.wit.imports.types.ErrorCodeHttpResponseContentCoding">ErrorCodeHttpResponseContentCoding</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeHttpResponseTimeout" href="#spin_sdk.wit.imports.types.ErrorCodeHttpResponseTimeout">ErrorCodeHttpResponseTimeout</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeHttpUpgradeFailed" href="#spin_sdk.wit.imports.types.ErrorCodeHttpUpgradeFailed">ErrorCodeHttpUpgradeFailed</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeHttpProtocolError" href="#spin_sdk.wit.imports.types.ErrorCodeHttpProtocolError">ErrorCodeHttpProtocolError</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeLoopDetected" href="#spin_sdk.wit.imports.types.ErrorCodeLoopDetected">ErrorCodeLoopDetected</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeConfigurationError" href="#spin_sdk.wit.imports.types.ErrorCodeConfigurationError">ErrorCodeConfigurationError</a>, <a title="spin_sdk.wit.imports.types.ErrorCodeInternalError" href="#spin_sdk.wit.imports.types.ErrorCodeInternalError">ErrorCodeInternalError</a>]]]) ‑> None</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Set the value of the <code>response-outparam</code> to either send a response,
@@ -4049,8 +4143,8 @@ implementation determine how to respond with an HTTP error response.</p></div>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">@staticmethod
-def set(param: Any, response: Result[Any, ErrorCode]) -&gt; None:
+<pre><code class="python">@classmethod
+def set(cls, param: Self, response: Result[OutgoingResponse, ErrorCode]) -&gt; None:
     &#34;&#34;&#34;
     Set the value of the `response-outparam` to either send a response,
     or indicate an error.
@@ -4061,25 +4155,6 @@ def set(param: Any, response: Result[Any, ErrorCode]) -&gt; None:
     
     The user may provide an `error` to `response` to allow the
     implementation determine how to respond with an HTTP error response.
-    &#34;&#34;&#34;
-    raise NotImplementedError</code></pre>
-</details>
-</dd>
-</dl>
-<h3>Methods</h3>
-<dl>
-<dt id="spin_sdk.wit.imports.types.ResponseOutparam.drop"><code class="name flex">
-<span>def <span class="ident">drop</span></span>(<span>self)</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Release this resource.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def drop(self):
-    &#34;&#34;&#34;
-    Release this resource.
     &#34;&#34;&#34;
     raise NotImplementedError</code></pre>
 </details>
@@ -4178,6 +4253,14 @@ class TlsAlertReceivedPayload:
 <li><h3>Super-module</h3>
 <ul>
 <li><code><a title="spin_sdk.wit.imports" href="index.html">spin_sdk.wit.imports</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-variables">Global variables</a></h3>
+<ul class="">
+<li><code><a title="spin_sdk.wit.imports.types.ErrorCode" href="#spin_sdk.wit.imports.types.ErrorCode">ErrorCode</a></code></li>
+<li><code><a title="spin_sdk.wit.imports.types.HeaderError" href="#spin_sdk.wit.imports.types.HeaderError">HeaderError</a></code></li>
+<li><code><a title="spin_sdk.wit.imports.types.Method" href="#spin_sdk.wit.imports.types.Method">Method</a></code></li>
+<li><code><a title="spin_sdk.wit.imports.types.Scheme" href="#spin_sdk.wit.imports.types.Scheme">Scheme</a></code></li>
 </ul>
 </li>
 <li><h3><a href="#header-functions">Functions</a></h3>
@@ -4369,7 +4452,6 @@ class TlsAlertReceivedPayload:
 <li><code><a title="spin_sdk.wit.imports.types.Fields.append" href="#spin_sdk.wit.imports.types.Fields.append">append</a></code></li>
 <li><code><a title="spin_sdk.wit.imports.types.Fields.clone" href="#spin_sdk.wit.imports.types.Fields.clone">clone</a></code></li>
 <li><code><a title="spin_sdk.wit.imports.types.Fields.delete" href="#spin_sdk.wit.imports.types.Fields.delete">delete</a></code></li>
-<li><code><a title="spin_sdk.wit.imports.types.Fields.drop" href="#spin_sdk.wit.imports.types.Fields.drop">drop</a></code></li>
 <li><code><a title="spin_sdk.wit.imports.types.Fields.entries" href="#spin_sdk.wit.imports.types.Fields.entries">entries</a></code></li>
 <li><code><a title="spin_sdk.wit.imports.types.Fields.from_list" href="#spin_sdk.wit.imports.types.Fields.from_list">from_list</a></code></li>
 <li><code><a title="spin_sdk.wit.imports.types.Fields.get" href="#spin_sdk.wit.imports.types.Fields.get">get</a></code></li>
@@ -4380,7 +4462,6 @@ class TlsAlertReceivedPayload:
 <li>
 <h4><code><a title="spin_sdk.wit.imports.types.FutureIncomingResponse" href="#spin_sdk.wit.imports.types.FutureIncomingResponse">FutureIncomingResponse</a></code></h4>
 <ul class="">
-<li><code><a title="spin_sdk.wit.imports.types.FutureIncomingResponse.drop" href="#spin_sdk.wit.imports.types.FutureIncomingResponse.drop">drop</a></code></li>
 <li><code><a title="spin_sdk.wit.imports.types.FutureIncomingResponse.get" href="#spin_sdk.wit.imports.types.FutureIncomingResponse.get">get</a></code></li>
 <li><code><a title="spin_sdk.wit.imports.types.FutureIncomingResponse.subscribe" href="#spin_sdk.wit.imports.types.FutureIncomingResponse.subscribe">subscribe</a></code></li>
 </ul>
@@ -4388,7 +4469,6 @@ class TlsAlertReceivedPayload:
 <li>
 <h4><code><a title="spin_sdk.wit.imports.types.FutureTrailers" href="#spin_sdk.wit.imports.types.FutureTrailers">FutureTrailers</a></code></h4>
 <ul class="">
-<li><code><a title="spin_sdk.wit.imports.types.FutureTrailers.drop" href="#spin_sdk.wit.imports.types.FutureTrailers.drop">drop</a></code></li>
 <li><code><a title="spin_sdk.wit.imports.types.FutureTrailers.get" href="#spin_sdk.wit.imports.types.FutureTrailers.get">get</a></code></li>
 <li><code><a title="spin_sdk.wit.imports.types.FutureTrailers.subscribe" href="#spin_sdk.wit.imports.types.FutureTrailers.subscribe">subscribe</a></code></li>
 </ul>
@@ -4405,7 +4485,6 @@ class TlsAlertReceivedPayload:
 <li>
 <h4><code><a title="spin_sdk.wit.imports.types.IncomingBody" href="#spin_sdk.wit.imports.types.IncomingBody">IncomingBody</a></code></h4>
 <ul class="">
-<li><code><a title="spin_sdk.wit.imports.types.IncomingBody.drop" href="#spin_sdk.wit.imports.types.IncomingBody.drop">drop</a></code></li>
 <li><code><a title="spin_sdk.wit.imports.types.IncomingBody.finish" href="#spin_sdk.wit.imports.types.IncomingBody.finish">finish</a></code></li>
 <li><code><a title="spin_sdk.wit.imports.types.IncomingBody.stream" href="#spin_sdk.wit.imports.types.IncomingBody.stream">stream</a></code></li>
 </ul>
@@ -4415,7 +4494,6 @@ class TlsAlertReceivedPayload:
 <ul class="two-column">
 <li><code><a title="spin_sdk.wit.imports.types.IncomingRequest.authority" href="#spin_sdk.wit.imports.types.IncomingRequest.authority">authority</a></code></li>
 <li><code><a title="spin_sdk.wit.imports.types.IncomingRequest.consume" href="#spin_sdk.wit.imports.types.IncomingRequest.consume">consume</a></code></li>
-<li><code><a title="spin_sdk.wit.imports.types.IncomingRequest.drop" href="#spin_sdk.wit.imports.types.IncomingRequest.drop">drop</a></code></li>
 <li><code><a title="spin_sdk.wit.imports.types.IncomingRequest.headers" href="#spin_sdk.wit.imports.types.IncomingRequest.headers">headers</a></code></li>
 <li><code><a title="spin_sdk.wit.imports.types.IncomingRequest.method" href="#spin_sdk.wit.imports.types.IncomingRequest.method">method</a></code></li>
 <li><code><a title="spin_sdk.wit.imports.types.IncomingRequest.path_with_query" href="#spin_sdk.wit.imports.types.IncomingRequest.path_with_query">path_with_query</a></code></li>
@@ -4426,7 +4504,6 @@ class TlsAlertReceivedPayload:
 <h4><code><a title="spin_sdk.wit.imports.types.IncomingResponse" href="#spin_sdk.wit.imports.types.IncomingResponse">IncomingResponse</a></code></h4>
 <ul class="">
 <li><code><a title="spin_sdk.wit.imports.types.IncomingResponse.consume" href="#spin_sdk.wit.imports.types.IncomingResponse.consume">consume</a></code></li>
-<li><code><a title="spin_sdk.wit.imports.types.IncomingResponse.drop" href="#spin_sdk.wit.imports.types.IncomingResponse.drop">drop</a></code></li>
 <li><code><a title="spin_sdk.wit.imports.types.IncomingResponse.headers" href="#spin_sdk.wit.imports.types.IncomingResponse.headers">headers</a></code></li>
 <li><code><a title="spin_sdk.wit.imports.types.IncomingResponse.status" href="#spin_sdk.wit.imports.types.IncomingResponse.status">status</a></code></li>
 </ul>
@@ -4467,7 +4544,6 @@ class TlsAlertReceivedPayload:
 <li>
 <h4><code><a title="spin_sdk.wit.imports.types.OutgoingBody" href="#spin_sdk.wit.imports.types.OutgoingBody">OutgoingBody</a></code></h4>
 <ul class="">
-<li><code><a title="spin_sdk.wit.imports.types.OutgoingBody.drop" href="#spin_sdk.wit.imports.types.OutgoingBody.drop">drop</a></code></li>
 <li><code><a title="spin_sdk.wit.imports.types.OutgoingBody.finish" href="#spin_sdk.wit.imports.types.OutgoingBody.finish">finish</a></code></li>
 <li><code><a title="spin_sdk.wit.imports.types.OutgoingBody.write" href="#spin_sdk.wit.imports.types.OutgoingBody.write">write</a></code></li>
 </ul>
@@ -4477,7 +4553,6 @@ class TlsAlertReceivedPayload:
 <ul class="two-column">
 <li><code><a title="spin_sdk.wit.imports.types.OutgoingRequest.authority" href="#spin_sdk.wit.imports.types.OutgoingRequest.authority">authority</a></code></li>
 <li><code><a title="spin_sdk.wit.imports.types.OutgoingRequest.body" href="#spin_sdk.wit.imports.types.OutgoingRequest.body">body</a></code></li>
-<li><code><a title="spin_sdk.wit.imports.types.OutgoingRequest.drop" href="#spin_sdk.wit.imports.types.OutgoingRequest.drop">drop</a></code></li>
 <li><code><a title="spin_sdk.wit.imports.types.OutgoingRequest.headers" href="#spin_sdk.wit.imports.types.OutgoingRequest.headers">headers</a></code></li>
 <li><code><a title="spin_sdk.wit.imports.types.OutgoingRequest.method" href="#spin_sdk.wit.imports.types.OutgoingRequest.method">method</a></code></li>
 <li><code><a title="spin_sdk.wit.imports.types.OutgoingRequest.path_with_query" href="#spin_sdk.wit.imports.types.OutgoingRequest.path_with_query">path_with_query</a></code></li>
@@ -4492,7 +4567,6 @@ class TlsAlertReceivedPayload:
 <h4><code><a title="spin_sdk.wit.imports.types.OutgoingResponse" href="#spin_sdk.wit.imports.types.OutgoingResponse">OutgoingResponse</a></code></h4>
 <ul class="">
 <li><code><a title="spin_sdk.wit.imports.types.OutgoingResponse.body" href="#spin_sdk.wit.imports.types.OutgoingResponse.body">body</a></code></li>
-<li><code><a title="spin_sdk.wit.imports.types.OutgoingResponse.drop" href="#spin_sdk.wit.imports.types.OutgoingResponse.drop">drop</a></code></li>
 <li><code><a title="spin_sdk.wit.imports.types.OutgoingResponse.headers" href="#spin_sdk.wit.imports.types.OutgoingResponse.headers">headers</a></code></li>
 <li><code><a title="spin_sdk.wit.imports.types.OutgoingResponse.set_status_code" href="#spin_sdk.wit.imports.types.OutgoingResponse.set_status_code">set_status_code</a></code></li>
 <li><code><a title="spin_sdk.wit.imports.types.OutgoingResponse.status_code" href="#spin_sdk.wit.imports.types.OutgoingResponse.status_code">status_code</a></code></li>
@@ -4503,7 +4577,6 @@ class TlsAlertReceivedPayload:
 <ul class="">
 <li><code><a title="spin_sdk.wit.imports.types.RequestOptions.between_bytes_timeout" href="#spin_sdk.wit.imports.types.RequestOptions.between_bytes_timeout">between_bytes_timeout</a></code></li>
 <li><code><a title="spin_sdk.wit.imports.types.RequestOptions.connect_timeout" href="#spin_sdk.wit.imports.types.RequestOptions.connect_timeout">connect_timeout</a></code></li>
-<li><code><a title="spin_sdk.wit.imports.types.RequestOptions.drop" href="#spin_sdk.wit.imports.types.RequestOptions.drop">drop</a></code></li>
 <li><code><a title="spin_sdk.wit.imports.types.RequestOptions.first_byte_timeout" href="#spin_sdk.wit.imports.types.RequestOptions.first_byte_timeout">first_byte_timeout</a></code></li>
 <li><code><a title="spin_sdk.wit.imports.types.RequestOptions.set_between_bytes_timeout" href="#spin_sdk.wit.imports.types.RequestOptions.set_between_bytes_timeout">set_between_bytes_timeout</a></code></li>
 <li><code><a title="spin_sdk.wit.imports.types.RequestOptions.set_connect_timeout" href="#spin_sdk.wit.imports.types.RequestOptions.set_connect_timeout">set_connect_timeout</a></code></li>
@@ -4513,7 +4586,6 @@ class TlsAlertReceivedPayload:
 <li>
 <h4><code><a title="spin_sdk.wit.imports.types.ResponseOutparam" href="#spin_sdk.wit.imports.types.ResponseOutparam">ResponseOutparam</a></code></h4>
 <ul class="">
-<li><code><a title="spin_sdk.wit.imports.types.ResponseOutparam.drop" href="#spin_sdk.wit.imports.types.ResponseOutparam.drop">drop</a></code></li>
 <li><code><a title="spin_sdk.wit.imports.types.ResponseOutparam.set" href="#spin_sdk.wit.imports.types.ResponseOutparam.set">set</a></code></li>
 </ul>
 </li>

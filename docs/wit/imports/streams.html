@@ -45,8 +45,8 @@ from abc import abstractmethod
 import weakref
 
 from ..types import Result, Ok, Err, Some
-from ..imports import error
 from ..imports import poll
+from ..imports import error
 
 
 @dataclass
@@ -59,8 +59,11 @@ class StreamErrorClosed:
     pass
 
 
-# An error for input-stream and output-stream operations.
 StreamError = Union[StreamErrorLastOperationFailed, StreamErrorClosed]
+&#34;&#34;&#34;
+An error for input-stream and output-stream operations.
+&#34;&#34;&#34;
+
 
 class InputStream:
     &#34;&#34;&#34;
@@ -97,6 +100,8 @@ class InputStream:
         is not possible to allocate in wasm32, or not desirable to allocate as
         as a return value by the callee. The callee may return a list of bytes
         less than `len` in size while more bytes are available for reading.
+        
+        Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.streams.StreamError)`
         &#34;&#34;&#34;
         raise NotImplementedError
 
@@ -104,6 +109,8 @@ class InputStream:
         &#34;&#34;&#34;
         Read bytes from a stream, after blocking until at least one byte can
         be read. Except for blocking, behavior is identical to `read`.
+        
+        Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.streams.StreamError)`
         &#34;&#34;&#34;
         raise NotImplementedError
 
@@ -113,6 +120,8 @@ class InputStream:
         
         Behaves identical to `read`, except instead of returning a list
         of bytes, returns the number of bytes consumed from the stream.
+        
+        Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.streams.StreamError)`
         &#34;&#34;&#34;
         raise NotImplementedError
 
@@ -120,6 +129,8 @@ class InputStream:
         &#34;&#34;&#34;
         Skip bytes from a stream, after blocking until at least one byte
         can be skipped. Except for blocking behavior, identical to `skip`.
+        
+        Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.streams.StreamError)`
         &#34;&#34;&#34;
         raise NotImplementedError
 
@@ -134,7 +145,11 @@ class InputStream:
         &#34;&#34;&#34;
         raise NotImplementedError
 
-    def drop(self):
+    def __enter__(self):
+        &#34;&#34;&#34;Returns self&#34;&#34;&#34;
+        return self
+                                                                    
+    def __exit__(self, *args):
         &#34;&#34;&#34;
         Release this resource.
         &#34;&#34;&#34;
@@ -164,6 +179,8 @@ class OutputStream:
         When this function returns 0 bytes, the `subscribe` pollable will
         become ready when this function will report at least 1 byte, or an
         error.
+        
+        Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.streams.StreamError)`
         &#34;&#34;&#34;
         raise NotImplementedError
 
@@ -176,6 +193,8 @@ class OutputStream:
         
         returns Err(closed) without writing if the stream has closed since
         the last call to check-write provided a permit.
+        
+        Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.streams.StreamError)`
         &#34;&#34;&#34;
         raise NotImplementedError
 
@@ -205,6 +224,8 @@ class OutputStream:
         // Check for any errors that arose during `flush`
         let _ = this.check-write();         // eliding error handling
         ```
+        
+        Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.streams.StreamError)`
         &#34;&#34;&#34;
         raise NotImplementedError
 
@@ -220,6 +241,8 @@ class OutputStream:
         writes (`check-write` will return `ok(0)`) until the flush has
         completed. The `subscribe` pollable will become ready when the
         flush has completed and the stream can accept more writes.
+        
+        Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.streams.StreamError)`
         &#34;&#34;&#34;
         raise NotImplementedError
 
@@ -227,6 +250,8 @@ class OutputStream:
         &#34;&#34;&#34;
         Request to flush buffered output, and block until flush completes
         and stream is ready for writing again.
+        
+        Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.streams.StreamError)`
         &#34;&#34;&#34;
         raise NotImplementedError
 
@@ -253,6 +278,8 @@ class OutputStream:
         preconditions (must use check-write first), but instead of
         passing a list of bytes, you simply pass the number of zero-bytes
         that should be written.
+        
+        Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.streams.StreamError)`
         &#34;&#34;&#34;
         raise NotImplementedError
 
@@ -282,6 +309,8 @@ class OutputStream:
         // Check for any errors that arose during `flush`
         let _ = this.check-write();         // eliding error handling
         ```
+        
+        Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.streams.StreamError)`
         &#34;&#34;&#34;
         raise NotImplementedError
 
@@ -300,6 +329,8 @@ class OutputStream:
         
         This function returns the number of bytes transferred; it may be less
         than `len`.
+        
+        Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.streams.StreamError)`
         &#34;&#34;&#34;
         raise NotImplementedError
 
@@ -310,10 +341,16 @@ class OutputStream:
         This is similar to `splice`, except that it blocks until the
         `output-stream` is ready for writing, and the `input-stream`
         is ready for reading, before performing the `splice`.
+        
+        Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.streams.StreamError)`
         &#34;&#34;&#34;
         raise NotImplementedError
 
-    def drop(self):
+    def __enter__(self):
+        &#34;&#34;&#34;Returns self&#34;&#34;&#34;
+        return self
+                                                                    
+    def __exit__(self, *args):
         &#34;&#34;&#34;
         Release this resource.
         &#34;&#34;&#34;
@@ -323,6 +360,13 @@ class OutputStream:
 <section>
 </section>
 <section>
+<h2 class="section-title" id="header-variables">Global variables</h2>
+<dl>
+<dt id="spin_sdk.wit.imports.streams.StreamError"><code class="name">var <span class="ident">StreamError</span></code></dt>
+<dd>
+<div class="desc"><p>An error for input-stream and output-stream operations.</p></div>
+</dd>
+</dl>
 </section>
 <section>
 </section>
@@ -379,6 +423,8 @@ for using <code>wasi:io/poll</code>.</p></div>
         is not possible to allocate in wasm32, or not desirable to allocate as
         as a return value by the callee. The callee may return a list of bytes
         less than `len` in size while more bytes are available for reading.
+        
+        Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.streams.StreamError)`
         &#34;&#34;&#34;
         raise NotImplementedError
 
@@ -386,6 +432,8 @@ for using <code>wasi:io/poll</code>.</p></div>
         &#34;&#34;&#34;
         Read bytes from a stream, after blocking until at least one byte can
         be read. Except for blocking, behavior is identical to `read`.
+        
+        Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.streams.StreamError)`
         &#34;&#34;&#34;
         raise NotImplementedError
 
@@ -395,6 +443,8 @@ for using <code>wasi:io/poll</code>.</p></div>
         
         Behaves identical to `read`, except instead of returning a list
         of bytes, returns the number of bytes consumed from the stream.
+        
+        Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.streams.StreamError)`
         &#34;&#34;&#34;
         raise NotImplementedError
 
@@ -402,6 +452,8 @@ for using <code>wasi:io/poll</code>.</p></div>
         &#34;&#34;&#34;
         Skip bytes from a stream, after blocking until at least one byte
         can be skipped. Except for blocking behavior, identical to `skip`.
+        
+        Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.streams.StreamError)`
         &#34;&#34;&#34;
         raise NotImplementedError
 
@@ -416,7 +468,11 @@ for using <code>wasi:io/poll</code>.</p></div>
         &#34;&#34;&#34;
         raise NotImplementedError
 
-    def drop(self):
+    def __enter__(self):
+        &#34;&#34;&#34;Returns self&#34;&#34;&#34;
+        return self
+                                                                    
+    def __exit__(self, *args):
         &#34;&#34;&#34;
         Release this resource.
         &#34;&#34;&#34;
@@ -429,7 +485,8 @@ for using <code>wasi:io/poll</code>.</p></div>
 </code></dt>
 <dd>
 <div class="desc"><p>Read bytes from a stream, after blocking until at least one byte can
-be read. Except for blocking, behavior is identical to <code>read</code>.</p></div>
+be read. Except for blocking, behavior is identical to <code>read</code>.</p>
+<p>Raises: <code><a title="spin_sdk.wit.types.Err" href="../types.html#spin_sdk.wit.types.Err">Err</a>(<a title="spin_sdk.wit.imports.streams.StreamError" href="#spin_sdk.wit.imports.streams.StreamError">StreamError</a>)</code></p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -438,6 +495,8 @@ be read. Except for blocking, behavior is identical to <code>read</code>.</p></d
     &#34;&#34;&#34;
     Read bytes from a stream, after blocking until at least one byte can
     be read. Except for blocking, behavior is identical to `read`.
+    
+    Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.streams.StreamError)`
     &#34;&#34;&#34;
     raise NotImplementedError</code></pre>
 </details>
@@ -447,7 +506,8 @@ be read. Except for blocking, behavior is identical to <code>read</code>.</p></d
 </code></dt>
 <dd>
 <div class="desc"><p>Skip bytes from a stream, after blocking until at least one byte
-can be skipped. Except for blocking behavior, identical to <code>skip</code>.</p></div>
+can be skipped. Except for blocking behavior, identical to <code>skip</code>.</p>
+<p>Raises: <code><a title="spin_sdk.wit.types.Err" href="../types.html#spin_sdk.wit.types.Err">Err</a>(<a title="spin_sdk.wit.imports.streams.StreamError" href="#spin_sdk.wit.imports.streams.StreamError">StreamError</a>)</code></p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -456,22 +516,8 @@ can be skipped. Except for blocking behavior, identical to <code>skip</code>.</p
     &#34;&#34;&#34;
     Skip bytes from a stream, after blocking until at least one byte
     can be skipped. Except for blocking behavior, identical to `skip`.
-    &#34;&#34;&#34;
-    raise NotImplementedError</code></pre>
-</details>
-</dd>
-<dt id="spin_sdk.wit.imports.streams.InputStream.drop"><code class="name flex">
-<span>def <span class="ident">drop</span></span>(<span>self)</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Release this resource.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def drop(self):
-    &#34;&#34;&#34;
-    Release this resource.
+    
+    Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.streams.StreamError)`
     &#34;&#34;&#34;
     raise NotImplementedError</code></pre>
 </details>
@@ -496,7 +542,8 @@ succeed and return an empty list, or otherwise fail with <code>closed</code>.</p
 <p>The <code>len</code> parameter is a <code>u64</code>, which could represent a list of u8 which
 is not possible to allocate in wasm32, or not desirable to allocate as
 as a return value by the callee. The callee may return a list of bytes
-less than <code>len</code> in size while more bytes are available for reading.</p></div>
+less than <code>len</code> in size while more bytes are available for reading.</p>
+<p>Raises: <code><a title="spin_sdk.wit.types.Err" href="../types.html#spin_sdk.wit.types.Err">Err</a>(<a title="spin_sdk.wit.imports.streams.StreamError" href="#spin_sdk.wit.imports.streams.StreamError">StreamError</a>)</code></p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -524,6 +571,8 @@ less than <code>len</code> in size while more bytes are available for reading.</
     is not possible to allocate in wasm32, or not desirable to allocate as
     as a return value by the callee. The callee may return a list of bytes
     less than `len` in size while more bytes are available for reading.
+    
+    Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.streams.StreamError)`
     &#34;&#34;&#34;
     raise NotImplementedError</code></pre>
 </details>
@@ -534,7 +583,8 @@ less than <code>len</code> in size while more bytes are available for reading.</
 <dd>
 <div class="desc"><p>Skip bytes from a stream. Returns number of bytes skipped.</p>
 <p>Behaves identical to <code>read</code>, except instead of returning a list
-of bytes, returns the number of bytes consumed from the stream.</p></div>
+of bytes, returns the number of bytes consumed from the stream.</p>
+<p>Raises: <code><a title="spin_sdk.wit.types.Err" href="../types.html#spin_sdk.wit.types.Err">Err</a>(<a title="spin_sdk.wit.imports.streams.StreamError" href="#spin_sdk.wit.imports.streams.StreamError">StreamError</a>)</code></p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -545,6 +595,8 @@ of bytes, returns the number of bytes consumed from the stream.</p></div>
     
     Behaves identical to `read`, except instead of returning a list
     of bytes, returns the number of bytes consumed from the stream.
+    
+    Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.streams.StreamError)`
     &#34;&#34;&#34;
     raise NotImplementedError</code></pre>
 </details>
@@ -615,6 +667,8 @@ polled for using <code>wasi:io/poll</code>.</p></div>
         When this function returns 0 bytes, the `subscribe` pollable will
         become ready when this function will report at least 1 byte, or an
         error.
+        
+        Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.streams.StreamError)`
         &#34;&#34;&#34;
         raise NotImplementedError
 
@@ -627,6 +681,8 @@ polled for using <code>wasi:io/poll</code>.</p></div>
         
         returns Err(closed) without writing if the stream has closed since
         the last call to check-write provided a permit.
+        
+        Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.streams.StreamError)`
         &#34;&#34;&#34;
         raise NotImplementedError
 
@@ -656,6 +712,8 @@ polled for using <code>wasi:io/poll</code>.</p></div>
         // Check for any errors that arose during `flush`
         let _ = this.check-write();         // eliding error handling
         ```
+        
+        Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.streams.StreamError)`
         &#34;&#34;&#34;
         raise NotImplementedError
 
@@ -671,6 +729,8 @@ polled for using <code>wasi:io/poll</code>.</p></div>
         writes (`check-write` will return `ok(0)`) until the flush has
         completed. The `subscribe` pollable will become ready when the
         flush has completed and the stream can accept more writes.
+        
+        Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.streams.StreamError)`
         &#34;&#34;&#34;
         raise NotImplementedError
 
@@ -678,6 +738,8 @@ polled for using <code>wasi:io/poll</code>.</p></div>
         &#34;&#34;&#34;
         Request to flush buffered output, and block until flush completes
         and stream is ready for writing again.
+        
+        Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.streams.StreamError)`
         &#34;&#34;&#34;
         raise NotImplementedError
 
@@ -704,6 +766,8 @@ polled for using <code>wasi:io/poll</code>.</p></div>
         preconditions (must use check-write first), but instead of
         passing a list of bytes, you simply pass the number of zero-bytes
         that should be written.
+        
+        Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.streams.StreamError)`
         &#34;&#34;&#34;
         raise NotImplementedError
 
@@ -733,6 +797,8 @@ polled for using <code>wasi:io/poll</code>.</p></div>
         // Check for any errors that arose during `flush`
         let _ = this.check-write();         // eliding error handling
         ```
+        
+        Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.streams.StreamError)`
         &#34;&#34;&#34;
         raise NotImplementedError
 
@@ -751,6 +817,8 @@ polled for using <code>wasi:io/poll</code>.</p></div>
         
         This function returns the number of bytes transferred; it may be less
         than `len`.
+        
+        Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.streams.StreamError)`
         &#34;&#34;&#34;
         raise NotImplementedError
 
@@ -761,10 +829,16 @@ polled for using <code>wasi:io/poll</code>.</p></div>
         This is similar to `splice`, except that it blocks until the
         `output-stream` is ready for writing, and the `input-stream`
         is ready for reading, before performing the `splice`.
+        
+        Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.streams.StreamError)`
         &#34;&#34;&#34;
         raise NotImplementedError
 
-    def drop(self):
+    def __enter__(self):
+        &#34;&#34;&#34;Returns self&#34;&#34;&#34;
+        return self
+                                                                    
+    def __exit__(self, *args):
         &#34;&#34;&#34;
         Release this resource.
         &#34;&#34;&#34;
@@ -777,7 +851,8 @@ polled for using <code>wasi:io/poll</code>.</p></div>
 </code></dt>
 <dd>
 <div class="desc"><p>Request to flush buffered output, and block until flush completes
-and stream is ready for writing again.</p></div>
+and stream is ready for writing again.</p>
+<p>Raises: <code><a title="spin_sdk.wit.types.Err" href="../types.html#spin_sdk.wit.types.Err">Err</a>(<a title="spin_sdk.wit.imports.streams.StreamError" href="#spin_sdk.wit.imports.streams.StreamError">StreamError</a>)</code></p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -786,6 +861,8 @@ and stream is ready for writing again.</p></div>
     &#34;&#34;&#34;
     Request to flush buffered output, and block until flush completes
     and stream is ready for writing again.
+    
+    Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.streams.StreamError)`
     &#34;&#34;&#34;
     raise NotImplementedError</code></pre>
 </details>
@@ -797,7 +874,8 @@ and stream is ready for writing again.</p></div>
 <div class="desc"><p>Read from one stream and write to another, with blocking.</p>
 <p>This is similar to <code>splice</code>, except that it blocks until the
 <code>output-stream</code> is ready for writing, and the <code>input-stream</code>
-is ready for reading, before performing the <code>splice</code>.</p></div>
+is ready for reading, before performing the <code>splice</code>.</p>
+<p>Raises: <code><a title="spin_sdk.wit.types.Err" href="../types.html#spin_sdk.wit.types.Err">Err</a>(<a title="spin_sdk.wit.imports.streams.StreamError" href="#spin_sdk.wit.imports.streams.StreamError">StreamError</a>)</code></p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -809,6 +887,8 @@ is ready for reading, before performing the <code>splice</code>.</p></div>
     This is similar to `splice`, except that it blocks until the
     `output-stream` is ready for writing, and the `input-stream`
     is ready for reading, before performing the `splice`.
+    
+    Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.streams.StreamError)`
     &#34;&#34;&#34;
     raise NotImplementedError</code></pre>
 </details>
@@ -837,7 +917,8 @@ this.flush();
 poll-one(pollable);
 // Check for any errors that arose during `flush`
 let _ = this.check-write();         // eliding error handling
-</code></pre></div>
+</code></pre>
+<p>Raises: <code><a title="spin_sdk.wit.types.Err" href="../types.html#spin_sdk.wit.types.Err">Err</a>(<a title="spin_sdk.wit.imports.streams.StreamError" href="#spin_sdk.wit.imports.streams.StreamError">StreamError</a>)</code></p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -868,6 +949,8 @@ let _ = this.check-write();         // eliding error handling
     // Check for any errors that arose during `flush`
     let _ = this.check-write();         // eliding error handling
     ```
+    
+    Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.streams.StreamError)`
     &#34;&#34;&#34;
     raise NotImplementedError</code></pre>
 </details>
@@ -896,7 +979,8 @@ this.flush();
 poll-one(pollable);
 // Check for any errors that arose during `flush`
 let _ = this.check-write();         // eliding error handling
-</code></pre></div>
+</code></pre>
+<p>Raises: <code><a title="spin_sdk.wit.types.Err" href="../types.html#spin_sdk.wit.types.Err">Err</a>(<a title="spin_sdk.wit.imports.streams.StreamError" href="#spin_sdk.wit.imports.streams.StreamError">StreamError</a>)</code></p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -927,6 +1011,8 @@ let _ = this.check-write();         // eliding error handling
     // Check for any errors that arose during `flush`
     let _ = this.check-write();         // eliding error handling
     ```
+    
+    Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.streams.StreamError)`
     &#34;&#34;&#34;
     raise NotImplementedError</code></pre>
 </details>
@@ -941,7 +1027,8 @@ or an error. Calling <code>write</code> with more bytes than this function has
 permitted will trap.</p>
 <p>When this function returns 0 bytes, the <code>subscribe</code> pollable will
 become ready when this function will report at least 1 byte, or an
-error.</p></div>
+error.</p>
+<p>Raises: <code><a title="spin_sdk.wit.types.Err" href="../types.html#spin_sdk.wit.types.Err">Err</a>(<a title="spin_sdk.wit.imports.streams.StreamError" href="#spin_sdk.wit.imports.streams.StreamError">StreamError</a>)</code></p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -957,22 +1044,8 @@ error.</p></div>
     When this function returns 0 bytes, the `subscribe` pollable will
     become ready when this function will report at least 1 byte, or an
     error.
-    &#34;&#34;&#34;
-    raise NotImplementedError</code></pre>
-</details>
-</dd>
-<dt id="spin_sdk.wit.imports.streams.OutputStream.drop"><code class="name flex">
-<span>def <span class="ident">drop</span></span>(<span>self)</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Release this resource.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def drop(self):
-    &#34;&#34;&#34;
-    Release this resource.
+    
+    Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.streams.StreamError)`
     &#34;&#34;&#34;
     raise NotImplementedError</code></pre>
 </details>
@@ -988,7 +1061,8 @@ is all that has been passed to <code>write</code> prior to this call.</p>
 <p>Upon calling this function, the <code>output-stream</code> will not accept any
 writes (<code>check-write</code> will return <code>ok(0)</code>) until the flush has
 completed. The <code>subscribe</code> pollable will become ready when the
-flush has completed and the stream can accept more writes.</p></div>
+flush has completed and the stream can accept more writes.</p>
+<p>Raises: <code><a title="spin_sdk.wit.types.Err" href="../types.html#spin_sdk.wit.types.Err">Err</a>(<a title="spin_sdk.wit.imports.streams.StreamError" href="#spin_sdk.wit.imports.streams.StreamError">StreamError</a>)</code></p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -1005,6 +1079,8 @@ flush has completed and the stream can accept more writes.</p></div>
     writes (`check-write` will return `ok(0)`) until the flush has
     completed. The `subscribe` pollable will become ready when the
     flush has completed and the stream can accept more writes.
+    
+    Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.streams.StreamError)`
     &#34;&#34;&#34;
     raise NotImplementedError</code></pre>
 </details>
@@ -1022,7 +1098,8 @@ flush has completed and the stream can accept more writes.</p></div>
 <p>Any error reported by the call to <code>check-write</code>, <code>read</code>, or
 <code>write</code> ends the splice and reports that error.</p>
 <p>This function returns the number of bytes transferred; it may be less
-than <code>len</code>.</p></div>
+than <code>len</code>.</p>
+<p>Raises: <code><a title="spin_sdk.wit.types.Err" href="../types.html#spin_sdk.wit.types.Err">Err</a>(<a title="spin_sdk.wit.imports.streams.StreamError" href="#spin_sdk.wit.imports.streams.StreamError">StreamError</a>)</code></p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -1042,6 +1119,8 @@ than <code>len</code>.</p></div>
     
     This function returns the number of bytes transferred; it may be less
     than `len`.
+    
+    Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.streams.StreamError)`
     &#34;&#34;&#34;
     raise NotImplementedError</code></pre>
 </details>
@@ -1086,7 +1165,8 @@ all derived <code>pollable</code>s created with this function are dropped.</p></
 <p>Precondition: check-write gave permit of Ok(n) and contents has a
 length of less than or equal to n. Otherwise, this function will trap.</p>
 <p>returns Err(closed) without writing if the stream has closed since
-the last call to check-write provided a permit.</p></div>
+the last call to check-write provided a permit.</p>
+<p>Raises: <code><a title="spin_sdk.wit.types.Err" href="../types.html#spin_sdk.wit.types.Err">Err</a>(<a title="spin_sdk.wit.imports.streams.StreamError" href="#spin_sdk.wit.imports.streams.StreamError">StreamError</a>)</code></p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -1100,6 +1180,8 @@ the last call to check-write provided a permit.</p></div>
     
     returns Err(closed) without writing if the stream has closed since
     the last call to check-write provided a permit.
+    
+    Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.streams.StreamError)`
     &#34;&#34;&#34;
     raise NotImplementedError</code></pre>
 </details>
@@ -1112,7 +1194,8 @@ the last call to check-write provided a permit.</p></div>
 <p>this should be used precisely like <code>write</code> with the exact same
 preconditions (must use check-write first), but instead of
 passing a list of bytes, you simply pass the number of zero-bytes
-that should be written.</p></div>
+that should be written.</p>
+<p>Raises: <code><a title="spin_sdk.wit.types.Err" href="../types.html#spin_sdk.wit.types.Err">Err</a>(<a title="spin_sdk.wit.imports.streams.StreamError" href="#spin_sdk.wit.imports.streams.StreamError">StreamError</a>)</code></p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -1125,6 +1208,8 @@ that should be written.</p></div>
     preconditions (must use check-write first), but instead of
     passing a list of bytes, you simply pass the number of zero-bytes
     that should be written.
+    
+    Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.streams.StreamError)`
     &#34;&#34;&#34;
     raise NotImplementedError</code></pre>
 </details>
@@ -1181,14 +1266,18 @@ class StreamErrorLastOperationFailed:
 <li><code><a title="spin_sdk.wit.imports" href="index.html">spin_sdk.wit.imports</a></code></li>
 </ul>
 </li>
+<li><h3><a href="#header-variables">Global variables</a></h3>
+<ul class="">
+<li><code><a title="spin_sdk.wit.imports.streams.StreamError" href="#spin_sdk.wit.imports.streams.StreamError">StreamError</a></code></li>
+</ul>
+</li>
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
 <li>
 <h4><code><a title="spin_sdk.wit.imports.streams.InputStream" href="#spin_sdk.wit.imports.streams.InputStream">InputStream</a></code></h4>
-<ul class="two-column">
+<ul class="">
 <li><code><a title="spin_sdk.wit.imports.streams.InputStream.blocking_read" href="#spin_sdk.wit.imports.streams.InputStream.blocking_read">blocking_read</a></code></li>
 <li><code><a title="spin_sdk.wit.imports.streams.InputStream.blocking_skip" href="#spin_sdk.wit.imports.streams.InputStream.blocking_skip">blocking_skip</a></code></li>
-<li><code><a title="spin_sdk.wit.imports.streams.InputStream.drop" href="#spin_sdk.wit.imports.streams.InputStream.drop">drop</a></code></li>
 <li><code><a title="spin_sdk.wit.imports.streams.InputStream.read" href="#spin_sdk.wit.imports.streams.InputStream.read">read</a></code></li>
 <li><code><a title="spin_sdk.wit.imports.streams.InputStream.skip" href="#spin_sdk.wit.imports.streams.InputStream.skip">skip</a></code></li>
 <li><code><a title="spin_sdk.wit.imports.streams.InputStream.subscribe" href="#spin_sdk.wit.imports.streams.InputStream.subscribe">subscribe</a></code></li>
@@ -1202,7 +1291,6 @@ class StreamErrorLastOperationFailed:
 <li><code><a title="spin_sdk.wit.imports.streams.OutputStream.blocking_write_and_flush" href="#spin_sdk.wit.imports.streams.OutputStream.blocking_write_and_flush">blocking_write_and_flush</a></code></li>
 <li><code><a title="spin_sdk.wit.imports.streams.OutputStream.blocking_write_zeroes_and_flush" href="#spin_sdk.wit.imports.streams.OutputStream.blocking_write_zeroes_and_flush">blocking_write_zeroes_and_flush</a></code></li>
 <li><code><a title="spin_sdk.wit.imports.streams.OutputStream.check_write" href="#spin_sdk.wit.imports.streams.OutputStream.check_write">check_write</a></code></li>
-<li><code><a title="spin_sdk.wit.imports.streams.OutputStream.drop" href="#spin_sdk.wit.imports.streams.OutputStream.drop">drop</a></code></li>
 <li><code><a title="spin_sdk.wit.imports.streams.OutputStream.flush" href="#spin_sdk.wit.imports.streams.OutputStream.flush">flush</a></code></li>
 <li><code><a title="spin_sdk.wit.imports.streams.OutputStream.splice" href="#spin_sdk.wit.imports.streams.OutputStream.splice">splice</a></code></li>
 <li><code><a title="spin_sdk.wit.imports.streams.OutputStream.subscribe" href="#spin_sdk.wit.imports.streams.OutputStream.subscribe">subscribe</a></code></li>

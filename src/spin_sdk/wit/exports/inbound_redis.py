@@ -20,3 +20,4 @@ class ErrorError:
 
 Error = Union[ErrorSuccess, ErrorError]
 
+

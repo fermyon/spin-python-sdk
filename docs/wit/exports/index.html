@@ -35,6 +35,16 @@ import weakref
 from ..types import Result, Ok, Err, Some
 from ..imports import types
 
+class InboundRedis(Protocol):
+
+    @abstractmethod
+    def handle_message(self, message: bytes) -&gt; None:
+        &#34;&#34;&#34;
+        Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.inbound_redis.Error)`
+        &#34;&#34;&#34;
+        raise NotImplementedError
+
+
 class IncomingHandler(Protocol):
 
     @abstractmethod
@@ -51,13 +61,6 @@ class IncomingHandler(Protocol):
         `response-outparam` before returning, or else the caller will respond
         with an error on its behalf.
         &#34;&#34;&#34;
-        raise NotImplementedError
-
-
-class InboundRedis(Protocol):
-
-    @abstractmethod
-    def handle_message(self, message: bytes) -&gt; None:
         raise NotImplementedError</code></pre>
 </details>
 </section>
@@ -121,6 +124,9 @@ Protocol classes can be generic, they are defined as::</p>
 
     @abstractmethod
     def handle_message(self, message: bytes) -&gt; None:
+        &#34;&#34;&#34;
+        Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.inbound_redis.Error)`
+        &#34;&#34;&#34;
         raise NotImplementedError</code></pre>
 </details>
 <h3>Ancestors</h3>
@@ -134,13 +140,16 @@ Protocol classes can be generic, they are defined as::</p>
 <span>def <span class="ident">handle_message</span></span>(<span>self, message: bytes) ‑> None</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Raises: <code><a title="spin_sdk.wit.types.Err" href="../types.html#spin_sdk.wit.types.Err">Err</a>(spin_sdk.wit.imports.inbound_redis.Error)</code></p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@abstractmethod
 def handle_message(self, message: bytes) -&gt; None:
+    &#34;&#34;&#34;
+    Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.inbound_redis.Error)`
+    &#34;&#34;&#34;
     raise NotImplementedError</code></pre>
 </details>
 </dd>

@@ -56,8 +56,11 @@ class ErrorOther:
     value: str
 
 
-# Errors related to interacting with Redis
 Error = Union[ErrorInvalidAddress, ErrorTooManyConnections, ErrorTypeError, ErrorOther]
+&#34;&#34;&#34;
+Errors related to interacting with Redis
+&#34;&#34;&#34;
+
 
 
 @dataclass
@@ -70,8 +73,11 @@ class RedisParameterBinary:
     value: bytes
 
 
-# A parameter type for the general-purpose `execute` function.
 RedisParameter = Union[RedisParameterInt64, RedisParameterBinary]
+&#34;&#34;&#34;
+A parameter type for the general-purpose `execute` function.
+&#34;&#34;&#34;
+
 
 
 @dataclass
@@ -94,27 +100,36 @@ class RedisResultBinary:
     value: bytes
 
 
-# A return type for the general-purpose `execute` function.
 RedisResult = Union[RedisResultNil, RedisResultStatus, RedisResultInt64, RedisResultBinary]
+&#34;&#34;&#34;
+A return type for the general-purpose `execute` function.
+&#34;&#34;&#34;
+
 
 class Connection:
     
-    @staticmethod
-    def open(address: str) -&gt; Any:
+    @classmethod
+    def open(cls, address: str) -&gt; Self:
         &#34;&#34;&#34;
         Open a connection to the Redis instance at `address`.
+        
+        Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.redis.Error)`
         &#34;&#34;&#34;
         raise NotImplementedError
 
     def publish(self, channel: str, payload: bytes) -&gt; None:
         &#34;&#34;&#34;
         Publish a Redis message to the specified channel.
+        
+        Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.redis.Error)`
         &#34;&#34;&#34;
         raise NotImplementedError
 
     def get(self, key: str) -&gt; Optional[bytes]:
         &#34;&#34;&#34;
         Get the value of a key.
+        
+        Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.redis.Error)`
         &#34;&#34;&#34;
         raise NotImplementedError
 
@@ -123,6 +138,8 @@ class Connection:
         Set key to value.
         
         If key already holds a value, it is overwritten.
+        
+        Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.redis.Error)`
         &#34;&#34;&#34;
         raise NotImplementedError
 
@@ -133,6 +150,8 @@ class Connection:
         If the key does not exist, it is set to 0 before performing the operation.
         An `error::type-error` is returned if the key contains a value of the wrong type
         or contains a string that can not be represented as integer.
+        
+        Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.redis.Error)`
         &#34;&#34;&#34;
         raise NotImplementedError
 
@@ -141,34 +160,48 @@ class Connection:
         Removes the specified keys.
         
         A key is ignored if it does not exist. Returns the number of keys deleted.
+        
+        Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.redis.Error)`
         &#34;&#34;&#34;
         raise NotImplementedError
 
     def sadd(self, key: str, values: List[str]) -&gt; int:
         &#34;&#34;&#34;
         Add the specified `values` to the set named `key`, returning the number of newly-added values.
+        
+        Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.redis.Error)`
         &#34;&#34;&#34;
         raise NotImplementedError
 
     def smembers(self, key: str) -&gt; List[str]:
         &#34;&#34;&#34;
         Retrieve the contents of the set named `key`.
+        
+        Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.redis.Error)`
         &#34;&#34;&#34;
         raise NotImplementedError
 
     def srem(self, key: str, values: List[str]) -&gt; int:
         &#34;&#34;&#34;
         Remove the specified `values` from the set named `key`, returning the number of newly-removed values.
+        
+        Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.redis.Error)`
         &#34;&#34;&#34;
         raise NotImplementedError
 
     def execute(self, command: str, arguments: List[RedisParameter]) -&gt; List[RedisResult]:
         &#34;&#34;&#34;
         Execute an arbitrary Redis command and receive the result.
+        
+        Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.redis.Error)`
         &#34;&#34;&#34;
         raise NotImplementedError
 
-    def drop(self):
+    def __enter__(self):
+        &#34;&#34;&#34;Returns self&#34;&#34;&#34;
+        return self
+                                                                    
+    def __exit__(self, *args):
         &#34;&#34;&#34;
         Release this resource.
         &#34;&#34;&#34;
@@ -178,6 +211,21 @@ class Connection:
 <section>
 </section>
 <section>
+<h2 class="section-title" id="header-variables">Global variables</h2>
+<dl>
+<dt id="spin_sdk.wit.imports.redis.Error"><code class="name">var <span class="ident">Error</span></code></dt>
+<dd>
+<div class="desc"><p>Errors related to interacting with Redis</p></div>
+</dd>
+<dt id="spin_sdk.wit.imports.redis.RedisParameter"><code class="name">var <span class="ident">RedisParameter</span></code></dt>
+<dd>
+<div class="desc"><p>A parameter type for the general-purpose <code>execute</code> function.</p></div>
+</dd>
+<dt id="spin_sdk.wit.imports.redis.RedisResult"><code class="name">var <span class="ident">RedisResult</span></code></dt>
+<dd>
+<div class="desc"><p>A return type for the general-purpose <code>execute</code> function.</p></div>
+</dd>
+</dl>
 </section>
 <section>
 </section>
@@ -195,22 +243,28 @@ class Connection:
 </summary>
 <pre><code class="python">class Connection:
     
-    @staticmethod
-    def open(address: str) -&gt; Any:
+    @classmethod
+    def open(cls, address: str) -&gt; Self:
         &#34;&#34;&#34;
         Open a connection to the Redis instance at `address`.
+        
+        Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.redis.Error)`
         &#34;&#34;&#34;
         raise NotImplementedError
 
     def publish(self, channel: str, payload: bytes) -&gt; None:
         &#34;&#34;&#34;
         Publish a Redis message to the specified channel.
+        
+        Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.redis.Error)`
         &#34;&#34;&#34;
         raise NotImplementedError
 
     def get(self, key: str) -&gt; Optional[bytes]:
         &#34;&#34;&#34;
         Get the value of a key.
+        
+        Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.redis.Error)`
         &#34;&#34;&#34;
         raise NotImplementedError
 
@@ -219,6 +273,8 @@ class Connection:
         Set key to value.
         
         If key already holds a value, it is overwritten.
+        
+        Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.redis.Error)`
         &#34;&#34;&#34;
         raise NotImplementedError
 
@@ -229,6 +285,8 @@ class Connection:
         If the key does not exist, it is set to 0 before performing the operation.
         An `error::type-error` is returned if the key contains a value of the wrong type
         or contains a string that can not be represented as integer.
+        
+        Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.redis.Error)`
         &#34;&#34;&#34;
         raise NotImplementedError
 
@@ -237,34 +295,48 @@ class Connection:
         Removes the specified keys.
         
         A key is ignored if it does not exist. Returns the number of keys deleted.
+        
+        Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.redis.Error)`
         &#34;&#34;&#34;
         raise NotImplementedError
 
     def sadd(self, key: str, values: List[str]) -&gt; int:
         &#34;&#34;&#34;
         Add the specified `values` to the set named `key`, returning the number of newly-added values.
+        
+        Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.redis.Error)`
         &#34;&#34;&#34;
         raise NotImplementedError
 
     def smembers(self, key: str) -&gt; List[str]:
         &#34;&#34;&#34;
         Retrieve the contents of the set named `key`.
+        
+        Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.redis.Error)`
         &#34;&#34;&#34;
         raise NotImplementedError
 
     def srem(self, key: str, values: List[str]) -&gt; int:
         &#34;&#34;&#34;
         Remove the specified `values` from the set named `key`, returning the number of newly-removed values.
+        
+        Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.redis.Error)`
         &#34;&#34;&#34;
         raise NotImplementedError
 
     def execute(self, command: str, arguments: List[RedisParameter]) -&gt; List[RedisResult]:
         &#34;&#34;&#34;
         Execute an arbitrary Redis command and receive the result.
+        
+        Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.redis.Error)`
         &#34;&#34;&#34;
         raise NotImplementedError
 
-    def drop(self):
+    def __enter__(self):
+        &#34;&#34;&#34;Returns self&#34;&#34;&#34;
+        return self
+                                                                    
+    def __exit__(self, *args):
         &#34;&#34;&#34;
         Release this resource.
         &#34;&#34;&#34;
@@ -273,18 +345,21 @@ class Connection:
 <h3>Static methods</h3>
 <dl>
 <dt id="spin_sdk.wit.imports.redis.Connection.open"><code class="name flex">
-<span>def <span class="ident">open</span></span>(<span>address: str) ‑> Any</span>
+<span>def <span class="ident">open</span></span>(<span>address: str) ‑> Self</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Open a connection to the Redis instance at <code>address</code>.</p></div>
+<div class="desc"><p>Open a connection to the Redis instance at <code>address</code>.</p>
+<p>Raises: <code><a title="spin_sdk.wit.types.Err" href="../types.html#spin_sdk.wit.types.Err">Err</a>(<a title="spin_sdk.wit.imports.redis.Error" href="#spin_sdk.wit.imports.redis.Error">Error</a>)</code></p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">@staticmethod
-def open(address: str) -&gt; Any:
+<pre><code class="python">@classmethod
+def open(cls, address: str) -&gt; Self:
     &#34;&#34;&#34;
     Open a connection to the Redis instance at `address`.
+    
+    Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.redis.Error)`
     &#34;&#34;&#34;
     raise NotImplementedError</code></pre>
 </details>
@@ -297,7 +372,8 @@ def open(address: str) -&gt; Any:
 </code></dt>
 <dd>
 <div class="desc"><p>Removes the specified keys.</p>
-<p>A key is ignored if it does not exist. Returns the number of keys deleted.</p></div>
+<p>A key is ignored if it does not exist. Returns the number of keys deleted.</p>
+<p>Raises: <code><a title="spin_sdk.wit.types.Err" href="../types.html#spin_sdk.wit.types.Err">Err</a>(<a title="spin_sdk.wit.imports.redis.Error" href="#spin_sdk.wit.imports.redis.Error">Error</a>)</code></p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -307,22 +383,8 @@ def open(address: str) -&gt; Any:
     Removes the specified keys.
     
     A key is ignored if it does not exist. Returns the number of keys deleted.
-    &#34;&#34;&#34;
-    raise NotImplementedError</code></pre>
-</details>
-</dd>
-<dt id="spin_sdk.wit.imports.redis.Connection.drop"><code class="name flex">
-<span>def <span class="ident">drop</span></span>(<span>self)</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Release this resource.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def drop(self):
-    &#34;&#34;&#34;
-    Release this resource.
+    
+    Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.redis.Error)`
     &#34;&#34;&#34;
     raise NotImplementedError</code></pre>
 </details>
@@ -331,7 +393,8 @@ def open(address: str) -&gt; Any:
 <span>def <span class="ident">execute</span></span>(<span>self, command: str, arguments: List[Union[<a title="spin_sdk.wit.imports.redis.RedisParameterInt64" href="#spin_sdk.wit.imports.redis.RedisParameterInt64">RedisParameterInt64</a>, <a title="spin_sdk.wit.imports.redis.RedisParameterBinary" href="#spin_sdk.wit.imports.redis.RedisParameterBinary">RedisParameterBinary</a>]]) ‑> List[Union[<a title="spin_sdk.wit.imports.redis.RedisResultNil" href="#spin_sdk.wit.imports.redis.RedisResultNil">RedisResultNil</a>, <a title="spin_sdk.wit.imports.redis.RedisResultStatus" href="#spin_sdk.wit.imports.redis.RedisResultStatus">RedisResultStatus</a>, <a title="spin_sdk.wit.imports.redis.RedisResultInt64" href="#spin_sdk.wit.imports.redis.RedisResultInt64">RedisResultInt64</a>, <a title="spin_sdk.wit.imports.redis.RedisResultBinary" href="#spin_sdk.wit.imports.redis.RedisResultBinary">RedisResultBinary</a>]]</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Execute an arbitrary Redis command and receive the result.</p></div>
+<div class="desc"><p>Execute an arbitrary Redis command and receive the result.</p>
+<p>Raises: <code><a title="spin_sdk.wit.types.Err" href="../types.html#spin_sdk.wit.types.Err">Err</a>(<a title="spin_sdk.wit.imports.redis.Error" href="#spin_sdk.wit.imports.redis.Error">Error</a>)</code></p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -339,6 +402,8 @@ def open(address: str) -&gt; Any:
 <pre><code class="python">def execute(self, command: str, arguments: List[RedisParameter]) -&gt; List[RedisResult]:
     &#34;&#34;&#34;
     Execute an arbitrary Redis command and receive the result.
+    
+    Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.redis.Error)`
     &#34;&#34;&#34;
     raise NotImplementedError</code></pre>
 </details>
@@ -347,7 +412,8 @@ def open(address: str) -&gt; Any:
 <span>def <span class="ident">get</span></span>(<span>self, key: str) ‑> Optional[bytes]</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Get the value of a key.</p></div>
+<div class="desc"><p>Get the value of a key.</p>
+<p>Raises: <code><a title="spin_sdk.wit.types.Err" href="../types.html#spin_sdk.wit.types.Err">Err</a>(<a title="spin_sdk.wit.imports.redis.Error" href="#spin_sdk.wit.imports.redis.Error">Error</a>)</code></p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -355,6 +421,8 @@ def open(address: str) -&gt; Any:
 <pre><code class="python">def get(self, key: str) -&gt; Optional[bytes]:
     &#34;&#34;&#34;
     Get the value of a key.
+    
+    Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.redis.Error)`
     &#34;&#34;&#34;
     raise NotImplementedError</code></pre>
 </details>
@@ -366,7 +434,8 @@ def open(address: str) -&gt; Any:
 <div class="desc"><p>Increments the number stored at key by one.</p>
 <p>If the key does not exist, it is set to 0 before performing the operation.
 An <code>error::type-error</code> is returned if the key contains a value of the wrong type
-or contains a string that can not be represented as integer.</p></div>
+or contains a string that can not be represented as integer.</p>
+<p>Raises: <code><a title="spin_sdk.wit.types.Err" href="../types.html#spin_sdk.wit.types.Err">Err</a>(<a title="spin_sdk.wit.imports.redis.Error" href="#spin_sdk.wit.imports.redis.Error">Error</a>)</code></p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -378,6 +447,8 @@ or contains a string that can not be represented as integer.</p></div>
     If the key does not exist, it is set to 0 before performing the operation.
     An `error::type-error` is returned if the key contains a value of the wrong type
     or contains a string that can not be represented as integer.
+    
+    Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.redis.Error)`
     &#34;&#34;&#34;
     raise NotImplementedError</code></pre>
 </details>
@@ -386,7 +457,8 @@ or contains a string that can not be represented as integer.</p></div>
 <span>def <span class="ident">publish</span></span>(<span>self, channel: str, payload: bytes) ‑> None</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Publish a Redis message to the specified channel.</p></div>
+<div class="desc"><p>Publish a Redis message to the specified channel.</p>
+<p>Raises: <code><a title="spin_sdk.wit.types.Err" href="../types.html#spin_sdk.wit.types.Err">Err</a>(<a title="spin_sdk.wit.imports.redis.Error" href="#spin_sdk.wit.imports.redis.Error">Error</a>)</code></p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -394,6 +466,8 @@ or contains a string that can not be represented as integer.</p></div>
 <pre><code class="python">def publish(self, channel: str, payload: bytes) -&gt; None:
     &#34;&#34;&#34;
     Publish a Redis message to the specified channel.
+    
+    Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.redis.Error)`
     &#34;&#34;&#34;
     raise NotImplementedError</code></pre>
 </details>
@@ -402,7 +476,8 @@ or contains a string that can not be represented as integer.</p></div>
 <span>def <span class="ident">sadd</span></span>(<span>self, key: str, values: List[str]) ‑> int</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Add the specified <code>values</code> to the set named <code>key</code>, returning the number of newly-added values.</p></div>
+<div class="desc"><p>Add the specified <code>values</code> to the set named <code>key</code>, returning the number of newly-added values.</p>
+<p>Raises: <code><a title="spin_sdk.wit.types.Err" href="../types.html#spin_sdk.wit.types.Err">Err</a>(<a title="spin_sdk.wit.imports.redis.Error" href="#spin_sdk.wit.imports.redis.Error">Error</a>)</code></p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -410,6 +485,8 @@ or contains a string that can not be represented as integer.</p></div>
 <pre><code class="python">def sadd(self, key: str, values: List[str]) -&gt; int:
     &#34;&#34;&#34;
     Add the specified `values` to the set named `key`, returning the number of newly-added values.
+    
+    Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.redis.Error)`
     &#34;&#34;&#34;
     raise NotImplementedError</code></pre>
 </details>
@@ -419,7 +496,8 @@ or contains a string that can not be represented as integer.</p></div>
 </code></dt>
 <dd>
 <div class="desc"><p>Set key to value.</p>
-<p>If key already holds a value, it is overwritten.</p></div>
+<p>If key already holds a value, it is overwritten.</p>
+<p>Raises: <code><a title="spin_sdk.wit.types.Err" href="../types.html#spin_sdk.wit.types.Err">Err</a>(<a title="spin_sdk.wit.imports.redis.Error" href="#spin_sdk.wit.imports.redis.Error">Error</a>)</code></p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -429,6 +507,8 @@ or contains a string that can not be represented as integer.</p></div>
     Set key to value.
     
     If key already holds a value, it is overwritten.
+    
+    Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.redis.Error)`
     &#34;&#34;&#34;
     raise NotImplementedError</code></pre>
 </details>
@@ -437,7 +517,8 @@ or contains a string that can not be represented as integer.</p></div>
 <span>def <span class="ident">smembers</span></span>(<span>self, key: str) ‑> List[str]</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Retrieve the contents of the set named <code>key</code>.</p></div>
+<div class="desc"><p>Retrieve the contents of the set named <code>key</code>.</p>
+<p>Raises: <code><a title="spin_sdk.wit.types.Err" href="../types.html#spin_sdk.wit.types.Err">Err</a>(<a title="spin_sdk.wit.imports.redis.Error" href="#spin_sdk.wit.imports.redis.Error">Error</a>)</code></p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -445,6 +526,8 @@ or contains a string that can not be represented as integer.</p></div>
 <pre><code class="python">def smembers(self, key: str) -&gt; List[str]:
     &#34;&#34;&#34;
     Retrieve the contents of the set named `key`.
+    
+    Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.redis.Error)`
     &#34;&#34;&#34;
     raise NotImplementedError</code></pre>
 </details>
@@ -453,7 +536,8 @@ or contains a string that can not be represented as integer.</p></div>
 <span>def <span class="ident">srem</span></span>(<span>self, key: str, values: List[str]) ‑> int</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Remove the specified <code>values</code> from the set named <code>key</code>, returning the number of newly-removed values.</p></div>
+<div class="desc"><p>Remove the specified <code>values</code> from the set named <code>key</code>, returning the number of newly-removed values.</p>
+<p>Raises: <code><a title="spin_sdk.wit.types.Err" href="../types.html#spin_sdk.wit.types.Err">Err</a>(<a title="spin_sdk.wit.imports.redis.Error" href="#spin_sdk.wit.imports.redis.Error">Error</a>)</code></p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -461,6 +545,8 @@ or contains a string that can not be represented as integer.</p></div>
 <pre><code class="python">def srem(self, key: str, values: List[str]) -&gt; int:
     &#34;&#34;&#34;
     Remove the specified `values` from the set named `key`, returning the number of newly-removed values.
+    
+    Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.redis.Error)`
     &#34;&#34;&#34;
     raise NotImplementedError</code></pre>
 </details>
@@ -669,13 +755,19 @@ class RedisResultStatus:
 <li><code><a title="spin_sdk.wit.imports" href="index.html">spin_sdk.wit.imports</a></code></li>
 </ul>
 </li>
+<li><h3><a href="#header-variables">Global variables</a></h3>
+<ul class="">
+<li><code><a title="spin_sdk.wit.imports.redis.Error" href="#spin_sdk.wit.imports.redis.Error">Error</a></code></li>
+<li><code><a title="spin_sdk.wit.imports.redis.RedisParameter" href="#spin_sdk.wit.imports.redis.RedisParameter">RedisParameter</a></code></li>
+<li><code><a title="spin_sdk.wit.imports.redis.RedisResult" href="#spin_sdk.wit.imports.redis.RedisResult">RedisResult</a></code></li>
+</ul>
+</li>
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
 <li>
 <h4><code><a title="spin_sdk.wit.imports.redis.Connection" href="#spin_sdk.wit.imports.redis.Connection">Connection</a></code></h4>
 <ul class="two-column">
 <li><code><a title="spin_sdk.wit.imports.redis.Connection.del_" href="#spin_sdk.wit.imports.redis.Connection.del_">del_</a></code></li>
-<li><code><a title="spin_sdk.wit.imports.redis.Connection.drop" href="#spin_sdk.wit.imports.redis.Connection.drop">drop</a></code></li>
 <li><code><a title="spin_sdk.wit.imports.redis.Connection.execute" href="#spin_sdk.wit.imports.redis.Connection.execute">execute</a></code></li>
 <li><code><a title="spin_sdk.wit.imports.redis.Connection.get" href="#spin_sdk.wit.imports.redis.Connection.get">get</a></code></li>
 <li><code><a title="spin_sdk.wit.imports.redis.Connection.incr" href="#spin_sdk.wit.imports.redis.Connection.incr">incr</a></code></li>

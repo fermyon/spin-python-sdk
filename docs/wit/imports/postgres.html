@@ -40,26 +40,36 @@ class Connection:
     A connection to a postgres database.
     &#34;&#34;&#34;
     
-    @staticmethod
-    def open(address: str) -&gt; Any:
+    @classmethod
+    def open(cls, address: str) -&gt; Self:
         &#34;&#34;&#34;
         Open a connection to the Postgres instance at `address`.
+        
+        Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.rdbms_types.Error)`
         &#34;&#34;&#34;
         raise NotImplementedError
 
     def query(self, statement: str, params: List[rdbms_types.ParameterValue]) -&gt; rdbms_types.RowSet:
         &#34;&#34;&#34;
         Query the database.
+        
+        Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.rdbms_types.Error)`
         &#34;&#34;&#34;
         raise NotImplementedError
 
     def execute(self, statement: str, params: List[rdbms_types.ParameterValue]) -&gt; int:
         &#34;&#34;&#34;
         Execute command to the database.
+        
+        Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.rdbms_types.Error)`
         &#34;&#34;&#34;
         raise NotImplementedError
 
-    def drop(self):
+    def __enter__(self):
+        &#34;&#34;&#34;Returns self&#34;&#34;&#34;
+        return self
+                                                                    
+    def __exit__(self, *args):
         &#34;&#34;&#34;
         Release this resource.
         &#34;&#34;&#34;
@@ -89,26 +99,36 @@ class Connection:
     A connection to a postgres database.
     &#34;&#34;&#34;
     
-    @staticmethod
-    def open(address: str) -&gt; Any:
+    @classmethod
+    def open(cls, address: str) -&gt; Self:
         &#34;&#34;&#34;
         Open a connection to the Postgres instance at `address`.
+        
+        Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.rdbms_types.Error)`
         &#34;&#34;&#34;
         raise NotImplementedError
 
     def query(self, statement: str, params: List[rdbms_types.ParameterValue]) -&gt; rdbms_types.RowSet:
         &#34;&#34;&#34;
         Query the database.
+        
+        Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.rdbms_types.Error)`
         &#34;&#34;&#34;
         raise NotImplementedError
 
     def execute(self, statement: str, params: List[rdbms_types.ParameterValue]) -&gt; int:
         &#34;&#34;&#34;
         Execute command to the database.
+        
+        Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.rdbms_types.Error)`
         &#34;&#34;&#34;
         raise NotImplementedError
 
-    def drop(self):
+    def __enter__(self):
+        &#34;&#34;&#34;Returns self&#34;&#34;&#34;
+        return self
+                                                                    
+    def __exit__(self, *args):
         &#34;&#34;&#34;
         Release this resource.
         &#34;&#34;&#34;
@@ -117,18 +137,21 @@ class Connection:
 <h3>Static methods</h3>
 <dl>
 <dt id="spin_sdk.wit.imports.postgres.Connection.open"><code class="name flex">
-<span>def <span class="ident">open</span></span>(<span>address: str) ‑> Any</span>
+<span>def <span class="ident">open</span></span>(<span>address: str) ‑> Self</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Open a connection to the Postgres instance at <code>address</code>.</p></div>
+<div class="desc"><p>Open a connection to the Postgres instance at <code>address</code>.</p>
+<p>Raises: <code><a title="spin_sdk.wit.types.Err" href="../types.html#spin_sdk.wit.types.Err">Err</a>(<a title="spin_sdk.wit.imports.rdbms_types.Error" href="rdbms_types.html#spin_sdk.wit.imports.rdbms_types.Error">Error</a>)</code></p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">@staticmethod
-def open(address: str) -&gt; Any:
+<pre><code class="python">@classmethod
+def open(cls, address: str) -&gt; Self:
     &#34;&#34;&#34;
     Open a connection to the Postgres instance at `address`.
+    
+    Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.rdbms_types.Error)`
     &#34;&#34;&#34;
     raise NotImplementedError</code></pre>
 </details>
@@ -136,27 +159,12 @@ def open(address: str) -&gt; Any:
 </dl>
 <h3>Methods</h3>
 <dl>
-<dt id="spin_sdk.wit.imports.postgres.Connection.drop"><code class="name flex">
-<span>def <span class="ident">drop</span></span>(<span>self)</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Release this resource.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def drop(self):
-    &#34;&#34;&#34;
-    Release this resource.
-    &#34;&#34;&#34;
-    raise NotImplementedError</code></pre>
-</details>
-</dd>
 <dt id="spin_sdk.wit.imports.postgres.Connection.execute"><code class="name flex">
 <span>def <span class="ident">execute</span></span>(<span>self, statement: str, params: List[Union[<a title="spin_sdk.wit.imports.rdbms_types.ParameterValueBoolean" href="rdbms_types.html#spin_sdk.wit.imports.rdbms_types.ParameterValueBoolean">ParameterValueBoolean</a>, <a title="spin_sdk.wit.imports.rdbms_types.ParameterValueInt8" href="rdbms_types.html#spin_sdk.wit.imports.rdbms_types.ParameterValueInt8">ParameterValueInt8</a>, <a title="spin_sdk.wit.imports.rdbms_types.ParameterValueInt16" href="rdbms_types.html#spin_sdk.wit.imports.rdbms_types.ParameterValueInt16">ParameterValueInt16</a>, <a title="spin_sdk.wit.imports.rdbms_types.ParameterValueInt32" href="rdbms_types.html#spin_sdk.wit.imports.rdbms_types.ParameterValueInt32">ParameterValueInt32</a>, <a title="spin_sdk.wit.imports.rdbms_types.ParameterValueInt64" href="rdbms_types.html#spin_sdk.wit.imports.rdbms_types.ParameterValueInt64">ParameterValueInt64</a>, <a title="spin_sdk.wit.imports.rdbms_types.ParameterValueUint8" href="rdbms_types.html#spin_sdk.wit.imports.rdbms_types.ParameterValueUint8">ParameterValueUint8</a>, <a title="spin_sdk.wit.imports.rdbms_types.ParameterValueUint16" href="rdbms_types.html#spin_sdk.wit.imports.rdbms_types.ParameterValueUint16">ParameterValueUint16</a>, <a title="spin_sdk.wit.imports.rdbms_types.ParameterValueUint32" href="rdbms_types.html#spin_sdk.wit.imports.rdbms_types.ParameterValueUint32">ParameterValueUint32</a>, <a title="spin_sdk.wit.imports.rdbms_types.ParameterValueUint64" href="rdbms_types.html#spin_sdk.wit.imports.rdbms_types.ParameterValueUint64">ParameterValueUint64</a>, <a title="spin_sdk.wit.imports.rdbms_types.ParameterValueFloating32" href="rdbms_types.html#spin_sdk.wit.imports.rdbms_types.ParameterValueFloating32">ParameterValueFloating32</a>, <a title="spin_sdk.wit.imports.rdbms_types.ParameterValueFloating64" href="rdbms_types.html#spin_sdk.wit.imports.rdbms_types.ParameterValueFloating64">ParameterValueFloating64</a>, <a title="spin_sdk.wit.imports.rdbms_types.ParameterValueStr" href="rdbms_types.html#spin_sdk.wit.imports.rdbms_types.ParameterValueStr">ParameterValueStr</a>, <a title="spin_sdk.wit.imports.rdbms_types.ParameterValueBinary" href="rdbms_types.html#spin_sdk.wit.imports.rdbms_types.ParameterValueBinary">ParameterValueBinary</a>, <a title="spin_sdk.wit.imports.rdbms_types.ParameterValueDbNull" href="rdbms_types.html#spin_sdk.wit.imports.rdbms_types.ParameterValueDbNull">ParameterValueDbNull</a>]]) ‑> int</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Execute command to the database.</p></div>
+<div class="desc"><p>Execute command to the database.</p>
+<p>Raises: <code><a title="spin_sdk.wit.types.Err" href="../types.html#spin_sdk.wit.types.Err">Err</a>(<a title="spin_sdk.wit.imports.rdbms_types.Error" href="rdbms_types.html#spin_sdk.wit.imports.rdbms_types.Error">Error</a>)</code></p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -164,6 +172,8 @@ def open(address: str) -&gt; Any:
 <pre><code class="python">def execute(self, statement: str, params: List[rdbms_types.ParameterValue]) -&gt; int:
     &#34;&#34;&#34;
     Execute command to the database.
+    
+    Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.rdbms_types.Error)`
     &#34;&#34;&#34;
     raise NotImplementedError</code></pre>
 </details>
@@ -172,7 +182,8 @@ def open(address: str) -&gt; Any:
 <span>def <span class="ident">query</span></span>(<span>self, statement: str, params: List[Union[<a title="spin_sdk.wit.imports.rdbms_types.ParameterValueBoolean" href="rdbms_types.html#spin_sdk.wit.imports.rdbms_types.ParameterValueBoolean">ParameterValueBoolean</a>, <a title="spin_sdk.wit.imports.rdbms_types.ParameterValueInt8" href="rdbms_types.html#spin_sdk.wit.imports.rdbms_types.ParameterValueInt8">ParameterValueInt8</a>, <a title="spin_sdk.wit.imports.rdbms_types.ParameterValueInt16" href="rdbms_types.html#spin_sdk.wit.imports.rdbms_types.ParameterValueInt16">ParameterValueInt16</a>, <a title="spin_sdk.wit.imports.rdbms_types.ParameterValueInt32" href="rdbms_types.html#spin_sdk.wit.imports.rdbms_types.ParameterValueInt32">ParameterValueInt32</a>, <a title="spin_sdk.wit.imports.rdbms_types.ParameterValueInt64" href="rdbms_types.html#spin_sdk.wit.imports.rdbms_types.ParameterValueInt64">ParameterValueInt64</a>, <a title="spin_sdk.wit.imports.rdbms_types.ParameterValueUint8" href="rdbms_types.html#spin_sdk.wit.imports.rdbms_types.ParameterValueUint8">ParameterValueUint8</a>, <a title="spin_sdk.wit.imports.rdbms_types.ParameterValueUint16" href="rdbms_types.html#spin_sdk.wit.imports.rdbms_types.ParameterValueUint16">ParameterValueUint16</a>, <a title="spin_sdk.wit.imports.rdbms_types.ParameterValueUint32" href="rdbms_types.html#spin_sdk.wit.imports.rdbms_types.ParameterValueUint32">ParameterValueUint32</a>, <a title="spin_sdk.wit.imports.rdbms_types.ParameterValueUint64" href="rdbms_types.html#spin_sdk.wit.imports.rdbms_types.ParameterValueUint64">ParameterValueUint64</a>, <a title="spin_sdk.wit.imports.rdbms_types.ParameterValueFloating32" href="rdbms_types.html#spin_sdk.wit.imports.rdbms_types.ParameterValueFloating32">ParameterValueFloating32</a>, <a title="spin_sdk.wit.imports.rdbms_types.ParameterValueFloating64" href="rdbms_types.html#spin_sdk.wit.imports.rdbms_types.ParameterValueFloating64">ParameterValueFloating64</a>, <a title="spin_sdk.wit.imports.rdbms_types.ParameterValueStr" href="rdbms_types.html#spin_sdk.wit.imports.rdbms_types.ParameterValueStr">ParameterValueStr</a>, <a title="spin_sdk.wit.imports.rdbms_types.ParameterValueBinary" href="rdbms_types.html#spin_sdk.wit.imports.rdbms_types.ParameterValueBinary">ParameterValueBinary</a>, <a title="spin_sdk.wit.imports.rdbms_types.ParameterValueDbNull" href="rdbms_types.html#spin_sdk.wit.imports.rdbms_types.ParameterValueDbNull">ParameterValueDbNull</a>]]) ‑> <a title="spin_sdk.wit.imports.rdbms_types.RowSet" href="rdbms_types.html#spin_sdk.wit.imports.rdbms_types.RowSet">RowSet</a></span>
 </code></dt>
 <dd>
-<div class="desc"><p>Query the database.</p></div>
+<div class="desc"><p>Query the database.</p>
+<p>Raises: <code><a title="spin_sdk.wit.types.Err" href="../types.html#spin_sdk.wit.types.Err">Err</a>(<a title="spin_sdk.wit.imports.rdbms_types.Error" href="rdbms_types.html#spin_sdk.wit.imports.rdbms_types.Error">Error</a>)</code></p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -180,6 +191,8 @@ def open(address: str) -&gt; Any:
 <pre><code class="python">def query(self, statement: str, params: List[rdbms_types.ParameterValue]) -&gt; rdbms_types.RowSet:
     &#34;&#34;&#34;
     Query the database.
+    
+    Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.rdbms_types.Error)`
     &#34;&#34;&#34;
     raise NotImplementedError</code></pre>
 </details>
@@ -205,7 +218,6 @@ def open(address: str) -&gt; Any:
 <li>
 <h4><code><a title="spin_sdk.wit.imports.postgres.Connection" href="#spin_sdk.wit.imports.postgres.Connection">Connection</a></code></h4>
 <ul class="">
-<li><code><a title="spin_sdk.wit.imports.postgres.Connection.drop" href="#spin_sdk.wit.imports.postgres.Connection.drop">drop</a></code></li>
 <li><code><a title="spin_sdk.wit.imports.postgres.Connection.execute" href="#spin_sdk.wit.imports.postgres.Connection.execute">execute</a></code></li>
 <li><code><a title="spin_sdk.wit.imports.postgres.Connection.open" href="#spin_sdk.wit.imports.postgres.Connection.open">open</a></code></li>
 <li><code><a title="spin_sdk.wit.imports.postgres.Connection.query" href="#spin_sdk.wit.imports.postgres.Connection.query">query</a></code></li>

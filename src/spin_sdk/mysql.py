@@ -2,7 +2,7 @@
 
 from spin_sdk.wit.imports.mysql import Connection
 
-def opem(connection_string: str) -> Connection:
+def open(connection_string: str) -> Connection:
     """
     Open a connection with a MySQL database.
     

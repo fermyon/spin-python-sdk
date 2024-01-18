@@ -10,8 +10,8 @@ from abc import abstractmethod
 import weakref
 
 from ..types import Result, Ok, Err, Some
-from ..imports import streams
 from ..imports import poll
+from ..imports import streams
 from ..imports import error
 
 
@@ -65,8 +65,11 @@ class MethodOther:
     value: str
 
 
-# This type corresponds to HTTP standard Methods.
 Method = Union[MethodGet, MethodHead, MethodPost, MethodPut, MethodDelete, MethodConnect, MethodOptions, MethodTrace, MethodPatch, MethodOther]
+"""
+This type corresponds to HTTP standard Methods.
+"""
+
 
 
 @dataclass
@@ -84,8 +87,11 @@ class SchemeOther:
     value: str
 
 
-# This type corresponds to HTTP standard Related Schemes.
 Scheme = Union[SchemeHttp, SchemeHttps, SchemeOther]
+"""
+This type corresponds to HTTP standard Related Schemes.
+"""
+
 
 @dataclass
 class DnsErrorPayload:
@@ -307,9 +313,12 @@ class ErrorCodeInternalError:
     value: Optional[str]
 
 
-# These cases are inspired by the IANA HTTP Proxy Error Types:
-# https://www.iana.org/assignments/http-proxy-status/http-proxy-status.xhtml#table-http-proxy-error-types
 ErrorCode = Union[ErrorCodeDnsTimeout, ErrorCodeDnsError, ErrorCodeDestinationNotFound, ErrorCodeDestinationUnavailable, ErrorCodeDestinationIpProhibited, ErrorCodeDestinationIpUnroutable, ErrorCodeConnectionRefused, ErrorCodeConnectionTerminated, ErrorCodeConnectionTimeout, ErrorCodeConnectionReadTimeout, ErrorCodeConnectionWriteTimeout, ErrorCodeConnectionLimitReached, ErrorCodeTlsProtocolError, ErrorCodeTlsCertificateError, ErrorCodeTlsAlertReceived, ErrorCodeHttpRequestDenied, ErrorCodeHttpRequestLengthRequired, ErrorCodeHttpRequestBodySize, ErrorCodeHttpRequestMethodInvalid, ErrorCodeHttpRequestUriInvalid, ErrorCodeHttpRequestUriTooLong, ErrorCodeHttpRequestHeaderSectionSize, ErrorCodeHttpRequestHeaderSize, ErrorCodeHttpRequestTrailerSectionSize, ErrorCodeHttpRequestTrailerSize, ErrorCodeHttpResponseIncomplete, ErrorCodeHttpResponseHeaderSectionSize, ErrorCodeHttpResponseHeaderSize, ErrorCodeHttpResponseBodySize, ErrorCodeHttpResponseTrailerSectionSize, ErrorCodeHttpResponseTrailerSize, ErrorCodeHttpResponseTransferCoding, ErrorCodeHttpResponseContentCoding, ErrorCodeHttpResponseTimeout, ErrorCodeHttpUpgradeFailed, ErrorCodeHttpProtocolError, ErrorCodeLoopDetected, ErrorCodeConfigurationError, ErrorCodeInternalError]
+"""
+These cases are inspired by the IANA HTTP Proxy Error Types:
+https://www.iana.org/assignments/http-proxy-status/http-proxy-status.xhtml#table-http-proxy-error-types
+"""
+
 
 
 @dataclass
@@ -327,9 +336,12 @@ class HeaderErrorImmutable:
     pass
 
 
-# This type enumerates the different kinds of errors that may occur when
-# setting or appending to a `fields` resource.
 HeaderError = Union[HeaderErrorInvalidSyntax, HeaderErrorForbidden, HeaderErrorImmutable]
+"""
+This type enumerates the different kinds of errors that may occur when
+setting or appending to a `fields` resource.
+"""
+
 
 class Fields:
     """
@@ -353,8 +365,8 @@ class Fields:
         """
         raise NotImplementedError
 
-    @staticmethod
-    def from_list(entries: List[Tuple[str, bytes]]) -> Any:
+    @classmethod
+    def from_list(cls, entries: List[Tuple[str, bytes]]) -> Self:
         """
         Construct an HTTP Fields.
         
@@ -371,6 +383,8 @@ class Fields:
         
         An error result will be returned if any header or value was
         syntactically invalid, or if a header was forbidden.
+        
+        Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.types.HeaderError)`
         """
         raise NotImplementedError
 
@@ -396,6 +410,8 @@ class Fields:
         key, if they have been set.
         
         Fails with `header-error.immutable` if the `fields` are immutable.
+        
+        Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.types.HeaderError)`
         """
         raise NotImplementedError
 
@@ -405,6 +421,8 @@ class Fields:
         exist.
         
         Fails with `header-error.immutable` if the `fields` are immutable.
+        
+        Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.types.HeaderError)`
         """
         raise NotImplementedError
 
@@ -414,6 +432,8 @@ class Fields:
         values for that key.
         
         Fails with `header-error.immutable` if the `fields` are immutable.
+        
+        Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.types.HeaderError)`
         """
         raise NotImplementedError
 
@@ -436,7 +456,116 @@ class Fields:
         """
         raise NotImplementedError
 
-    def drop(self):
+    def __enter__(self):
+        """Returns self"""
+        return self
+                                                                    
+    def __exit__(self, *args):
+        """
+        Release this resource.
+        """
+        raise NotImplementedError
+
+
+class FutureTrailers:
+    """
+    Represents a future which may eventaully return trailers, or an error.
+    
+    In the case that the incoming HTTP Request or Response did not have any
+    trailers, this future will resolve to the empty set of trailers once the
+    complete Request or Response body has been received.
+    """
+    
+    def subscribe(self) -> poll.Pollable:
+        """
+        Returns a pollable which becomes ready when either the trailers have
+        been received, or an error has occured. When this pollable is ready,
+        the `get` method will return `some`.
+        """
+        raise NotImplementedError
+
+    def get(self) -> Optional[Result[Result[Optional[Fields], ErrorCode], None]]:
+        """
+        Returns the contents of the trailers, or an error which occured,
+        once the future is ready.
+        
+        The outer `option` represents future readiness. Users can wait on this
+        `option` to become `some` using the `subscribe` method.
+        
+        The outer `result` is used to retrieve the trailers or error at most
+        once. It will be success on the first call in which the outer option
+        is `some`, and error on subsequent calls.
+        
+        The inner `result` represents that either the HTTP Request or Response
+        body, as well as any trailers, were received successfully, or that an
+        error occured receiving them. The optional `trailers` indicates whether
+        or not trailers were present in the body.
+        
+        When some `trailers` are returned by this method, the `trailers`
+        resource is immutable, and a child. Use of the `set`, `append`, or
+        `delete` methods will return an error, and the resource must be
+        dropped before the parent `future-trailers` is dropped.
+        """
+        raise NotImplementedError
+
+    def __enter__(self):
+        """Returns self"""
+        return self
+                                                                    
+    def __exit__(self, *args):
+        """
+        Release this resource.
+        """
+        raise NotImplementedError
+
+
+class IncomingBody:
+    """
+    Represents an incoming HTTP Request or Response's Body.
+    
+    A body has both its contents - a stream of bytes - and a (possibly
+    empty) set of trailers, indicating that the full contents of the
+    body have been received. This resource represents the contents as
+    an `input-stream` and the delivery of trailers as a `future-trailers`,
+    and ensures that the user of this interface may only be consuming either
+    the body contents or waiting on trailers at any given time.
+    """
+    
+    def stream(self) -> streams.InputStream:
+        """
+        Returns the contents of the body, as a stream of bytes.
+        
+        Returns success on first call: the stream representing the contents
+        can be retrieved at most once. Subsequent calls will return error.
+        
+        The returned `input-stream` resource is a child: it must be dropped
+        before the parent `incoming-body` is dropped, or consumed by
+        `incoming-body.finish`.
+        
+        This invariant ensures that the implementation can determine whether
+        the user is consuming the contents of the body, waiting on the
+        `future-trailers` to be ready, or neither. This allows for network
+        backpressure is to be applied when the user is consuming the body,
+        and for that backpressure to not inhibit delivery of the trailers if
+        the user does not read the entire body.
+        
+        Raises: `spin_sdk.wit.types.Err(None)`
+        """
+        raise NotImplementedError
+
+    @classmethod
+    def finish(cls, this: Self) -> FutureTrailers:
+        """
+        Takes ownership of `incoming-body`, and returns a `future-trailers`.
+        This function will trap if the `input-stream` child is still alive.
+        """
+        raise NotImplementedError
+
+    def __enter__(self):
+        """Returns self"""
+        return self
+                                                                    
+    def __exit__(self, *args):
         """
         Release this resource.
         """
@@ -485,410 +614,20 @@ class IncomingRequest:
         """
         raise NotImplementedError
 
-    def consume(self) -> Any:
+    def consume(self) -> IncomingBody:
         """
         Gives the `incoming-body` associated with this request. Will only
         return success at most once, and subsequent calls will return error.
-        """
-        raise NotImplementedError
-
-    def drop(self):
-        """
-        Release this resource.
-        """
-        raise NotImplementedError
-
-
-class OutgoingRequest:
-    """
-    Represents an outgoing HTTP Request.
-    """
-    
-    def __init__(self, headers: Fields):
-        """
-        Construct a new `outgoing-request` with a default `method` of `GET`, and
-        `none` values for `path-with-query`, `scheme`, and `authority`.
         
-        * `headers` is the HTTP Headers for the Request.
-        
-        It is possible to construct, or manipulate with the accessor functions
-        below, an `outgoing-request` with an invalid combination of `scheme`
-        and `authority`, or `headers` which are not permitted to be sent.
-        It is the obligation of the `outgoing-handler.handle` implementation
-        to reject invalid constructions of `outgoing-request`.
+        Raises: `spin_sdk.wit.types.Err(None)`
         """
         raise NotImplementedError
 
-    def body(self) -> Any:
-        """
-        Returns the resource corresponding to the outgoing Body for this
-        Request.
-        
-        Returns success on the first call: the `outgoing-body` resource for
-        this `outgoing-request` can be retrieved at most once. Subsequent
-        calls will return error.
-        """
-        raise NotImplementedError
-
-    def method(self) -> Method:
-        """
-        Get the Method for the Request.
-        """
-        raise NotImplementedError
-
-    def set_method(self, method: Method) -> None:
-        """
-        Set the Method for the Request. Fails if the string present in a
-        `method.other` argument is not a syntactically valid method.
-        """
-        raise NotImplementedError
-
-    def path_with_query(self) -> Optional[str]:
-        """
-        Get the combination of the HTTP Path and Query for the Request.
-        When `none`, this represents an empty Path and empty Query.
-        """
-        raise NotImplementedError
-
-    def set_path_with_query(self, path_with_query: Optional[str]) -> None:
-        """
-        Set the combination of the HTTP Path and Query for the Request.
-        When `none`, this represents an empty Path and empty Query. Fails is the
-        string given is not a syntactically valid path and query uri component.
-        """
-        raise NotImplementedError
-
-    def scheme(self) -> Optional[Scheme]:
-        """
-        Get the HTTP Related Scheme for the Request. When `none`, the
-        implementation may choose an appropriate default scheme.
-        """
-        raise NotImplementedError
-
-    def set_scheme(self, scheme: Optional[Scheme]) -> None:
-        """
-        Set the HTTP Related Scheme for the Request. When `none`, the
-        implementation may choose an appropriate default scheme. Fails if the
-        string given is not a syntactically valid uri scheme.
-        """
-        raise NotImplementedError
-
-    def authority(self) -> Optional[str]:
-        """
-        Get the HTTP Authority for the Request. A value of `none` may be used
-        with Related Schemes which do not require an Authority. The HTTP and
-        HTTPS schemes always require an authority.
-        """
-        raise NotImplementedError
-
-    def set_authority(self, authority: Optional[str]) -> None:
-        """
-        Set the HTTP Authority for the Request. A value of `none` may be used
-        with Related Schemes which do not require an Authority. The HTTP and
-        HTTPS schemes always require an authority. Fails if the string given is
-        not a syntactically valid uri authority.
-        """
-        raise NotImplementedError
-
-    def headers(self) -> Fields:
-        """
-        Get the headers associated with the Request.
-        
-        The returned `headers` resource is immutable: `set`, `append`, and
-        `delete` operations will fail with `header-error.immutable`.
-        
-        This headers resource is a child: it must be dropped before the parent
-        `outgoing-request` is dropped, or its ownership is transfered to
-        another component by e.g. `outgoing-handler.handle`.
-        """
-        raise NotImplementedError
-
-    def drop(self):
-        """
-        Release this resource.
-        """
-        raise NotImplementedError
-
-
-class RequestOptions:
-    """
-    Parameters for making an HTTP Request. Each of these parameters is
-    currently an optional timeout applicable to the transport layer of the
-    HTTP protocol.
-    
-    These timeouts are separate from any the user may use to bound a
-    blocking call to `wasi:io/poll.poll`.
-    """
-    
-    def __init__(self):
-        """
-        Construct a default `request-options` value.
-        """
-        raise NotImplementedError
-
-    def connect_timeout(self) -> Optional[int]:
-        """
-        The timeout for the initial connect to the HTTP Server.
-        """
-        raise NotImplementedError
-
-    def set_connect_timeout(self, duration: Optional[int]) -> None:
-        """
-        Set the timeout for the initial connect to the HTTP Server. An error
-        return value indicates that this timeout is not supported.
-        """
-        raise NotImplementedError
-
-    def first_byte_timeout(self) -> Optional[int]:
-        """
-        The timeout for receiving the first byte of the Response body.
-        """
-        raise NotImplementedError
-
-    def set_first_byte_timeout(self, duration: Optional[int]) -> None:
-        """
-        Set the timeout for receiving the first byte of the Response body. An
-        error return value indicates that this timeout is not supported.
-        """
-        raise NotImplementedError
-
-    def between_bytes_timeout(self) -> Optional[int]:
-        """
-        The timeout for receiving subsequent chunks of bytes in the Response
-        body stream.
-        """
-        raise NotImplementedError
-
-    def set_between_bytes_timeout(self, duration: Optional[int]) -> None:
-        """
-        Set the timeout for receiving subsequent chunks of bytes in the Response
-        body stream. An error return value indicates that this timeout is not
-        supported.
-        """
-        raise NotImplementedError
-
-    def drop(self):
-        """
-        Release this resource.
-        """
-        raise NotImplementedError
-
-
-class ResponseOutparam:
-    """
-    Represents the ability to send an HTTP Response.
-    
-    This resource is used by the `wasi:http/incoming-handler` interface to
-    allow a Response to be sent corresponding to the Request provided as the
-    other argument to `incoming-handler.handle`.
-    """
-    
-    @staticmethod
-    def set(param: Any, response: Result[Any, ErrorCode]) -> None:
-        """
-        Set the value of the `response-outparam` to either send a response,
-        or indicate an error.
-        
-        This method consumes the `response-outparam` to ensure that it is
-        called at most once. If it is never called, the implementation
-        will respond with an error.
-        
-        The user may provide an `error` to `response` to allow the
-        implementation determine how to respond with an HTTP error response.
-        """
-        raise NotImplementedError
-
-    def drop(self):
-        """
-        Release this resource.
-        """
-        raise NotImplementedError
-
-
-class IncomingResponse:
-    """
-    Represents an incoming HTTP Response.
-    """
-    
-    def status(self) -> int:
-        """
-        Returns the status code from the incoming response.
-        """
-        raise NotImplementedError
-
-    def headers(self) -> Fields:
-        """
-        Returns the headers from the incoming response.
-        
-        The returned `headers` resource is immutable: `set`, `append`, and
-        `delete` operations will fail with `header-error.immutable`.
-        
-        This headers resource is a child: it must be dropped before the parent
-        `incoming-response` is dropped.
-        """
-        raise NotImplementedError
-
-    def consume(self) -> Any:
-        """
-        Returns the incoming body. May be called at most once. Returns error
-        if called additional times.
-        """
-        raise NotImplementedError
-
-    def drop(self):
-        """
-        Release this resource.
-        """
-        raise NotImplementedError
-
-
-class IncomingBody:
-    """
-    Represents an incoming HTTP Request or Response's Body.
-    
-    A body has both its contents - a stream of bytes - and a (possibly
-    empty) set of trailers, indicating that the full contents of the
-    body have been received. This resource represents the contents as
-    an `input-stream` and the delivery of trailers as a `future-trailers`,
-    and ensures that the user of this interface may only be consuming either
-    the body contents or waiting on trailers at any given time.
-    """
-    
-    def stream(self) -> streams.InputStream:
-        """
-        Returns the contents of the body, as a stream of bytes.
-        
-        Returns success on first call: the stream representing the contents
-        can be retrieved at most once. Subsequent calls will return error.
-        
-        The returned `input-stream` resource is a child: it must be dropped
-        before the parent `incoming-body` is dropped, or consumed by
-        `incoming-body.finish`.
-        
-        This invariant ensures that the implementation can determine whether
-        the user is consuming the contents of the body, waiting on the
-        `future-trailers` to be ready, or neither. This allows for network
-        backpressure is to be applied when the user is consuming the body,
-        and for that backpressure to not inhibit delivery of the trailers if
-        the user does not read the entire body.
-        """
-        raise NotImplementedError
-
-    @staticmethod
-    def finish(this: Any) -> Any:
-        """
-        Takes ownership of `incoming-body`, and returns a `future-trailers`.
-        This function will trap if the `input-stream` child is still alive.
-        """
-        raise NotImplementedError
-
-    def drop(self):
-        """
-        Release this resource.
-        """
-        raise NotImplementedError
-
-
-class FutureTrailers:
-    """
-    Represents a future which may eventaully return trailers, or an error.
-    
-    In the case that the incoming HTTP Request or Response did not have any
-    trailers, this future will resolve to the empty set of trailers once the
-    complete Request or Response body has been received.
-    """
-    
-    def subscribe(self) -> poll.Pollable:
-        """
-        Returns a pollable which becomes ready when either the trailers have
-        been received, or an error has occured. When this pollable is ready,
-        the `get` method will return `some`.
-        """
-        raise NotImplementedError
-
-    def get(self) -> Optional[Result[Result[Optional[Fields], ErrorCode], None]]:
-        """
-        Returns the contents of the trailers, or an error which occured,
-        once the future is ready.
-        
-        The outer `option` represents future readiness. Users can wait on this
-        `option` to become `some` using the `subscribe` method.
-        
-        The outer `result` is used to retrieve the trailers or error at most
-        once. It will be success on the first call in which the outer option
-        is `some`, and error on subsequent calls.
-        
-        The inner `result` represents that either the HTTP Request or Response
-        body, as well as any trailers, were received successfully, or that an
-        error occured receiving them. The optional `trailers` indicates whether
-        or not trailers were present in the body.
-        
-        When some `trailers` are returned by this method, the `trailers`
-        resource is immutable, and a child. Use of the `set`, `append`, or
-        `delete` methods will return an error, and the resource must be
-        dropped before the parent `future-trailers` is dropped.
-        """
-        raise NotImplementedError
-
-    def drop(self):
-        """
-        Release this resource.
-        """
-        raise NotImplementedError
-
-
-class OutgoingResponse:
-    """
-    Represents an outgoing HTTP Response.
-    """
-    
-    def __init__(self, headers: Fields):
-        """
-        Construct an `outgoing-response`, with a default `status-code` of `200`.
-        If a different `status-code` is needed, it must be set via the
-        `set-status-code` method.
-        
-        * `headers` is the HTTP Headers for the Response.
-        """
-        raise NotImplementedError
-
-    def status_code(self) -> int:
-        """
-        Get the HTTP Status Code for the Response.
-        """
-        raise NotImplementedError
-
-    def set_status_code(self, status_code: int) -> None:
-        """
-        Set the HTTP Status Code for the Response. Fails if the status-code
-        given is not a valid http status code.
-        """
-        raise NotImplementedError
-
-    def headers(self) -> Fields:
-        """
-        Get the headers associated with the Request.
-        
-        The returned `headers` resource is immutable: `set`, `append`, and
-        `delete` operations will fail with `header-error.immutable`.
-        
-        This headers resource is a child: it must be dropped before the parent
-        `outgoing-request` is dropped, or its ownership is transfered to
-        another component by e.g. `outgoing-handler.handle`.
-        """
-        raise NotImplementedError
-
-    def body(self) -> Any:
-        """
-        Returns the resource corresponding to the outgoing Body for this Response.
-        
-        Returns success on the first call: the `outgoing-body` resource for
-        this `outgoing-response` can be retrieved at most once. Subsequent
-        calls will return error.
-        """
-        raise NotImplementedError
-
-    def drop(self):
+    def __enter__(self):
+        """Returns self"""
+        return self
+                                                                    
+    def __exit__(self, *args):
         """
         Release this resource.
         """
@@ -926,11 +665,13 @@ class OutgoingBody:
         Returns success on the first call: the `output-stream` resource for
         this `outgoing-body` may be retrieved at most once. Subsequent calls
         will return error.
+        
+        Raises: `spin_sdk.wit.types.Err(None)`
         """
         raise NotImplementedError
 
-    @staticmethod
-    def finish(this: Any, trailers: Optional[Fields]) -> None:
+    @classmethod
+    def finish(cls, this: Self, trailers: Optional[Fields]) -> None:
         """
         Finalize an outgoing body, optionally providing trailers. This must be
         called to signal that the response is complete. If the `outgoing-body`
@@ -941,10 +682,359 @@ class OutgoingBody:
         constructed with a Content-Length header, and the contents written
         to the body (via `write`) does not match the value given in the
         Content-Length.
+        
+        Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.types.ErrorCode)`
         """
         raise NotImplementedError
 
-    def drop(self):
+    def __enter__(self):
+        """Returns self"""
+        return self
+                                                                    
+    def __exit__(self, *args):
+        """
+        Release this resource.
+        """
+        raise NotImplementedError
+
+
+class OutgoingRequest:
+    """
+    Represents an outgoing HTTP Request.
+    """
+    
+    def __init__(self, headers: Fields):
+        """
+        Construct a new `outgoing-request` with a default `method` of `GET`, and
+        `none` values for `path-with-query`, `scheme`, and `authority`.
+        
+        * `headers` is the HTTP Headers for the Request.
+        
+        It is possible to construct, or manipulate with the accessor functions
+        below, an `outgoing-request` with an invalid combination of `scheme`
+        and `authority`, or `headers` which are not permitted to be sent.
+        It is the obligation of the `outgoing-handler.handle` implementation
+        to reject invalid constructions of `outgoing-request`.
+        """
+        raise NotImplementedError
+
+    def body(self) -> OutgoingBody:
+        """
+        Returns the resource corresponding to the outgoing Body for this
+        Request.
+        
+        Returns success on the first call: the `outgoing-body` resource for
+        this `outgoing-request` can be retrieved at most once. Subsequent
+        calls will return error.
+        
+        Raises: `spin_sdk.wit.types.Err(None)`
+        """
+        raise NotImplementedError
+
+    def method(self) -> Method:
+        """
+        Get the Method for the Request.
+        """
+        raise NotImplementedError
+
+    def set_method(self, method: Method) -> None:
+        """
+        Set the Method for the Request. Fails if the string present in a
+        `method.other` argument is not a syntactically valid method.
+        
+        Raises: `spin_sdk.wit.types.Err(None)`
+        """
+        raise NotImplementedError
+
+    def path_with_query(self) -> Optional[str]:
+        """
+        Get the combination of the HTTP Path and Query for the Request.
+        When `none`, this represents an empty Path and empty Query.
+        """
+        raise NotImplementedError
+
+    def set_path_with_query(self, path_with_query: Optional[str]) -> None:
+        """
+        Set the combination of the HTTP Path and Query for the Request.
+        When `none`, this represents an empty Path and empty Query. Fails is the
+        string given is not a syntactically valid path and query uri component.
+        
+        Raises: `spin_sdk.wit.types.Err(None)`
+        """
+        raise NotImplementedError
+
+    def scheme(self) -> Optional[Scheme]:
+        """
+        Get the HTTP Related Scheme for the Request. When `none`, the
+        implementation may choose an appropriate default scheme.
+        """
+        raise NotImplementedError
+
+    def set_scheme(self, scheme: Optional[Scheme]) -> None:
+        """
+        Set the HTTP Related Scheme for the Request. When `none`, the
+        implementation may choose an appropriate default scheme. Fails if the
+        string given is not a syntactically valid uri scheme.
+        
+        Raises: `spin_sdk.wit.types.Err(None)`
+        """
+        raise NotImplementedError
+
+    def authority(self) -> Optional[str]:
+        """
+        Get the HTTP Authority for the Request. A value of `none` may be used
+        with Related Schemes which do not require an Authority. The HTTP and
+        HTTPS schemes always require an authority.
+        """
+        raise NotImplementedError
+
+    def set_authority(self, authority: Optional[str]) -> None:
+        """
+        Set the HTTP Authority for the Request. A value of `none` may be used
+        with Related Schemes which do not require an Authority. The HTTP and
+        HTTPS schemes always require an authority. Fails if the string given is
+        not a syntactically valid uri authority.
+        
+        Raises: `spin_sdk.wit.types.Err(None)`
+        """
+        raise NotImplementedError
+
+    def headers(self) -> Fields:
+        """
+        Get the headers associated with the Request.
+        
+        The returned `headers` resource is immutable: `set`, `append`, and
+        `delete` operations will fail with `header-error.immutable`.
+        
+        This headers resource is a child: it must be dropped before the parent
+        `outgoing-request` is dropped, or its ownership is transfered to
+        another component by e.g. `outgoing-handler.handle`.
+        """
+        raise NotImplementedError
+
+    def __enter__(self):
+        """Returns self"""
+        return self
+                                                                    
+    def __exit__(self, *args):
+        """
+        Release this resource.
+        """
+        raise NotImplementedError
+
+
+class RequestOptions:
+    """
+    Parameters for making an HTTP Request. Each of these parameters is
+    currently an optional timeout applicable to the transport layer of the
+    HTTP protocol.
+    
+    These timeouts are separate from any the user may use to bound a
+    blocking call to `wasi:io/poll.poll`.
+    """
+    
+    def __init__(self):
+        """
+        Construct a default `request-options` value.
+        """
+        raise NotImplementedError
+
+    def connect_timeout(self) -> Optional[int]:
+        """
+        The timeout for the initial connect to the HTTP Server.
+        """
+        raise NotImplementedError
+
+    def set_connect_timeout(self, duration: Optional[int]) -> None:
+        """
+        Set the timeout for the initial connect to the HTTP Server. An error
+        return value indicates that this timeout is not supported.
+        
+        Raises: `spin_sdk.wit.types.Err(None)`
+        """
+        raise NotImplementedError
+
+    def first_byte_timeout(self) -> Optional[int]:
+        """
+        The timeout for receiving the first byte of the Response body.
+        """
+        raise NotImplementedError
+
+    def set_first_byte_timeout(self, duration: Optional[int]) -> None:
+        """
+        Set the timeout for receiving the first byte of the Response body. An
+        error return value indicates that this timeout is not supported.
+        
+        Raises: `spin_sdk.wit.types.Err(None)`
+        """
+        raise NotImplementedError
+
+    def between_bytes_timeout(self) -> Optional[int]:
+        """
+        The timeout for receiving subsequent chunks of bytes in the Response
+        body stream.
+        """
+        raise NotImplementedError
+
+    def set_between_bytes_timeout(self, duration: Optional[int]) -> None:
+        """
+        Set the timeout for receiving subsequent chunks of bytes in the Response
+        body stream. An error return value indicates that this timeout is not
+        supported.
+        
+        Raises: `spin_sdk.wit.types.Err(None)`
+        """
+        raise NotImplementedError
+
+    def __enter__(self):
+        """Returns self"""
+        return self
+                                                                    
+    def __exit__(self, *args):
+        """
+        Release this resource.
+        """
+        raise NotImplementedError
+
+
+class OutgoingResponse:
+    """
+    Represents an outgoing HTTP Response.
+    """
+    
+    def __init__(self, headers: Fields):
+        """
+        Construct an `outgoing-response`, with a default `status-code` of `200`.
+        If a different `status-code` is needed, it must be set via the
+        `set-status-code` method.
+        
+        * `headers` is the HTTP Headers for the Response.
+        """
+        raise NotImplementedError
+
+    def status_code(self) -> int:
+        """
+        Get the HTTP Status Code for the Response.
+        """
+        raise NotImplementedError
+
+    def set_status_code(self, status_code: int) -> None:
+        """
+        Set the HTTP Status Code for the Response. Fails if the status-code
+        given is not a valid http status code.
+        
+        Raises: `spin_sdk.wit.types.Err(None)`
+        """
+        raise NotImplementedError
+
+    def headers(self) -> Fields:
+        """
+        Get the headers associated with the Request.
+        
+        The returned `headers` resource is immutable: `set`, `append`, and
+        `delete` operations will fail with `header-error.immutable`.
+        
+        This headers resource is a child: it must be dropped before the parent
+        `outgoing-request` is dropped, or its ownership is transfered to
+        another component by e.g. `outgoing-handler.handle`.
+        """
+        raise NotImplementedError
+
+    def body(self) -> OutgoingBody:
+        """
+        Returns the resource corresponding to the outgoing Body for this Response.
+        
+        Returns success on the first call: the `outgoing-body` resource for
+        this `outgoing-response` can be retrieved at most once. Subsequent
+        calls will return error.
+        
+        Raises: `spin_sdk.wit.types.Err(None)`
+        """
+        raise NotImplementedError
+
+    def __enter__(self):
+        """Returns self"""
+        return self
+                                                                    
+    def __exit__(self, *args):
+        """
+        Release this resource.
+        """
+        raise NotImplementedError
+
+
+class ResponseOutparam:
+    """
+    Represents the ability to send an HTTP Response.
+    
+    This resource is used by the `wasi:http/incoming-handler` interface to
+    allow a Response to be sent corresponding to the Request provided as the
+    other argument to `incoming-handler.handle`.
+    """
+    
+    @classmethod
+    def set(cls, param: Self, response: Result[OutgoingResponse, ErrorCode]) -> None:
+        """
+        Set the value of the `response-outparam` to either send a response,
+        or indicate an error.
+        
+        This method consumes the `response-outparam` to ensure that it is
+        called at most once. If it is never called, the implementation
+        will respond with an error.
+        
+        The user may provide an `error` to `response` to allow the
+        implementation determine how to respond with an HTTP error response.
+        """
+        raise NotImplementedError
+
+    def __enter__(self):
+        """Returns self"""
+        return self
+                                                                    
+    def __exit__(self, *args):
+        """
+        Release this resource.
+        """
+        raise NotImplementedError
+
+
+class IncomingResponse:
+    """
+    Represents an incoming HTTP Response.
+    """
+    
+    def status(self) -> int:
+        """
+        Returns the status code from the incoming response.
+        """
+        raise NotImplementedError
+
+    def headers(self) -> Fields:
+        """
+        Returns the headers from the incoming response.
+        
+        The returned `headers` resource is immutable: `set`, `append`, and
+        `delete` operations will fail with `header-error.immutable`.
+        
+        This headers resource is a child: it must be dropped before the parent
+        `incoming-response` is dropped.
+        """
+        raise NotImplementedError
+
+    def consume(self) -> IncomingBody:
+        """
+        Returns the incoming body. May be called at most once. Returns error
+        if called additional times.
+        
+        Raises: `spin_sdk.wit.types.Err(None)`
+        """
+        raise NotImplementedError
+
+    def __enter__(self):
+        """Returns self"""
+        return self
+                                                                    
+    def __exit__(self, *args):
         """
         Release this resource.
         """
@@ -987,7 +1077,11 @@ class FutureIncomingResponse:
         """
         raise NotImplementedError
 
-    def drop(self):
+    def __enter__(self):
+        """Returns self"""
+        return self
+                                                                    
+    def __exit__(self, *args):
         """
         Release this resource.
         """

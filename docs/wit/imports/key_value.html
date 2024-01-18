@@ -56,22 +56,27 @@ class ErrorOther:
     value: str
 
 
-# The set of errors which may be raised by functions in this interface
 Error = Union[ErrorStoreTableFull, ErrorNoSuchStore, ErrorAccessDenied, ErrorOther]
+&#34;&#34;&#34;
+The set of errors which may be raised by functions in this interface
+&#34;&#34;&#34;
+
 
 class Store:
     &#34;&#34;&#34;
     An open key-value store
     &#34;&#34;&#34;
     
-    @staticmethod
-    def open(label: str) -&gt; Any:
+    @classmethod
+    def open(cls, label: str) -&gt; Self:
         &#34;&#34;&#34;
         Open the store with the specified label.
         
         `label` must refer to a store allowed in the spin.toml manifest.
         
         `error::no-such-store` will be raised if the `label` is not recognized.
+        
+        Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.key_value.Error)`
         &#34;&#34;&#34;
         raise NotImplementedError
 
@@ -80,12 +85,16 @@ class Store:
         Get the value associated with the specified `key`
         
         Returns `ok(none)` if the key does not exist.
+        
+        Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.key_value.Error)`
         &#34;&#34;&#34;
         raise NotImplementedError
 
     def set(self, key: str, value: bytes) -&gt; None:
         &#34;&#34;&#34;
         Set the `value` associated with the specified `key` overwriting any existing value.
+        
+        Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.key_value.Error)`
         &#34;&#34;&#34;
         raise NotImplementedError
 
@@ -94,22 +103,32 @@ class Store:
         Delete the tuple with the specified `key`
         
         No error is raised if a tuple did not previously exist for `key`.
+        
+        Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.key_value.Error)`
         &#34;&#34;&#34;
         raise NotImplementedError
 
     def exists(self, key: str) -&gt; int:
         &#34;&#34;&#34;
         Return whether a tuple exists for the specified `key`
+        
+        Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.key_value.Error)`
         &#34;&#34;&#34;
         raise NotImplementedError
 
     def get_keys(self) -&gt; List[str]:
         &#34;&#34;&#34;
         Return a list of all the keys
+        
+        Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.key_value.Error)`
         &#34;&#34;&#34;
         raise NotImplementedError
 
-    def drop(self):
+    def __enter__(self):
+        &#34;&#34;&#34;Returns self&#34;&#34;&#34;
+        return self
+                                                                    
+    def __exit__(self, *args):
         &#34;&#34;&#34;
         Release this resource.
         &#34;&#34;&#34;
@@ -119,6 +138,13 @@ class Store:
 <section>
 </section>
 <section>
+<h2 class="section-title" id="header-variables">Global variables</h2>
+<dl>
+<dt id="spin_sdk.wit.imports.key_value.Error"><code class="name">var <span class="ident">Error</span></code></dt>
+<dd>
+<div class="desc"><p>The set of errors which may be raised by functions in this interface</p></div>
+</dd>
+</dl>
 </section>
 <section>
 </section>
@@ -203,14 +229,16 @@ class ErrorStoreTableFull:
     An open key-value store
     &#34;&#34;&#34;
     
-    @staticmethod
-    def open(label: str) -&gt; Any:
+    @classmethod
+    def open(cls, label: str) -&gt; Self:
         &#34;&#34;&#34;
         Open the store with the specified label.
         
         `label` must refer to a store allowed in the spin.toml manifest.
         
         `error::no-such-store` will be raised if the `label` is not recognized.
+        
+        Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.key_value.Error)`
         &#34;&#34;&#34;
         raise NotImplementedError
 
@@ -219,12 +247,16 @@ class ErrorStoreTableFull:
         Get the value associated with the specified `key`
         
         Returns `ok(none)` if the key does not exist.
+        
+        Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.key_value.Error)`
         &#34;&#34;&#34;
         raise NotImplementedError
 
     def set(self, key: str, value: bytes) -&gt; None:
         &#34;&#34;&#34;
         Set the `value` associated with the specified `key` overwriting any existing value.
+        
+        Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.key_value.Error)`
         &#34;&#34;&#34;
         raise NotImplementedError
 
@@ -233,22 +265,32 @@ class ErrorStoreTableFull:
         Delete the tuple with the specified `key`
         
         No error is raised if a tuple did not previously exist for `key`.
+        
+        Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.key_value.Error)`
         &#34;&#34;&#34;
         raise NotImplementedError
 
     def exists(self, key: str) -&gt; int:
         &#34;&#34;&#34;
         Return whether a tuple exists for the specified `key`
+        
+        Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.key_value.Error)`
         &#34;&#34;&#34;
         raise NotImplementedError
 
     def get_keys(self) -&gt; List[str]:
         &#34;&#34;&#34;
         Return a list of all the keys
+        
+        Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.key_value.Error)`
         &#34;&#34;&#34;
         raise NotImplementedError
 
-    def drop(self):
+    def __enter__(self):
+        &#34;&#34;&#34;Returns self&#34;&#34;&#34;
+        return self
+                                                                    
+    def __exit__(self, *args):
         &#34;&#34;&#34;
         Release this resource.
         &#34;&#34;&#34;
@@ -257,24 +299,27 @@ class ErrorStoreTableFull:
 <h3>Static methods</h3>
 <dl>
 <dt id="spin_sdk.wit.imports.key_value.Store.open"><code class="name flex">
-<span>def <span class="ident">open</span></span>(<span>label: str) ‑> Any</span>
+<span>def <span class="ident">open</span></span>(<span>label: str) ‑> Self</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Open the store with the specified label.</p>
 <p><code>label</code> must refer to a store allowed in the spin.toml manifest.</p>
-<p><code>error::no-such-store</code> will be raised if the <code>label</code> is not recognized.</p></div>
+<p><code>error::no-such-store</code> will be raised if the <code>label</code> is not recognized.</p>
+<p>Raises: <code><a title="spin_sdk.wit.types.Err" href="../types.html#spin_sdk.wit.types.Err">Err</a>(<a title="spin_sdk.wit.imports.key_value.Error" href="#spin_sdk.wit.imports.key_value.Error">Error</a>)</code></p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">@staticmethod
-def open(label: str) -&gt; Any:
+<pre><code class="python">@classmethod
+def open(cls, label: str) -&gt; Self:
     &#34;&#34;&#34;
     Open the store with the specified label.
     
     `label` must refer to a store allowed in the spin.toml manifest.
     
     `error::no-such-store` will be raised if the `label` is not recognized.
+    
+    Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.key_value.Error)`
     &#34;&#34;&#34;
     raise NotImplementedError</code></pre>
 </details>
@@ -287,7 +332,8 @@ def open(label: str) -&gt; Any:
 </code></dt>
 <dd>
 <div class="desc"><p>Delete the tuple with the specified <code>key</code></p>
-<p>No error is raised if a tuple did not previously exist for <code>key</code>.</p></div>
+<p>No error is raised if a tuple did not previously exist for <code>key</code>.</p>
+<p>Raises: <code><a title="spin_sdk.wit.types.Err" href="../types.html#spin_sdk.wit.types.Err">Err</a>(<a title="spin_sdk.wit.imports.key_value.Error" href="#spin_sdk.wit.imports.key_value.Error">Error</a>)</code></p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -297,22 +343,8 @@ def open(label: str) -&gt; Any:
     Delete the tuple with the specified `key`
     
     No error is raised if a tuple did not previously exist for `key`.
-    &#34;&#34;&#34;
-    raise NotImplementedError</code></pre>
-</details>
-</dd>
-<dt id="spin_sdk.wit.imports.key_value.Store.drop"><code class="name flex">
-<span>def <span class="ident">drop</span></span>(<span>self)</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Release this resource.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def drop(self):
-    &#34;&#34;&#34;
-    Release this resource.
+    
+    Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.key_value.Error)`
     &#34;&#34;&#34;
     raise NotImplementedError</code></pre>
 </details>
@@ -321,7 +353,8 @@ def open(label: str) -&gt; Any:
 <span>def <span class="ident">exists</span></span>(<span>self, key: str) ‑> int</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Return whether a tuple exists for the specified <code>key</code></p></div>
+<div class="desc"><p>Return whether a tuple exists for the specified <code>key</code></p>
+<p>Raises: <code><a title="spin_sdk.wit.types.Err" href="../types.html#spin_sdk.wit.types.Err">Err</a>(<a title="spin_sdk.wit.imports.key_value.Error" href="#spin_sdk.wit.imports.key_value.Error">Error</a>)</code></p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -329,6 +362,8 @@ def open(label: str) -&gt; Any:
 <pre><code class="python">def exists(self, key: str) -&gt; int:
     &#34;&#34;&#34;
     Return whether a tuple exists for the specified `key`
+    
+    Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.key_value.Error)`
     &#34;&#34;&#34;
     raise NotImplementedError</code></pre>
 </details>
@@ -338,7 +373,8 @@ def open(label: str) -&gt; Any:
 </code></dt>
 <dd>
 <div class="desc"><p>Get the value associated with the specified <code>key</code></p>
-<p>Returns <code>ok(none)</code> if the key does not exist.</p></div>
+<p>Returns <code>ok(none)</code> if the key does not exist.</p>
+<p>Raises: <code><a title="spin_sdk.wit.types.Err" href="../types.html#spin_sdk.wit.types.Err">Err</a>(<a title="spin_sdk.wit.imports.key_value.Error" href="#spin_sdk.wit.imports.key_value.Error">Error</a>)</code></p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -348,6 +384,8 @@ def open(label: str) -&gt; Any:
     Get the value associated with the specified `key`
     
     Returns `ok(none)` if the key does not exist.
+    
+    Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.key_value.Error)`
     &#34;&#34;&#34;
     raise NotImplementedError</code></pre>
 </details>
@@ -356,7 +394,8 @@ def open(label: str) -&gt; Any:
 <span>def <span class="ident">get_keys</span></span>(<span>self) ‑> List[str]</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Return a list of all the keys</p></div>
+<div class="desc"><p>Return a list of all the keys</p>
+<p>Raises: <code><a title="spin_sdk.wit.types.Err" href="../types.html#spin_sdk.wit.types.Err">Err</a>(<a title="spin_sdk.wit.imports.key_value.Error" href="#spin_sdk.wit.imports.key_value.Error">Error</a>)</code></p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -364,6 +403,8 @@ def open(label: str) -&gt; Any:
 <pre><code class="python">def get_keys(self) -&gt; List[str]:
     &#34;&#34;&#34;
     Return a list of all the keys
+    
+    Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.key_value.Error)`
     &#34;&#34;&#34;
     raise NotImplementedError</code></pre>
 </details>
@@ -372,7 +413,8 @@ def open(label: str) -&gt; Any:
 <span>def <span class="ident">set</span></span>(<span>self, key: str, value: bytes) ‑> None</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Set the <code>value</code> associated with the specified <code>key</code> overwriting any existing value.</p></div>
+<div class="desc"><p>Set the <code>value</code> associated with the specified <code>key</code> overwriting any existing value.</p>
+<p>Raises: <code><a title="spin_sdk.wit.types.Err" href="../types.html#spin_sdk.wit.types.Err">Err</a>(<a title="spin_sdk.wit.imports.key_value.Error" href="#spin_sdk.wit.imports.key_value.Error">Error</a>)</code></p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -380,6 +422,8 @@ def open(label: str) -&gt; Any:
 <pre><code class="python">def set(self, key: str, value: bytes) -&gt; None:
     &#34;&#34;&#34;
     Set the `value` associated with the specified `key` overwriting any existing value.
+    
+    Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.key_value.Error)`
     &#34;&#34;&#34;
     raise NotImplementedError</code></pre>
 </details>
@@ -398,6 +442,11 @@ def open(label: str) -&gt; Any:
 <li><h3>Super-module</h3>
 <ul>
 <li><code><a title="spin_sdk.wit.imports" href="index.html">spin_sdk.wit.imports</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-variables">Global variables</a></h3>
+<ul class="">
+<li><code><a title="spin_sdk.wit.imports.key_value.Error" href="#spin_sdk.wit.imports.key_value.Error">Error</a></code></li>
 </ul>
 </li>
 <li><h3><a href="#header-classes">Classes</a></h3>
@@ -421,7 +470,6 @@ def open(label: str) -&gt; Any:
 <h4><code><a title="spin_sdk.wit.imports.key_value.Store" href="#spin_sdk.wit.imports.key_value.Store">Store</a></code></h4>
 <ul class="two-column">
 <li><code><a title="spin_sdk.wit.imports.key_value.Store.delete" href="#spin_sdk.wit.imports.key_value.Store.delete">delete</a></code></li>
-<li><code><a title="spin_sdk.wit.imports.key_value.Store.drop" href="#spin_sdk.wit.imports.key_value.Store.drop">drop</a></code></li>
 <li><code><a title="spin_sdk.wit.imports.key_value.Store.exists" href="#spin_sdk.wit.imports.key_value.Store.exists">exists</a></code></li>
 <li><code><a title="spin_sdk.wit.imports.key_value.Store.get" href="#spin_sdk.wit.imports.key_value.Store.get">get</a></code></li>
 <li><code><a title="spin_sdk.wit.imports.key_value.Store.get_keys" href="#spin_sdk.wit.imports.key_value.Store.get_keys">get_keys</a></code></li>

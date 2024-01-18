@@ -38,8 +38,11 @@ class ErrorInvalidInput:
     value: str
 
 
-# The set of errors which may be raised by functions in this interface
 Error = Union[ErrorModelNotSupported, ErrorRuntimeError, ErrorInvalidInput]
+"""
+The set of errors which may be raised by functions in this interface
+"""
+
 
 @dataclass
 class InferencingUsage:
@@ -76,12 +79,16 @@ class EmbeddingsResult:
 def infer(model: str, prompt: str, params: Optional[InferencingParams]) -> InferencingResult:
     """
     Perform inferencing using the provided model and prompt with the given optional params
+    
+    Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.llm.Error)`
     """
     raise NotImplementedError
 
 def generate_embeddings(model: str, text: List[str]) -> EmbeddingsResult:
     """
     Generate embeddings for the supplied list of text
+    
+    Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.llm.Error)`
     """
     raise NotImplementedError
 

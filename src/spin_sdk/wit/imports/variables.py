@@ -28,8 +28,11 @@ class ErrorOther:
     value: str
 
 
-# The set of errors which may be raised by functions in this interface.
 Error = Union[ErrorInvalidName, ErrorUndefined, ErrorProvider, ErrorOther]
+"""
+The set of errors which may be raised by functions in this interface.
+"""
+
 
 
 def get(name: str) -> str:
@@ -37,6 +40,8 @@ def get(name: str) -> str:
     Get an application variable value for the current component.
     
     The name must match one defined in in the component manifest.
+    
+    Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.variables.Error)`
     """
     raise NotImplementedError
 

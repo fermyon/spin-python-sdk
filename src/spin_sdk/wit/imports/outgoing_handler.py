@@ -24,6 +24,8 @@ def handle(request: types.OutgoingRequest, options: Optional[types.RequestOption
     This function may return an error if the `outgoing-request` is invalid
     or not allowed to be made. Otherwise, protocol errors are reported
     through the `future-incoming-response`.
+    
+    Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.types.ErrorCode)`
     """
     raise NotImplementedError
 

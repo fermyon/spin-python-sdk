@@ -12,8 +12,8 @@ from abc import abstractmethod
 import weakref
 
 from ..types import Result, Ok, Err, Some
-from ..imports import error
 from ..imports import poll
+from ..imports import error
 
 
 @dataclass
@@ -26,8 +26,11 @@ class StreamErrorClosed:
     pass
 
 
-# An error for input-stream and output-stream operations.
 StreamError = Union[StreamErrorLastOperationFailed, StreamErrorClosed]
+"""
+An error for input-stream and output-stream operations.
+"""
+
 
 class InputStream:
     """
@@ -64,6 +67,8 @@ class InputStream:
         is not possible to allocate in wasm32, or not desirable to allocate as
         as a return value by the callee. The callee may return a list of bytes
         less than `len` in size while more bytes are available for reading.
+        
+        Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.streams.StreamError)`
         """
         raise NotImplementedError
 
@@ -71,6 +76,8 @@ class InputStream:
         """
         Read bytes from a stream, after blocking until at least one byte can
         be read. Except for blocking, behavior is identical to `read`.
+        
+        Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.streams.StreamError)`
         """
         raise NotImplementedError
 
@@ -80,6 +87,8 @@ class InputStream:
         
         Behaves identical to `read`, except instead of returning a list
         of bytes, returns the number of bytes consumed from the stream.
+        
+        Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.streams.StreamError)`
         """
         raise NotImplementedError
 
@@ -87,6 +96,8 @@ class InputStream:
         """
         Skip bytes from a stream, after blocking until at least one byte
         can be skipped. Except for blocking behavior, identical to `skip`.
+        
+        Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.streams.StreamError)`
         """
         raise NotImplementedError
 
@@ -101,7 +112,11 @@ class InputStream:
         """
         raise NotImplementedError
 
-    def drop(self):
+    def __enter__(self):
+        """Returns self"""
+        return self
+                                                                    
+    def __exit__(self, *args):
         """
         Release this resource.
         """
@@ -131,6 +146,8 @@ class OutputStream:
         When this function returns 0 bytes, the `subscribe` pollable will
         become ready when this function will report at least 1 byte, or an
         error.
+        
+        Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.streams.StreamError)`
         """
         raise NotImplementedError
 
@@ -143,6 +160,8 @@ class OutputStream:
         
         returns Err(closed) without writing if the stream has closed since
         the last call to check-write provided a permit.
+        
+        Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.streams.StreamError)`
         """
         raise NotImplementedError
 
@@ -172,6 +191,8 @@ class OutputStream:
         // Check for any errors that arose during `flush`
         let _ = this.check-write();         // eliding error handling
         ```
+        
+        Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.streams.StreamError)`
         """
         raise NotImplementedError
 
@@ -187,6 +208,8 @@ class OutputStream:
         writes (`check-write` will return `ok(0)`) until the flush has
         completed. The `subscribe` pollable will become ready when the
         flush has completed and the stream can accept more writes.
+        
+        Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.streams.StreamError)`
         """
         raise NotImplementedError
 
@@ -194,6 +217,8 @@ class OutputStream:
         """
         Request to flush buffered output, and block until flush completes
         and stream is ready for writing again.
+        
+        Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.streams.StreamError)`
         """
         raise NotImplementedError
 
@@ -220,6 +245,8 @@ class OutputStream:
         preconditions (must use check-write first), but instead of
         passing a list of bytes, you simply pass the number of zero-bytes
         that should be written.
+        
+        Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.streams.StreamError)`
         """
         raise NotImplementedError
 
@@ -249,6 +276,8 @@ class OutputStream:
         // Check for any errors that arose during `flush`
         let _ = this.check-write();         // eliding error handling
         ```
+        
+        Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.streams.StreamError)`
         """
         raise NotImplementedError
 
@@ -267,6 +296,8 @@ class OutputStream:
         
         This function returns the number of bytes transferred; it may be less
         than `len`.
+        
+        Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.streams.StreamError)`
         """
         raise NotImplementedError
 
@@ -277,10 +308,16 @@ class OutputStream:
         This is similar to `splice`, except that it blocks until the
         `output-stream` is ready for writing, and the `input-stream`
         is ready for reading, before performing the `splice`.
+        
+        Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.streams.StreamError)`
         """
         raise NotImplementedError
 
-    def drop(self):
+    def __enter__(self):
+        """Returns self"""
+        return self
+                                                                    
+    def __exit__(self, *args):
         """
         Release this resource.
         """

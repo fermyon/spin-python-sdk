@@ -28,22 +28,27 @@ class ErrorOther:
     value: str
 
 
-# The set of errors which may be raised by functions in this interface
 Error = Union[ErrorStoreTableFull, ErrorNoSuchStore, ErrorAccessDenied, ErrorOther]
+"""
+The set of errors which may be raised by functions in this interface
+"""
+
 
 class Store:
     """
     An open key-value store
     """
     
-    @staticmethod
-    def open(label: str) -> Any:
+    @classmethod
+    def open(cls, label: str) -> Self:
         """
         Open the store with the specified label.
         
         `label` must refer to a store allowed in the spin.toml manifest.
         
         `error::no-such-store` will be raised if the `label` is not recognized.
+        
+        Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.key_value.Error)`
         """
         raise NotImplementedError
 
@@ -52,12 +57,16 @@ class Store:
         Get the value associated with the specified `key`
         
         Returns `ok(none)` if the key does not exist.
+        
+        Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.key_value.Error)`
         """
         raise NotImplementedError
 
     def set(self, key: str, value: bytes) -> None:
         """
         Set the `value` associated with the specified `key` overwriting any existing value.
+        
+        Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.key_value.Error)`
         """
         raise NotImplementedError
 
@@ -66,22 +75,32 @@ class Store:
         Delete the tuple with the specified `key`
         
         No error is raised if a tuple did not previously exist for `key`.
+        
+        Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.key_value.Error)`
         """
         raise NotImplementedError
 
     def exists(self, key: str) -> int:
         """
         Return whether a tuple exists for the specified `key`
+        
+        Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.key_value.Error)`
         """
         raise NotImplementedError
 
     def get_keys(self) -> List[str]:
         """
         Return a list of all the keys
+        
+        Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.key_value.Error)`
         """
         raise NotImplementedError
 
-    def drop(self):
+    def __enter__(self):
+        """Returns self"""
+        return self
+                                                                    
+    def __exit__(self, *args):
         """
         Release this resource.
         """

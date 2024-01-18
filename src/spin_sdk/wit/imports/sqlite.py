@@ -33,8 +33,11 @@ class ErrorIo:
     value: str
 
 
-# The set of errors which may be raised by functions in this interface
 Error = Union[ErrorNoSuchDatabase, ErrorAccessDenied, ErrorInvalidConnection, ErrorDatabaseFull, ErrorIo]
+"""
+The set of errors which may be raised by functions in this interface
+"""
+
 
 
 @dataclass
@@ -62,8 +65,11 @@ class ValueNull:
     pass
 
 
-# A single column's result from a database query
 Value = Union[ValueInteger, ValueReal, ValueText, ValueBlob, ValueNull]
+"""
+A single column's result from a database query
+"""
+
 
 @dataclass
 class RowResult:
@@ -85,24 +91,32 @@ class Connection:
     A handle to an open sqlite instance
     """
     
-    @staticmethod
-    def open(database: str) -> Any:
+    @classmethod
+    def open(cls, database: str) -> Self:
         """
         Open a connection to a named database instance.
         
         If `database` is "default", the default instance is opened.
         
         `error::no-such-database` will be raised if the `name` is not recognized.
+        
+        Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.sqlite.Error)`
         """
         raise NotImplementedError
 
     def execute(self, statement: str, parameters: List[Value]) -> QueryResult:
         """
         Execute a statement returning back data if there is any
+        
+        Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.sqlite.Error)`
         """
         raise NotImplementedError
 
-    def drop(self):
+    def __enter__(self):
+        """Returns self"""
+        return self
+                                                                    
+    def __exit__(self, *args):
         """
         Release this resource.
         """
