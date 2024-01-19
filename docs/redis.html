@@ -39,7 +39,7 @@ def open(connection_string: str) -&gt; Connection:
 
     A `spin_sdk.wit.types.Err(spin_sdk.wit.imports.redis.ErrorInvalidAddress)` will be raised if the connection string is invalid.
 
-    A `spin_sdk.wit.types.Err(spin_sdk.wit.imports.redis.ErrorTooManyConnection)` will be raised if there are too many open connections. Closing one or more previously opened connection using the `drop` method might help.
+    A `spin_sdk.wit.types.Err(spin_sdk.wit.imports.redis.ErrorTooManyConnection)` will be raised if there are too many open connections. Closing one or more previously opened connection using the `__exit__` method might help.
     
     A `spin_sdk.wit.types.Err(spin_sdk.wit.imports.redis.ErrorOther(str))` when some other error occurs.
     &#34;&#34;&#34;
@@ -60,7 +60,7 @@ def open(connection_string: str) -&gt; Connection:
 <div class="desc"><p>Open a connection with a Redis database.</p>
 <p>The connection_string is the Redis URL to connect to.</p>
 <p>A <code><a title="spin_sdk.wit.types.Err" href="wit/types.html#spin_sdk.wit.types.Err">Err</a>(<a title="spin_sdk.wit.imports.redis.ErrorInvalidAddress" href="wit/imports/redis.html#spin_sdk.wit.imports.redis.ErrorInvalidAddress">ErrorInvalidAddress</a>)</code> will be raised if the connection string is invalid.</p>
-<p>A <code><a title="spin_sdk.wit.types.Err" href="wit/types.html#spin_sdk.wit.types.Err">Err</a>(spin_sdk.wit.imports.redis.ErrorTooManyConnection)</code> will be raised if there are too many open connections. Closing one or more previously opened connection using the <code>drop</code> method might help.</p>
+<p>A <code><a title="spin_sdk.wit.types.Err" href="wit/types.html#spin_sdk.wit.types.Err">Err</a>(spin_sdk.wit.imports.redis.ErrorTooManyConnection)</code> will be raised if there are too many open connections. Closing one or more previously opened connection using the <code>__exit__</code> method might help.</p>
 <p>A <code><a title="spin_sdk.wit.types.Err" href="wit/types.html#spin_sdk.wit.types.Err">Err</a>(<a title="spin_sdk.wit.imports.redis.ErrorOther" href="wit/imports/redis.html#spin_sdk.wit.imports.redis.ErrorOther">ErrorOther</a>(str))</code> when some other error occurs.</p></div>
 <details class="source">
 <summary>
@@ -74,7 +74,7 @@ def open(connection_string: str) -&gt; Connection:
 
     A `spin_sdk.wit.types.Err(spin_sdk.wit.imports.redis.ErrorInvalidAddress)` will be raised if the connection string is invalid.
 
-    A `spin_sdk.wit.types.Err(spin_sdk.wit.imports.redis.ErrorTooManyConnection)` will be raised if there are too many open connections. Closing one or more previously opened connection using the `drop` method might help.
+    A `spin_sdk.wit.types.Err(spin_sdk.wit.imports.redis.ErrorTooManyConnection)` will be raised if there are too many open connections. Closing one or more previously opened connection using the `__exit__` method might help.
     
     A `spin_sdk.wit.types.Err(spin_sdk.wit.imports.redis.ErrorOther(str))` when some other error occurs.
     &#34;&#34;&#34;

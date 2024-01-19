@@ -16,7 +16,7 @@ def open(name: str) -> Store:
     access to the specified store.
 
     A `spin_sdk.wit.types.Err(spin_sdk.wit.imports.key_value.ErrorStoreTableFull)` will be raised if too many stores have been opened simultaneously.
-    Closing one or more previously opened stores might address this using the `drop` method.
+    Closing one or more previously opened stores might address this using the `__exit__` method.
     
     A `spin_sdk.wit.types.Err(spin_sdk.wit.imports.key_value.ErrorOther(str))` will be raised if some implementation specific error has occured (e.g I/O)
     """
@@ -31,7 +31,7 @@ def open_default() -> Store:
     default store.
 
     A `spin_sdk.wit.types.Err(spin_sdk.wit.imports.key_value.ErrorStoreTableFull)` will be raised if too many stores have been opened simultaneously.
-    Closing one or more previously opened stores might address this using the `drop` method.
+    Closing one or more previously opened stores might address this using the `__exit__` method.
 
     A `spin_sdk.wit.types.Err(spin_sdk.wit.imports.key_value.ErrorOther(str))` will be raised if some implementation specific error has occured (e.g I/O)
     """

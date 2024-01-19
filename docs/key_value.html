@@ -45,7 +45,7 @@ def open(name: str) -&gt; Store:
     access to the specified store.
 
     A `spin_sdk.wit.types.Err(spin_sdk.wit.imports.key_value.ErrorStoreTableFull)` will be raised if too many stores have been opened simultaneously.
-    Closing one or more previously opened stores might address this using the `drop` method.
+    Closing one or more previously opened stores might address this using the `__exit__` method.
     
     A `spin_sdk.wit.types.Err(spin_sdk.wit.imports.key_value.ErrorOther(str))` will be raised if some implementation specific error has occured (e.g I/O)
     &#34;&#34;&#34;
@@ -60,7 +60,7 @@ def open_default() -&gt; Store:
     default store.
 
     A `spin_sdk.wit.types.Err(spin_sdk.wit.imports.key_value.ErrorStoreTableFull)` will be raised if too many stores have been opened simultaneously.
-    Closing one or more previously opened stores might address this using the `drop` method.
+    Closing one or more previously opened stores might address this using the `__exit__` method.
 
     A `spin_sdk.wit.types.Err(spin_sdk.wit.imports.key_value.ErrorOther(str))` will be raised if some implementation specific error has occured (e.g I/O)
     &#34;&#34;&#34;
@@ -87,7 +87,7 @@ supplied with the application.</p>
 <p>A <code><a title="spin_sdk.wit.types.Err" href="wit/types.html#spin_sdk.wit.types.Err">Err</a>(<a title="spin_sdk.wit.imports.key_value.ErrorAccessDenied" href="wit/imports/key_value.html#spin_sdk.wit.imports.key_value.ErrorAccessDenied">ErrorAccessDenied</a>)</code> will be raised if the requesting component does not have
 access to the specified store.</p>
 <p>A <code><a title="spin_sdk.wit.types.Err" href="wit/types.html#spin_sdk.wit.types.Err">Err</a>(<a title="spin_sdk.wit.imports.key_value.ErrorStoreTableFull" href="wit/imports/key_value.html#spin_sdk.wit.imports.key_value.ErrorStoreTableFull">ErrorStoreTableFull</a>)</code> will be raised if too many stores have been opened simultaneously.
-Closing one or more previously opened stores might address this using the <code>drop</code> method.</p>
+Closing one or more previously opened stores might address this using the <code>__exit__</code> method.</p>
 <p>A <code><a title="spin_sdk.wit.types.Err" href="wit/types.html#spin_sdk.wit.types.Err">Err</a>(<a title="spin_sdk.wit.imports.key_value.ErrorOther" href="wit/imports/key_value.html#spin_sdk.wit.imports.key_value.ErrorOther">ErrorOther</a>(str))</code> will be raised if some implementation specific error has occured (e.g I/O)</p></div>
 <details class="source">
 <summary>
@@ -107,7 +107,7 @@ Closing one or more previously opened stores might address this using the <code>
     access to the specified store.
 
     A `spin_sdk.wit.types.Err(spin_sdk.wit.imports.key_value.ErrorStoreTableFull)` will be raised if too many stores have been opened simultaneously.
-    Closing one or more previously opened stores might address this using the `drop` method.
+    Closing one or more previously opened stores might address this using the `__exit__` method.
     
     A `spin_sdk.wit.types.Err(spin_sdk.wit.imports.key_value.ErrorOther(str))` will be raised if some implementation specific error has occured (e.g I/O)
     &#34;&#34;&#34;
@@ -123,7 +123,7 @@ Closing one or more previously opened stores might address this using the <code>
 will be raised if the requesting component does not have access to the
 default store.</p>
 <p>A <code><a title="spin_sdk.wit.types.Err" href="wit/types.html#spin_sdk.wit.types.Err">Err</a>(<a title="spin_sdk.wit.imports.key_value.ErrorStoreTableFull" href="wit/imports/key_value.html#spin_sdk.wit.imports.key_value.ErrorStoreTableFull">ErrorStoreTableFull</a>)</code> will be raised if too many stores have been opened simultaneously.
-Closing one or more previously opened stores might address this using the <code>drop</code> method.</p>
+Closing one or more previously opened stores might address this using the <code>__exit__</code> method.</p>
 <p>A <code><a title="spin_sdk.wit.types.Err" href="wit/types.html#spin_sdk.wit.types.Err">Err</a>(<a title="spin_sdk.wit.imports.key_value.ErrorOther" href="wit/imports/key_value.html#spin_sdk.wit.imports.key_value.ErrorOther">ErrorOther</a>(str))</code> will be raised if some implementation specific error has occured (e.g I/O)</p></div>
 <details class="source">
 <summary>
@@ -138,7 +138,7 @@ Closing one or more previously opened stores might address this using the <code>
     default store.
 
     A `spin_sdk.wit.types.Err(spin_sdk.wit.imports.key_value.ErrorStoreTableFull)` will be raised if too many stores have been opened simultaneously.
-    Closing one or more previously opened stores might address this using the `drop` method.
+    Closing one or more previously opened stores might address this using the `__exit__` method.
 
     A `spin_sdk.wit.types.Err(spin_sdk.wit.imports.key_value.ErrorOther(str))` will be raised if some implementation specific error has occured (e.g I/O)
     &#34;&#34;&#34;
