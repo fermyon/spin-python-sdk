@@ -2,7 +2,7 @@
 
 This is an experimental SDK for creating Spin apps using `componentize-py`.
 
-## [API Documentation](https://dicej.github.io/experimental-spin-python-sdk/index.html)
+## [API Documentation](https://fermyon.github.io/spin-python-sdk-v2/index.html)
 
 ## Example
 
@@ -19,7 +19,7 @@ This is an experimental SDK for creating Spin apps using `componentize-py`.
 Once you have Python and pip installed, you can use the latter to create and
 enter a virtual environment and then install the desired packages
 
-```
+```shell
 python -m venv .venv
 source .venv/bin/activate
 pip install componentize-py==0.10.0 spin-sdk==0.0.5 mypy==1.8.0
@@ -29,7 +29,7 @@ pip install componentize-py==0.10.0 spin-sdk==0.0.5 mypy==1.8.0
 
 A minimal app requires two files: a `spin.toml` and a Python script, which we'll name `app.py`:
 
-```
+```shell
 cat >spin.toml <<EOF
 spin_manifest_version = 2
 
@@ -49,7 +49,7 @@ command = "componentize-py -w spin-http componentize app -o app.wasm"
 EOF
 ```
 
-```
+```shell
 cat >app.py <<EOF
 from spin_sdk.http import simple
 from spin_sdk.http.simple import Request, Response
@@ -73,7 +73,7 @@ spin build -u
 
 Finally, you can test your app using e.g. `curl` in another terminal:
 
-```
+```shell
 curl -i http://127.0.0.1:3000
 ```
 
@@ -90,4 +90,4 @@ Hello from Python!
 
 Please file an issue if you have any trouble.
 
-See the [examples directory](https://github.com/dicej/experimental-spin-python-sdk/tree/main/examples) in the repository for more examples.
+See the [examples directory](https://github.com/fermyon/spin-python-sdk-v2/tree/main/examples) in the repository for more examples.
