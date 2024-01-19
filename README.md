@@ -14,7 +14,7 @@ This is an experimental SDK for creating Spin apps using `componentize-py`.
 - [MyPy](https://pypi.org/project/mypy/)
     - This is optional, but useful for during development.
 - [Spin](https://github.com/fermyon/spin) 2.2 or later.
-    - As of this writing Spin 2.2 has not yet been released, so we must use a [temporary fork](https://github.com/dicej/spin/tree/wasmtime-16) which supports the `0.2.0-rc-2023-12-05` snapshot of WASI.  You can find pre-built binaries [here](https://github.com/dicej/spin/releases/tag/canary).
+    - As of this writing Spin 2.2 has not yet been released, so we must use the `main` branch of Spin for the time being. You can find pre-built binaries [here](https://github.com/fermyon/spin/releases/tag/canary).
 
 Once you have Python and pip installed, you can use the latter to create and
 enter a virtual environment and then install the desired packages
@@ -22,7 +22,7 @@ enter a virtual environment and then install the desired packages
 ```
 python -m venv .venv
 source .venv/bin/activate
-pip install componentize-py==0.9.2 spin-sdk==0.0.4 mypy==1.8.0
+pip install componentize-py==0.10.0 spin-sdk==0.0.5 mypy==1.8.0
 ```
 
 ### Hello, World
