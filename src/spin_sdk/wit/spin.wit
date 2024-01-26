@@ -1,7 +1,7 @@
 package fermyon:spin@2.0.0;
 
 world spin-imports {
-  import wasi:http/outgoing-handler@0.2.0-rc-2023-12-05;
+  import wasi:http/outgoing-handler@0.2.0;
   import llm;
   import redis;
   import postgres;
@@ -18,7 +18,7 @@ world spin-redis {
 
 world spin-http {
   include spin-imports;
-  export wasi:http/incoming-handler@0.2.0-rc-2023-12-05;
+  export wasi:http/incoming-handler@0.2.0;
 }
 
 world spin-all {

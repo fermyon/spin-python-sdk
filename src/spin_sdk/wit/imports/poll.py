@@ -13,7 +13,7 @@ from ..types import Result, Ok, Err, Some
 
 class Pollable:
     """
-    `pollable` epresents a single I/O event which may be ready, or not.
+    `pollable` represents a single I/O event which may be ready, or not.
     """
     
     def ready(self) -> int:

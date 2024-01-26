@@ -4,20 +4,18 @@
 
 - Python
 - `pip`
-- `componentize-py` 0.10.0
+- `componentize-py` 0.11.0
 
 Once you have `pip` installed, you can install `componentize-py` using:
 
 ```bash
-pip install componentize-py==0.10.0
+pip install componentize-py==0.11.0
 ```
 
 ### Generating the bindings
 
 The bindings are generated from
-[src/spin_sdk/wit/spin.wit](./src/spin_sdk/wit/spin.wit).  The
-[src/spin_sdk/wit/deps](./src/spin_sdk/wit/deps) directory was copied from
-https://github.com/bytecodealliance/wasmtime/tree/v16.0.0/crates/wasi/wit/deps
+[src/spin_sdk/wit/spin.wit](./src/spin_sdk/wit/spin.wit).
 
 ```bash
 componentize-py -d src/spin_sdk/wit -w spin-all bindings bindings --world-module spin_sdk.wit

@@ -12,7 +12,9 @@ class InboundRedis(Protocol):
     @abstractmethod
     def handle_message(self, message: bytes) -> None:
         """
-        Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.inbound_redis.Error)`
+        The entrypoint for a Redis handler.
+        
+        Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.redis_types.Error)`
         """
         raise NotImplementedError
 

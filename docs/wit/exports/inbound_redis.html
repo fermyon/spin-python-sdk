@@ -32,21 +32,7 @@ from dataclasses import dataclass
 from abc import abstractmethod
 import weakref
 
-from ..types import Result, Ok, Err, Some
-
-
-
-@dataclass
-class ErrorSuccess:
-    pass
-
-
-@dataclass
-class ErrorError:
-    pass
-
-
-Error = Union[ErrorSuccess, ErrorError]</code></pre>
+from ..types import Result, Ok, Err, Some</code></pre>
 </details>
 </section>
 <section>
@@ -56,37 +42,6 @@ Error = Union[ErrorSuccess, ErrorError]</code></pre>
 <section>
 </section>
 <section>
-<h2 class="section-title" id="header-classes">Classes</h2>
-<dl>
-<dt id="spin_sdk.wit.exports.inbound_redis.ErrorError"><code class="flex name class">
-<span>class <span class="ident">ErrorError</span></span>
-</code></dt>
-<dd>
-<div class="desc"><p>ErrorError()</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@dataclass
-class ErrorError:
-    pass</code></pre>
-</details>
-</dd>
-<dt id="spin_sdk.wit.exports.inbound_redis.ErrorSuccess"><code class="flex name class">
-<span>class <span class="ident">ErrorSuccess</span></span>
-</code></dt>
-<dd>
-<div class="desc"><p>ErrorSuccess()</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@dataclass
-class ErrorSuccess:
-    pass</code></pre>
-</details>
-</dd>
-</dl>
 </section>
 </article>
 <nav id="sidebar">
@@ -98,16 +53,6 @@ class ErrorSuccess:
 <li><h3>Super-module</h3>
 <ul>
 <li><code><a title="spin_sdk.wit.exports" href="index.html">spin_sdk.wit.exports</a></code></li>
-</ul>
-</li>
-<li><h3><a href="#header-classes">Classes</a></h3>
-<ul>
-<li>
-<h4><code><a title="spin_sdk.wit.exports.inbound_redis.ErrorError" href="#spin_sdk.wit.exports.inbound_redis.ErrorError">ErrorError</a></code></h4>
-</li>
-<li>
-<h4><code><a title="spin_sdk.wit.exports.inbound_redis.ErrorSuccess" href="#spin_sdk.wit.exports.inbound_redis.ErrorSuccess">ErrorSuccess</a></code></h4>
-</li>
 </ul>
 </li>
 </ul>

@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "spin-sdk"
-version = "0.0.5"
+version = "2.0.0rc1"
 description = "Experimental SDK for Spin and Componentize-Py"
 readme = "README.md"
 license = { file = "LICENSE" }
@@ -13,8 +13,8 @@ maintainers = [ { name = "Fermyon Engineering", email = "engineering@fermyon.com
 keywords = [ "webassembly", "wasm", "component", "spin" ]
 
 [project.urls]
-repository = "https://github.com/fermyon/spin-python-sdk-v2"
-documentation = "https://fermyon.github.io/spin-python-sdk-v2"
+repository = "https://github.com/fermyon/spin-python-sdk"
+documentation = "https://fermyon.github.io/spin-python-sdk"
 
 [tool.setuptools.packages.find]
 where = ["src"]

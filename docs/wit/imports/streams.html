@@ -81,6 +81,11 @@ class InputStream:
         &#34;&#34;&#34;
         Perform a non-blocking read from the stream.
         
+        When the source of a `read` is binary data, the bytes from the source
+        are returned verbatim. When the source of a `read` is known to the
+        implementation to be text, bytes containing the UTF-8 encoding of the
+        text are returned.
+        
         This function returns a list of bytes containing the read data,
         when successful. The returned list will contain up to `len` bytes;
         it may return fewer than requested, but not more. The list is
@@ -188,6 +193,12 @@ class OutputStream:
         &#34;&#34;&#34;
         Perform a write. This function never blocks.
         
+        When the destination of a `write` is binary data, the bytes from
+        `contents` are written verbatim. When the destination of a `write` is
+        known to the implementation to be text, the bytes of `contents` are
+        transcoded from UTF-8 into the encoding of the destination and then
+        written.
+        
         Precondition: check-write gave permit of Ok(n) and contents has a
         length of less than or equal to n. Otherwise, this function will trap.
         
@@ -211,7 +222,7 @@ class OutputStream:
         let pollable = this.subscribe();
         while !contents.is_empty() {
         // Wait for the stream to become writable
-        poll-one(pollable);
+        pollable.block();
         let Ok(n) = this.check-write(); // eliding error handling
         let len = min(n, contents.len());
         let (chunk, rest) = contents.split_at(len);
@@ -220,7 +231,7 @@ class OutputStream:
         }
         this.flush();
         // Wait for completion of `flush`
-        poll-one(pollable);
+        pollable.block();
         // Check for any errors that arose during `flush`
         let _ = this.check-write();         // eliding error handling
         ```
@@ -274,7 +285,7 @@ class OutputStream:
         &#34;&#34;&#34;
         Write zeroes to a stream.
         
-        this should be used precisely like `write` with the exact same
+        This should be used precisely like `write` with the exact same
         preconditions (must use check-write first), but instead of
         passing a list of bytes, you simply pass the number of zero-bytes
         that should be written.
@@ -297,7 +308,7 @@ class OutputStream:
         let pollable = this.subscribe();
         while num_zeroes != 0 {
         // Wait for the stream to become writable
-        poll-one(pollable);
+        pollable.block();
         let Ok(n) = this.check-write(); // eliding error handling
         let len = min(n, num_zeroes);
         this.write-zeroes(len);         // eliding error handling
@@ -305,7 +316,7 @@ class OutputStream:
         }
         this.flush();
         // Wait for completion of `flush`
-        poll-one(pollable);
+        pollable.block();
         // Check for any errors that arose during `flush`
         let _ = this.check-write();         // eliding error handling
         ```
@@ -403,6 +414,11 @@ for using <code>wasi:io/poll</code>.</p></div>
     def read(self, len: int) -&gt; bytes:
         &#34;&#34;&#34;
         Perform a non-blocking read from the stream.
+        
+        When the source of a `read` is binary data, the bytes from the source
+        are returned verbatim. When the source of a `read` is known to the
+        implementation to be text, bytes containing the UTF-8 encoding of the
+        text are returned.
         
         This function returns a list of bytes containing the read data,
         when successful. The returned list will contain up to `len` bytes;
@@ -527,6 +543,10 @@ can be skipped. Except for blocking behavior, identical to <code>skip</code>.</p
 </code></dt>
 <dd>
 <div class="desc"><p>Perform a non-blocking read from the stream.</p>
+<p>When the source of a <code>read</code> is binary data, the bytes from the source
+are returned verbatim. When the source of a <code>read</code> is known to the
+implementation to be text, bytes containing the UTF-8 encoding of the
+text are returned.</p>
 <p>This function returns a list of bytes containing the read data,
 when successful. The returned list will contain up to <code>len</code> bytes;
 it may return fewer than requested, but not more. The list is
@@ -551,6 +571,11 @@ less than <code>len</code> in size while more bytes are available for reading.</
 <pre><code class="python">def read(self, len: int) -&gt; bytes:
     &#34;&#34;&#34;
     Perform a non-blocking read from the stream.
+    
+    When the source of a `read` is binary data, the bytes from the source
+    are returned verbatim. When the source of a `read` is known to the
+    implementation to be text, bytes containing the UTF-8 encoding of the
+    text are returned.
     
     This function returns a list of bytes containing the read data,
     when successful. The returned list will contain up to `len` bytes;
@@ -676,6 +701,12 @@ polled for using <code>wasi:io/poll</code>.</p></div>
         &#34;&#34;&#34;
         Perform a write. This function never blocks.
         
+        When the destination of a `write` is binary data, the bytes from
+        `contents` are written verbatim. When the destination of a `write` is
+        known to the implementation to be text, the bytes of `contents` are
+        transcoded from UTF-8 into the encoding of the destination and then
+        written.
+        
         Precondition: check-write gave permit of Ok(n) and contents has a
         length of less than or equal to n. Otherwise, this function will trap.
         
@@ -699,7 +730,7 @@ polled for using <code>wasi:io/poll</code>.</p></div>
         let pollable = this.subscribe();
         while !contents.is_empty() {
         // Wait for the stream to become writable
-        poll-one(pollable);
+        pollable.block();
         let Ok(n) = this.check-write(); // eliding error handling
         let len = min(n, contents.len());
         let (chunk, rest) = contents.split_at(len);
@@ -708,7 +739,7 @@ polled for using <code>wasi:io/poll</code>.</p></div>
         }
         this.flush();
         // Wait for completion of `flush`
-        poll-one(pollable);
+        pollable.block();
         // Check for any errors that arose during `flush`
         let _ = this.check-write();         // eliding error handling
         ```
@@ -762,7 +793,7 @@ polled for using <code>wasi:io/poll</code>.</p></div>
         &#34;&#34;&#34;
         Write zeroes to a stream.
         
-        this should be used precisely like `write` with the exact same
+        This should be used precisely like `write` with the exact same
         preconditions (must use check-write first), but instead of
         passing a list of bytes, you simply pass the number of zero-bytes
         that should be written.
@@ -785,7 +816,7 @@ polled for using <code>wasi:io/poll</code>.</p></div>
         let pollable = this.subscribe();
         while num_zeroes != 0 {
         // Wait for the stream to become writable
-        poll-one(pollable);
+        pollable.block();
         let Ok(n) = this.check-write(); // eliding error handling
         let len = min(n, num_zeroes);
         this.write-zeroes(len);         // eliding error handling
@@ -793,7 +824,7 @@ polled for using <code>wasi:io/poll</code>.</p></div>
         }
         this.flush();
         // Wait for completion of `flush`
-        poll-one(pollable);
+        pollable.block();
         // Check for any errors that arose during `flush`
         let _ = this.check-write();         // eliding error handling
         ```
@@ -905,7 +936,7 @@ following pseudo-code:</p>
 <pre><code class="language-text">let pollable = this.subscribe();
 while !contents.is_empty() {
 // Wait for the stream to become writable
-poll-one(pollable);
+pollable.block();
 let Ok(n) = this.check-write(); // eliding error handling
 let len = min(n, contents.len());
 let (chunk, rest) = contents.split_at(len);
@@ -914,7 +945,7 @@ contents = rest;
 }
 this.flush();
 // Wait for completion of `flush`
-poll-one(pollable);
+pollable.block();
 // Check for any errors that arose during `flush`
 let _ = this.check-write();         // eliding error handling
 </code></pre>
@@ -936,7 +967,7 @@ let _ = this.check-write();         // eliding error handling
     let pollable = this.subscribe();
     while !contents.is_empty() {
     // Wait for the stream to become writable
-    poll-one(pollable);
+    pollable.block();
     let Ok(n) = this.check-write(); // eliding error handling
     let len = min(n, contents.len());
     let (chunk, rest) = contents.split_at(len);
@@ -945,7 +976,7 @@ let _ = this.check-write();         // eliding error handling
     }
     this.flush();
     // Wait for completion of `flush`
-    poll-one(pollable);
+    pollable.block();
     // Check for any errors that arose during `flush`
     let _ = this.check-write();         // eliding error handling
     ```
@@ -968,7 +999,7 @@ the following pseudo-code:</p>
 <pre><code class="language-text">let pollable = this.subscribe();
 while num_zeroes != 0 {
 // Wait for the stream to become writable
-poll-one(pollable);
+pollable.block();
 let Ok(n) = this.check-write(); // eliding error handling
 let len = min(n, num_zeroes);
 this.write-zeroes(len);         // eliding error handling
@@ -976,7 +1007,7 @@ num_zeroes -= len;
 }
 this.flush();
 // Wait for completion of `flush`
-poll-one(pollable);
+pollable.block();
 // Check for any errors that arose during `flush`
 let _ = this.check-write();         // eliding error handling
 </code></pre>
@@ -999,7 +1030,7 @@ let _ = this.check-write();         // eliding error handling
     let pollable = this.subscribe();
     while num_zeroes != 0 {
     // Wait for the stream to become writable
-    poll-one(pollable);
+    pollable.block();
     let Ok(n) = this.check-write(); // eliding error handling
     let len = min(n, num_zeroes);
     this.write-zeroes(len);         // eliding error handling
@@ -1007,7 +1038,7 @@ let _ = this.check-write();         // eliding error handling
     }
     this.flush();
     // Wait for completion of `flush`
-    poll-one(pollable);
+    pollable.block();
     // Check for any errors that arose during `flush`
     let _ = this.check-write();         // eliding error handling
     ```
@@ -1162,6 +1193,11 @@ all derived <code>pollable</code>s created with this function are dropped.</p></
 </code></dt>
 <dd>
 <div class="desc"><p>Perform a write. This function never blocks.</p>
+<p>When the destination of a <code>write</code> is binary data, the bytes from
+<code>contents</code> are written verbatim. When the destination of a <code>write</code> is
+known to the implementation to be text, the bytes of <code>contents</code> are
+transcoded from UTF-8 into the encoding of the destination and then
+written.</p>
 <p>Precondition: check-write gave permit of Ok(n) and contents has a
 length of less than or equal to n. Otherwise, this function will trap.</p>
 <p>returns Err(closed) without writing if the stream has closed since
@@ -1174,6 +1210,12 @@ the last call to check-write provided a permit.</p>
 <pre><code class="python">def write(self, contents: bytes) -&gt; None:
     &#34;&#34;&#34;
     Perform a write. This function never blocks.
+    
+    When the destination of a `write` is binary data, the bytes from
+    `contents` are written verbatim. When the destination of a `write` is
+    known to the implementation to be text, the bytes of `contents` are
+    transcoded from UTF-8 into the encoding of the destination and then
+    written.
     
     Precondition: check-write gave permit of Ok(n) and contents has a
     length of less than or equal to n. Otherwise, this function will trap.
@@ -1191,7 +1233,7 @@ the last call to check-write provided a permit.</p>
 </code></dt>
 <dd>
 <div class="desc"><p>Write zeroes to a stream.</p>
-<p>this should be used precisely like <code>write</code> with the exact same
+<p>This should be used precisely like <code>write</code> with the exact same
 preconditions (must use check-write first), but instead of
 passing a list of bytes, you simply pass the number of zero-bytes
 that should be written.</p>
@@ -1204,7 +1246,7 @@ that should be written.</p>
     &#34;&#34;&#34;
     Write zeroes to a stream.
     
-    this should be used precisely like `write` with the exact same
+    This should be used precisely like `write` with the exact same
     preconditions (must use check-write first), but instead of
     passing a list of bytes, you simply pass the number of zero-bytes
     that should be written.

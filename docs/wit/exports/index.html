@@ -40,7 +40,9 @@ class InboundRedis(Protocol):
     @abstractmethod
     def handle_message(self, message: bytes) -&gt; None:
         &#34;&#34;&#34;
-        Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.inbound_redis.Error)`
+        The entrypoint for a Redis handler.
+        
+        Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.redis_types.Error)`
         &#34;&#34;&#34;
         raise NotImplementedError
 
@@ -125,7 +127,9 @@ Protocol classes can be generic, they are defined as::</p>
     @abstractmethod
     def handle_message(self, message: bytes) -&gt; None:
         &#34;&#34;&#34;
-        Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.inbound_redis.Error)`
+        The entrypoint for a Redis handler.
+        
+        Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.redis_types.Error)`
         &#34;&#34;&#34;
         raise NotImplementedError</code></pre>
 </details>
@@ -140,7 +144,8 @@ Protocol classes can be generic, they are defined as::</p>
 <span>def <span class="ident">handle_message</span></span>(<span>self, message: bytes) ‑> None</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Raises: <code><a title="spin_sdk.wit.types.Err" href="../types.html#spin_sdk.wit.types.Err">Err</a>(spin_sdk.wit.imports.inbound_redis.Error)</code></p></div>
+<div class="desc"><p>The entrypoint for a Redis handler.</p>
+<p>Raises: <code><a title="spin_sdk.wit.types.Err" href="../types.html#spin_sdk.wit.types.Err">Err</a>(<a title="spin_sdk.wit.imports.redis_types.Error" href="../imports/redis_types.html#spin_sdk.wit.imports.redis_types.Error">Error</a>)</code></p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -148,7 +153,9 @@ Protocol classes can be generic, they are defined as::</p>
 <pre><code class="python">@abstractmethod
 def handle_message(self, message: bytes) -&gt; None:
     &#34;&#34;&#34;
-    Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.inbound_redis.Error)`
+    The entrypoint for a Redis handler.
+    
+    Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.redis_types.Error)`
     &#34;&#34;&#34;
     raise NotImplementedError</code></pre>
 </details>

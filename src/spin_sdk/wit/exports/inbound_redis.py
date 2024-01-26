@@ -7,17 +7,3 @@ import weakref
 from ..types import Result, Ok, Err, Some
 
 
-
-@dataclass
-class ErrorSuccess:
-    pass
-
-
-@dataclass
-class ErrorError:
-    pass
-
-
-Error = Union[ErrorSuccess, ErrorError]
-
-
