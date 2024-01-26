@@ -1,9 +1,9 @@
-# [Spin](https://github.com/fermyon/spin) Python SDK
+# Spin Python SDK
 
-This is an SDK for creating Spin apps using Python.
+This is an SDK for creating [Spin](https://github.com/fermyon/spin) apps using Python.
 
-Note that this SDK supercedes the older, experimental Spin Python SDK, which may
-be found in the [old-sdk](https://github.com/fermyon/spin-sdk/tree/old-sdk)
+Note that this SDK supercedes an earlier, experimental version, which may be
+found in the [old-sdk](https://github.com/fermyon/spin-python-sdk/tree/old-sdk)
 branch.
 
 ## [API Documentation](https://fermyon.github.io/spin-python-sdk/index.html)

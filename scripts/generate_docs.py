@@ -19,6 +19,9 @@ if expected_doc_comment not in content:
 # Change to the root directory of the project
 os.chdir(os.path.join(script_dir, '..'))
 
+# Move docs/v1 out of the way
+shutil.move(os.path.join('docs', 'v1'), 'tmp')
+
 # Remove the 'docs' directory
 shutil.rmtree('docs', ignore_errors=True)
 
@@ -31,3 +34,7 @@ shutil.move('html/spin_sdk', os.path.join('..', 'docs'))
 
 # Remove the 'src/html' directory
 os.rmdir('html')
+
+os.chdir('..')
+# Move docs/v1 back into place
+shutil.move('tmp', os.path.join('docs', 'v1'))
