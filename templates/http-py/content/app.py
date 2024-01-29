@@ -1,8 +1,10 @@
-from spin_http import Response
+from spin_sdk.http import simple
+from spin_sdk.http.simple import Request, Response
 
-
-def handle_request(request):
-
-    return Response(200,
-                    {"content-type": "text/plain"},
-                    bytes(f"Hello from the Python SDK", "utf-8"))
+class IncomingHandler(simple.IncomingHandler):
+    def handle_request(self, request: Request) -> Response:
+        return Response(
+            200,
+            {"content-type": "text/plain"},
+            bytes("Hello from Python!", "utf-8")
+        )
