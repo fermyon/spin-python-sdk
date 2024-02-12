@@ -1,8 +1,8 @@
-from spin_sdk.http import simple
-from spin_sdk.http.simple import Request, Response
+from spin_sdk.http import IncomingHandler
+from spin_sdk.http import Request, Response
 from spin_sdk import key_value
 
-class IncomingHandler(simple.IncomingHandler):
+class IncomingHandler(IncomingHandler):
     def handle_request(self, request: Request) -> Response:
         with key_value.open_default() as a:
             a.set("test", bytes("hello world!", "utf-8"))
