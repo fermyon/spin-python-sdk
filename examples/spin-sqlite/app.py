@@ -1,5 +1,4 @@
-from spin_sdk.http import IncomingHandler
-from spin_sdk.http import Request, Response
+from spin_sdk.http import IncomingHandler, Request, Response
 from spin_sdk import sqlite
 from spin_sdk.wit.imports.sqlite import ValueInteger
 
