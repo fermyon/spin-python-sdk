@@ -1,5 +1,5 @@
 manifest_version = "1"
-id = "http-py-simple"
+id = "http-py"
 description = "HTTP request handler using Python"
 tags = ["http", "python", "py"]
 
