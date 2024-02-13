@@ -1,8 +1,7 @@
-from spin_sdk.http import simple
-from spin_sdk.http.simple import Request, Response
+from spin_sdk.http import IncomingHandler, Request, Response
 from spin_sdk import postgres
 
-class IncomingHandler(simple.IncomingHandler):
+class IncomingHandler(IncomingHandler):
     def handle_request(self, request: Request) -> Response:
         with postgres.open("user=postgres dbname=spin_dev host=127.0.0.1") as db:
             print(db.query("select * from test", []))

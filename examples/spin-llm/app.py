@@ -1,8 +1,7 @@
-from spin_sdk.http import simple
-from spin_sdk.http.simple import Request, Response
+from spin_sdk.http import IncomingHandler, Request, Response
 from spin_sdk import llm
 
-class IncomingHandler(simple.IncomingHandler):
+class IncomingHandler(IncomingHandler):
     def handle_request(self, request: Request) -> Response:
         res = llm.infer("llama2-chat", "tell me a joke")
         print(res.text)

@@ -1,7 +1,6 @@
-from spin_sdk.http import simple
-from spin_sdk.http.simple import Request, Response, send
+from spin_sdk.http import IncomingHandler, Request, Response, send
 
-class IncomingHandler(simple.IncomingHandler):
+class IncomingHandler(IncomingHandler):
     def handle_request(self, request: Request) -> Response:
         try:
             url = request.headers["url"]
