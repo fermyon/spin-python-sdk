@@ -57,10 +57,9 @@ EOF
 
 ```shell
 cat >app.py <<EOF
-from spin_sdk.http import simple
-from spin_sdk.http.simple import Request, Response
+from spin_sdk.http import Request, Response, IncomingHandler
 
-class IncomingHandler(simple.IncomingHandler):
+class IncomingHandler(IncomingHandler):
     def handle_request(self, request: Request) -> Response:
         return Response(
             200,
