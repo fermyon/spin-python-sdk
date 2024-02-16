@@ -5,7 +5,7 @@ from typing import Optional, Sequence
 from spin_sdk.wit.imports import llm as spin_llm
 
 @dataclass
-class LLMInferencingParams:
+class InferencingParams:
     max_tokens: int = 100
     repeat_penalty: float = 1.1
     repeat_penalty_last_n_token_count: int = 64
@@ -24,7 +24,7 @@ def generate_embeddings(model: str, text: Sequence[str]) -> spin_llm.EmbeddingsR
     """
     return spin_llm.generate_embeddings(model, text)
 
-def infer_with_options(model: str, prompt: str, options: Optional[LLMInferencingParams]) -> spin_llm.InferencingResult:
+def infer_with_options(model: str, prompt: str, options: Optional[InferencingParams]) -> spin_llm.InferencingResult:
     """
     A `spin_sdk.wit.types.Err(spin_sdk.wit.imports.llm.ErrorModelNotSupported)` will be raised if the component does not have access to the specified model.
     
@@ -32,7 +32,7 @@ def infer_with_options(model: str, prompt: str, options: Optional[LLMInferencing
 
     A `spin_sdk.wit.types.Err(spin_sdk.wit.imports.llm.ErrorInvalidInput(str))` will be raised if an invalid input is provided.
     """
-    options = options or LLMInferencingParams
+    options = options or InferencingParams
     return spin_llm.infer(model, prompt, options)
 
 def infer(model: str, prompt: str) -> spin_llm.InferencingResult:
@@ -43,6 +43,6 @@ def infer(model: str, prompt: str) -> spin_llm.InferencingResult:
 
     A `spin_sdk.wit.types.Err(spin_sdk.wit.imports.llm.ErrorInvalidInput(str))` will be raised if an invalid input is provided.
     """
-    options = LLMInferencingParams
+    options = InferencingParams
     return spin_llm.infer(model, prompt, options)
 
