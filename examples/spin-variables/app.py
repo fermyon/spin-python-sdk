@@ -1,7 +1,7 @@
-from spin_sdk.http import IncomingHandler, Request, Response
-from spin_sdk import variables
+from spin_sdk import http, variables  
+from spin_sdk.http import Request, Response
 
-class IncomingHandler(IncomingHandler):
+class IncomingHandler(http.IncomingHandler):
     def handle_request(self, request: Request) -> Response:
         print(variables.get("message"))
         return Response(

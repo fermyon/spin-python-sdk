@@ -1,7 +1,7 @@
-from spin_sdk.http import IncomingHandler, Request, Response
-from spin_sdk import redis
+from spin_sdk import http, redis 
+from spin_sdk.http import Request, Response
 
-class IncomingHandler(IncomingHandler):
+class IncomingHandler(http.IncomingHandler):
     def handle_request(self, request: Request) -> Response:
         with redis.open("redis://localhost:6379") as db:
             print(db.get("test"))
