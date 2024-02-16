@@ -1,8 +1,9 @@
 import numpy
 import json
-from spin_sdk.http import IncomingHandler, Request, Response
+from spin_sdk import http   
+from spin_sdk.http import Request, Response
 
-class IncomingHandler(IncomingHandler):
+class IncomingHandler(http.IncomingHandler):
     def handle_request(self, request: Request) -> Response:
         if request.method == "POST" \
            and request.uri == "/multiply" \
