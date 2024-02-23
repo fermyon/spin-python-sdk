@@ -1,7 +1,7 @@
 """Module for interacting with an SQLite database"""
 
 from typing import List
-from spin_sdk.wit.imports.sqlite import Connection
+from spin_sdk.wit.imports.sqlite import Connection, ValueInteger, ValueReal, ValueText, ValueBlob
 
 def open(name: str) -> Connection:
     """Open a connection to a named database instance.
@@ -26,3 +26,8 @@ def open_default() -> Connection:
     A `spin_sdk.wit.types.Err(spin_sdk.wit.imports.sqlite.ErrorIo(str))` will be raised when implementation-specific error occured (e.g. I/O)
     """
     return Connection.open("default")
+
+ValueInteger = ValueInteger
+ValueReal = ValueReal
+ValueText = ValueText
+ValueBlob = ValueBlob

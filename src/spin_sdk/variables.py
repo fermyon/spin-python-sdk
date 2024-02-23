@@ -1,4 +1,9 @@
-"""Module for getting Spin Variable values"""
+"""Module for interacting with Spin Variables"""
 
-# Just re-export
-from spin_sdk.wit.imports.variables import *
+from spin_sdk.wit.imports import variables
+
+def get(key: str):
+    """
+    Gets the value of the given key
+    """
+    return variables.get(key)

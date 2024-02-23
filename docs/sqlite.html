@@ -30,7 +30,7 @@
 <pre><code class="python">&#34;&#34;&#34;Module for interacting with an SQLite database&#34;&#34;&#34;
 
 from typing import List
-from spin_sdk.wit.imports.sqlite import Connection
+from spin_sdk.wit.imports.sqlite import Connection, ValueInteger, ValueReal, ValueText, ValueBlob
 
 def open(name: str) -&gt; Connection:
     &#34;&#34;&#34;Open a connection to a named database instance.
@@ -54,7 +54,12 @@ def open_default() -&gt; Connection:
 
     A `spin_sdk.wit.types.Err(spin_sdk.wit.imports.sqlite.ErrorIo(str))` will be raised when implementation-specific error occured (e.g. I/O)
     &#34;&#34;&#34;
-    return Connection.open(&#34;default&#34;)</code></pre>
+    return Connection.open(&#34;default&#34;)
+
+ValueInteger = ValueInteger
+ValueReal = ValueReal
+ValueText = ValueText
+ValueBlob = ValueBlob</code></pre>
 </details>
 </section>
 <section>
