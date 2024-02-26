@@ -16,10 +16,8 @@ inbound links; it will be removed or replaced.)_
 - [Python 3.10 or later and pip](https://www.python.org/downloads/)
 - [componentize-py](https://pypi.org/project/componentize-py/)
 - [spin-sdk](https://pypi.org/project/spin-sdk/)
-- [MyPy](https://pypi.org/project/mypy/)
-    - This is optional, but useful for during development.
 - [Spin](https://github.com/fermyon/spin) 2.2 or later.
-    - As of this writing Spin 2.2 has not yet been released, so we must use the `main` branch of Spin for the time being. You can find pre-built binaries [here](https://github.com/fermyon/spin/releases/tag/canary).
+- [MyPy](https://pypi.org/project/mypy/) -- This is optional, but useful for during development.
 
 Once you have Python and pip installed, you can use the latter to create and
 enter a virtual environment and then install the desired packages
