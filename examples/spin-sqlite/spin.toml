@@ -15,4 +15,4 @@ source = "app.wasm"
 sqlite_databases = ["default"]
 ai_models = ["llama2-chat"]
 [component.test.build]
-command = "componentize-py -w spin-http componentize -p . -p ../../src app -o app.wasm"
+command = "componentize-py -w spin-http componentize app -o app.wasm"

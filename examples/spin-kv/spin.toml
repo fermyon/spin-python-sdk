@@ -15,4 +15,4 @@ source = "app.wasm"
 allowed_outbound_hosts = []
 key_value_stores = ["default"]
 [component.test.build]
-command = "componentize-py -w spin-http componentize -p . -p ../../src app -o app.wasm"
+command = "componentize-py -w spin-http componentize app -o app.wasm"

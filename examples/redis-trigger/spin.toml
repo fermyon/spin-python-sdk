@@ -16,4 +16,4 @@ component = "echo-message"
 [component.echo-message]
 source = "app.wasm"
 [component.echo-message.build]
-command = "componentize-py -w spin-redis componentize -p . -p ../../src app -o app.wasm"
+command = "componentize-py -w spin-redis componentize app -o app.wasm"
