@@ -1,0 +1,3 @@
+spin-sdk == 2.0.0
+componentize-py == 0.11.2
+http-router

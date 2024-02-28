@@ -4,3 +4,4 @@ __pycache__
 .spin
 src/spin_sdk.egg-info
 dist
+venv/
