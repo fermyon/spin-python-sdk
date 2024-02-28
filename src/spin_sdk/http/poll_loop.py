@@ -152,7 +152,7 @@ class PollLoop(asyncio.AbstractEventLoop):
             if self.exception is not None:
                 raise self.exception
             
-        future.result()
+        return future.result()
 
     def is_running(self):
         return self.running
