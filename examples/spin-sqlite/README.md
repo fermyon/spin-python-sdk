@@ -1,6 +1,6 @@
 # Example: Spin Sqlite
 
-This is an example showcasing the use of Spin sqlite within a guest component. 
+This is an example showcasing the use of Spin SQLite within a guest component. 
 
 ## Preparing the Environment
 
@@ -11,7 +11,7 @@ python3 -m venv venv
 source venv/bin/activate
 ```
 
-Install the required packages specified in `the requirements.txt` using the command:
+Install the required packages specified in the `requirements.txt` using the command:
 
 ```bash
 pip3 install -r requirements.txt

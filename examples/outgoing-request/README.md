@@ -11,7 +11,7 @@ python3 -m venv venv
 source venv/bin/activate
 ```
 
-Install the required packages specified in `the requirements.txt` using the command:
+Install the required packages specified in the `requirements.txt` using the command:
 
 ```bash
 pip3 install -r requirements.txt
@@ -26,7 +26,7 @@ spin build --up
 ## Testing the App
 
 ```bash
-$ ccurl -H "url: https://example.com" localhost:3000
+$ curl -H "url: https://example.com" localhost:3000
 <!doctype html>
 <html>
 <head>

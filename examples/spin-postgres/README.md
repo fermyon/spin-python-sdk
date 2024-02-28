@@ -1,6 +1,6 @@
 # Example: Spin Postgres
 
-This is an example showcasing the use of Spin postgres bindings within a guest component. 
+This is an example showcasing the use of Spin PostgreSQL bindings within a guest component. 
 
 ## Preparing the Environment
 
@@ -11,13 +11,13 @@ python3 -m venv venv
 source venv/bin/activate
 ```
 
-Install the required packages specified in `the requirements.txt` using the command:
+Install the required packages specified in the `requirements.txt` using the command:
 
 ```bash
 pip3 install -r requirements.txt
 ```
 
-For this example, a postgres database named `spin_dev` must be accessible at `127.0.0.1` with a user `postgres` should exist. 
+For this example, a PostgreSQL database named `spin_dev` must be accessible at `127.0.0.1` with a user `postgres` should exist. 
 
 ## Building and Running the Examples
 
