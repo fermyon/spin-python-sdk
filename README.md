@@ -4,8 +4,7 @@ This is an SDK for creating [Spin](https://github.com/fermyon/spin) apps using P
 
 Note that this SDK supersedes an earlier, experimental version, which may be
 found in the [old-sdk](https://github.com/fermyon/spin-python-sdk/tree/old-sdk)
-branch. _(The old template remains on `main` temporarily to preserve compatibility for some
-inbound links; it will be removed or replaced.)_
+branch.
 
 ## [API Documentation](https://fermyon.github.io/spin-python-sdk/index.html)
 
