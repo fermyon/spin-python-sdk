@@ -186,7 +186,7 @@ class PollLoop(asyncio.AbstractEventLoop):
             if self.exception is not None:
                 raise self.exception
             
-        future.result()
+        return future.result()
 
     def is_running(self):
         return self.running
@@ -513,7 +513,7 @@ async def register(loop: PollLoop, pollable: Pollable):
             if self.exception is not None:
                 raise self.exception
             
-        future.result()
+        return future.result()
 
     def is_running(self):
         return self.running
@@ -1312,7 +1312,7 @@ to make the server to start accepting connections.</p></div>
         if self.exception is not None:
             raise self.exception
         
-    future.result()</code></pre>
+    return future.result()</code></pre>
 </details>
 </dd>
 <dt id="spin_sdk.http.poll_loop.PollLoop.sendfile"><code class="name flex">
