@@ -5,28 +5,28 @@ stream types.
 In the future, the component model is expected to add built-in stream types;
 when it does, they are expected to subsume this API.
 """
-from typing import TypeVar, Generic, Union, Optional, Union, Protocol, Tuple, List, Any, Self
+from typing import TypeVar, Generic, Union, Optional, Protocol, Tuple, List, Any, Self
 from enum import Flag, Enum, auto
 from dataclasses import dataclass
 from abc import abstractmethod
 import weakref
 
 from ..types import Result, Ok, Err, Some
-from ..imports import poll
 from ..imports import error
+from ..imports import poll
 
 
 @dataclass
-class StreamErrorLastOperationFailed:
+class StreamError_LastOperationFailed:
     value: error.Error
 
 
 @dataclass
-class StreamErrorClosed:
+class StreamError_Closed:
     pass
 
 
-StreamError = Union[StreamErrorLastOperationFailed, StreamErrorClosed]
+StreamError = Union[StreamError_LastOperationFailed, StreamError_Closed]
 """
 An error for input-stream and output-stream operations.
 """

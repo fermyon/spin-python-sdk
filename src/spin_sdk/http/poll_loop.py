@@ -14,7 +14,7 @@ import subprocess
 from spin_sdk.wit.types import Ok, Err
 from spin_sdk.wit.imports import types, streams, poll, outgoing_handler
 from spin_sdk.wit.imports.types import IncomingBody, OutgoingBody, OutgoingRequest, IncomingResponse
-from spin_sdk.wit.imports.streams import StreamErrorClosed, InputStream
+from spin_sdk.wit.imports.streams import StreamError_Closed, InputStream
 from spin_sdk.wit.imports.poll import Pollable
 from typing import Optional, cast
 
@@ -63,7 +63,7 @@ class Stream:
                     else:
                         return buffer
             except Err as e:
-                if isinstance(e.value, StreamErrorClosed):
+                if isinstance(e.value, StreamError_Closed):
                     if self.stream is not None:
                         self.stream.__exit__()
                         self.stream = None

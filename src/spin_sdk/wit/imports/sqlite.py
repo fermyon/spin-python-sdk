@@ -1,4 +1,4 @@
-from typing import TypeVar, Generic, Union, Optional, Union, Protocol, Tuple, List, Any, Self
+from typing import TypeVar, Generic, Union, Optional, Protocol, Tuple, List, Any, Self
 from enum import Flag, Enum, auto
 from dataclasses import dataclass
 from abc import abstractmethod
@@ -9,31 +9,31 @@ from ..types import Result, Ok, Err, Some
 
 
 @dataclass
-class ErrorNoSuchDatabase:
+class Error_NoSuchDatabase:
     pass
 
 
 @dataclass
-class ErrorAccessDenied:
+class Error_AccessDenied:
     pass
 
 
 @dataclass
-class ErrorInvalidConnection:
+class Error_InvalidConnection:
     pass
 
 
 @dataclass
-class ErrorDatabaseFull:
+class Error_DatabaseFull:
     pass
 
 
 @dataclass
-class ErrorIo:
+class Error_Io:
     value: str
 
 
-Error = Union[ErrorNoSuchDatabase, ErrorAccessDenied, ErrorInvalidConnection, ErrorDatabaseFull, ErrorIo]
+Error = Union[Error_NoSuchDatabase, Error_AccessDenied, Error_InvalidConnection, Error_DatabaseFull, Error_Io]
 """
 The set of errors which may be raised by functions in this interface
 """
@@ -41,31 +41,31 @@ The set of errors which may be raised by functions in this interface
 
 
 @dataclass
-class ValueInteger:
+class Value_Integer:
     value: int
 
 
 @dataclass
-class ValueReal:
+class Value_Real:
     value: float
 
 
 @dataclass
-class ValueText:
+class Value_Text:
     value: str
 
 
 @dataclass
-class ValueBlob:
+class Value_Blob:
     value: bytes
 
 
 @dataclass
-class ValueNull:
+class Value_Null:
     pass
 
 
-Value = Union[ValueInteger, ValueReal, ValueText, ValueBlob, ValueNull]
+Value = Union[Value_Integer, Value_Real, Value_Text, Value_Blob, Value_Null]
 """
 A single column's result from a database query
 """

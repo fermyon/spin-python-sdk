@@ -8,8 +8,8 @@ def open(connection_string: str) -> Connection:
     
     The connection_string is the Postgres URL connection string.
 
-    A `spin_sdk.wit.types.Err(spin_sdk.wit.imports.rdbms_types.ErrorConnectionFailed(str))` when a connection fails.
+    A `spin_sdk.wit.types.Err(spin_sdk.wit.imports.rdbms_types.Error_ConnectionFailed(str))` when a connection fails.
     
-    A `spin_sdk.wit.types.Err(spin_sdk.wit.imports.rdbms_types.ErrorOther(str))` when some other error occurs.
+    A `spin_sdk.wit.types.Err(spin_sdk.wit.imports.rdbms_types.Error_Other(str))` when some other error occurs.
     """
     return Connection.open(connection_string)

@@ -1,7 +1,7 @@
 """
 A WASI interface dedicated to performing inferencing for Large Language Models.
 """
-from typing import TypeVar, Generic, Union, Optional, Union, Protocol, Tuple, List, Any, Self
+from typing import TypeVar, Generic, Union, Optional, Protocol, Tuple, List, Any, Self
 from enum import Flag, Enum, auto
 from dataclasses import dataclass
 from abc import abstractmethod
@@ -24,21 +24,21 @@ class InferencingParams:
 
 
 @dataclass
-class ErrorModelNotSupported:
+class Error_ModelNotSupported:
     pass
 
 
 @dataclass
-class ErrorRuntimeError:
+class Error_RuntimeError:
     value: str
 
 
 @dataclass
-class ErrorInvalidInput:
+class Error_InvalidInput:
     value: str
 
 
-Error = Union[ErrorModelNotSupported, ErrorRuntimeError, ErrorInvalidInput]
+Error = Union[Error_ModelNotSupported, Error_RuntimeError, Error_InvalidInput]
 """
 The set of errors which may be raised by functions in this interface
 """

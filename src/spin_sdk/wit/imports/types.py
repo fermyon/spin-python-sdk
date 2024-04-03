@@ -3,7 +3,7 @@ This interface defines all of the types and methods for implementing
 HTTP Requests and Responses, both incoming and outgoing, as well as
 their headers, trailers, and bodies.
 """
-from typing import TypeVar, Generic, Union, Optional, Union, Protocol, Tuple, List, Any, Self
+from typing import TypeVar, Generic, Union, Optional, Protocol, Tuple, List, Any, Self
 from enum import Flag, Enum, auto
 from dataclasses import dataclass
 from abc import abstractmethod
@@ -16,56 +16,56 @@ from ..imports import error
 
 
 @dataclass
-class MethodGet:
+class Method_Get:
     pass
 
 
 @dataclass
-class MethodHead:
+class Method_Head:
     pass
 
 
 @dataclass
-class MethodPost:
+class Method_Post:
     pass
 
 
 @dataclass
-class MethodPut:
+class Method_Put:
     pass
 
 
 @dataclass
-class MethodDelete:
+class Method_Delete:
     pass
 
 
 @dataclass
-class MethodConnect:
+class Method_Connect:
     pass
 
 
 @dataclass
-class MethodOptions:
+class Method_Options:
     pass
 
 
 @dataclass
-class MethodTrace:
+class Method_Trace:
     pass
 
 
 @dataclass
-class MethodPatch:
+class Method_Patch:
     pass
 
 
 @dataclass
-class MethodOther:
+class Method_Other:
     value: str
 
 
-Method = Union[MethodGet, MethodHead, MethodPost, MethodPut, MethodDelete, MethodConnect, MethodOptions, MethodTrace, MethodPatch, MethodOther]
+Method = Union[Method_Get, Method_Head, Method_Post, Method_Put, Method_Delete, Method_Connect, Method_Options, Method_Trace, Method_Patch, Method_Other]
 """
 This type corresponds to HTTP standard Methods.
 """
@@ -73,21 +73,21 @@ This type corresponds to HTTP standard Methods.
 
 
 @dataclass
-class SchemeHttp:
+class Scheme_Http:
     pass
 
 
 @dataclass
-class SchemeHttps:
+class Scheme_Https:
     pass
 
 
 @dataclass
-class SchemeOther:
+class Scheme_Other:
     value: str
 
 
-Scheme = Union[SchemeHttp, SchemeHttps, SchemeOther]
+Scheme = Union[Scheme_Http, Scheme_Https, Scheme_Other]
 """
 This type corresponds to HTTP standard Related Schemes.
 """
@@ -119,201 +119,201 @@ class FieldSizePayload:
 
 
 @dataclass
-class ErrorCodeDnsTimeout:
+class ErrorCode_DnsTimeout:
     pass
 
 
 @dataclass
-class ErrorCodeDnsError:
+class ErrorCode_DnsError:
     value: DnsErrorPayload
 
 
 @dataclass
-class ErrorCodeDestinationNotFound:
+class ErrorCode_DestinationNotFound:
     pass
 
 
 @dataclass
-class ErrorCodeDestinationUnavailable:
+class ErrorCode_DestinationUnavailable:
     pass
 
 
 @dataclass
-class ErrorCodeDestinationIpProhibited:
+class ErrorCode_DestinationIpProhibited:
     pass
 
 
 @dataclass
-class ErrorCodeDestinationIpUnroutable:
+class ErrorCode_DestinationIpUnroutable:
     pass
 
 
 @dataclass
-class ErrorCodeConnectionRefused:
+class ErrorCode_ConnectionRefused:
     pass
 
 
 @dataclass
-class ErrorCodeConnectionTerminated:
+class ErrorCode_ConnectionTerminated:
     pass
 
 
 @dataclass
-class ErrorCodeConnectionTimeout:
+class ErrorCode_ConnectionTimeout:
     pass
 
 
 @dataclass
-class ErrorCodeConnectionReadTimeout:
+class ErrorCode_ConnectionReadTimeout:
     pass
 
 
 @dataclass
-class ErrorCodeConnectionWriteTimeout:
+class ErrorCode_ConnectionWriteTimeout:
     pass
 
 
 @dataclass
-class ErrorCodeConnectionLimitReached:
+class ErrorCode_ConnectionLimitReached:
     pass
 
 
 @dataclass
-class ErrorCodeTlsProtocolError:
+class ErrorCode_TlsProtocolError:
     pass
 
 
 @dataclass
-class ErrorCodeTlsCertificateError:
+class ErrorCode_TlsCertificateError:
     pass
 
 
 @dataclass
-class ErrorCodeTlsAlertReceived:
+class ErrorCode_TlsAlertReceived:
     value: TlsAlertReceivedPayload
 
 
 @dataclass
-class ErrorCodeHttpRequestDenied:
+class ErrorCode_HttpRequestDenied:
     pass
 
 
 @dataclass
-class ErrorCodeHttpRequestLengthRequired:
+class ErrorCode_HttpRequestLengthRequired:
     pass
 
 
 @dataclass
-class ErrorCodeHttpRequestBodySize:
+class ErrorCode_HttpRequestBodySize:
     value: Optional[int]
 
 
 @dataclass
-class ErrorCodeHttpRequestMethodInvalid:
+class ErrorCode_HttpRequestMethodInvalid:
     pass
 
 
 @dataclass
-class ErrorCodeHttpRequestUriInvalid:
+class ErrorCode_HttpRequestUriInvalid:
     pass
 
 
 @dataclass
-class ErrorCodeHttpRequestUriTooLong:
+class ErrorCode_HttpRequestUriTooLong:
     pass
 
 
 @dataclass
-class ErrorCodeHttpRequestHeaderSectionSize:
+class ErrorCode_HttpRequestHeaderSectionSize:
     value: Optional[int]
 
 
 @dataclass
-class ErrorCodeHttpRequestHeaderSize:
+class ErrorCode_HttpRequestHeaderSize:
     value: Optional[FieldSizePayload]
 
 
 @dataclass
-class ErrorCodeHttpRequestTrailerSectionSize:
+class ErrorCode_HttpRequestTrailerSectionSize:
     value: Optional[int]
 
 
 @dataclass
-class ErrorCodeHttpRequestTrailerSize:
+class ErrorCode_HttpRequestTrailerSize:
     value: FieldSizePayload
 
 
 @dataclass
-class ErrorCodeHttpResponseIncomplete:
+class ErrorCode_HttpResponseIncomplete:
     pass
 
 
 @dataclass
-class ErrorCodeHttpResponseHeaderSectionSize:
+class ErrorCode_HttpResponseHeaderSectionSize:
     value: Optional[int]
 
 
 @dataclass
-class ErrorCodeHttpResponseHeaderSize:
+class ErrorCode_HttpResponseHeaderSize:
     value: FieldSizePayload
 
 
 @dataclass
-class ErrorCodeHttpResponseBodySize:
+class ErrorCode_HttpResponseBodySize:
     value: Optional[int]
 
 
 @dataclass
-class ErrorCodeHttpResponseTrailerSectionSize:
+class ErrorCode_HttpResponseTrailerSectionSize:
     value: Optional[int]
 
 
 @dataclass
-class ErrorCodeHttpResponseTrailerSize:
+class ErrorCode_HttpResponseTrailerSize:
     value: FieldSizePayload
 
 
 @dataclass
-class ErrorCodeHttpResponseTransferCoding:
+class ErrorCode_HttpResponseTransferCoding:
     value: Optional[str]
 
 
 @dataclass
-class ErrorCodeHttpResponseContentCoding:
+class ErrorCode_HttpResponseContentCoding:
     value: Optional[str]
 
 
 @dataclass
-class ErrorCodeHttpResponseTimeout:
+class ErrorCode_HttpResponseTimeout:
     pass
 
 
 @dataclass
-class ErrorCodeHttpUpgradeFailed:
+class ErrorCode_HttpUpgradeFailed:
     pass
 
 
 @dataclass
-class ErrorCodeHttpProtocolError:
+class ErrorCode_HttpProtocolError:
     pass
 
 
 @dataclass
-class ErrorCodeLoopDetected:
+class ErrorCode_LoopDetected:
     pass
 
 
 @dataclass
-class ErrorCodeConfigurationError:
+class ErrorCode_ConfigurationError:
     pass
 
 
 @dataclass
-class ErrorCodeInternalError:
+class ErrorCode_InternalError:
     value: Optional[str]
 
 
-ErrorCode = Union[ErrorCodeDnsTimeout, ErrorCodeDnsError, ErrorCodeDestinationNotFound, ErrorCodeDestinationUnavailable, ErrorCodeDestinationIpProhibited, ErrorCodeDestinationIpUnroutable, ErrorCodeConnectionRefused, ErrorCodeConnectionTerminated, ErrorCodeConnectionTimeout, ErrorCodeConnectionReadTimeout, ErrorCodeConnectionWriteTimeout, ErrorCodeConnectionLimitReached, ErrorCodeTlsProtocolError, ErrorCodeTlsCertificateError, ErrorCodeTlsAlertReceived, ErrorCodeHttpRequestDenied, ErrorCodeHttpRequestLengthRequired, ErrorCodeHttpRequestBodySize, ErrorCodeHttpRequestMethodInvalid, ErrorCodeHttpRequestUriInvalid, ErrorCodeHttpRequestUriTooLong, ErrorCodeHttpRequestHeaderSectionSize, ErrorCodeHttpRequestHeaderSize, ErrorCodeHttpRequestTrailerSectionSize, ErrorCodeHttpRequestTrailerSize, ErrorCodeHttpResponseIncomplete, ErrorCodeHttpResponseHeaderSectionSize, ErrorCodeHttpResponseHeaderSize, ErrorCodeHttpResponseBodySize, ErrorCodeHttpResponseTrailerSectionSize, ErrorCodeHttpResponseTrailerSize, ErrorCodeHttpResponseTransferCoding, ErrorCodeHttpResponseContentCoding, ErrorCodeHttpResponseTimeout, ErrorCodeHttpUpgradeFailed, ErrorCodeHttpProtocolError, ErrorCodeLoopDetected, ErrorCodeConfigurationError, ErrorCodeInternalError]
+ErrorCode = Union[ErrorCode_DnsTimeout, ErrorCode_DnsError, ErrorCode_DestinationNotFound, ErrorCode_DestinationUnavailable, ErrorCode_DestinationIpProhibited, ErrorCode_DestinationIpUnroutable, ErrorCode_ConnectionRefused, ErrorCode_ConnectionTerminated, ErrorCode_ConnectionTimeout, ErrorCode_ConnectionReadTimeout, ErrorCode_ConnectionWriteTimeout, ErrorCode_ConnectionLimitReached, ErrorCode_TlsProtocolError, ErrorCode_TlsCertificateError, ErrorCode_TlsAlertReceived, ErrorCode_HttpRequestDenied, ErrorCode_HttpRequestLengthRequired, ErrorCode_HttpRequestBodySize, ErrorCode_HttpRequestMethodInvalid, ErrorCode_HttpRequestUriInvalid, ErrorCode_HttpRequestUriTooLong, ErrorCode_HttpRequestHeaderSectionSize, ErrorCode_HttpRequestHeaderSize, ErrorCode_HttpRequestTrailerSectionSize, ErrorCode_HttpRequestTrailerSize, ErrorCode_HttpResponseIncomplete, ErrorCode_HttpResponseHeaderSectionSize, ErrorCode_HttpResponseHeaderSize, ErrorCode_HttpResponseBodySize, ErrorCode_HttpResponseTrailerSectionSize, ErrorCode_HttpResponseTrailerSize, ErrorCode_HttpResponseTransferCoding, ErrorCode_HttpResponseContentCoding, ErrorCode_HttpResponseTimeout, ErrorCode_HttpUpgradeFailed, ErrorCode_HttpProtocolError, ErrorCode_LoopDetected, ErrorCode_ConfigurationError, ErrorCode_InternalError]
 """
 These cases are inspired by the IANA HTTP Proxy Error Types:
 https://www.iana.org/assignments/http-proxy-status/http-proxy-status.xhtml#table-http-proxy-error-types
@@ -322,21 +322,21 @@ https://www.iana.org/assignments/http-proxy-status/http-proxy-status.xhtml#table
 
 
 @dataclass
-class HeaderErrorInvalidSyntax:
+class HeaderError_InvalidSyntax:
     pass
 
 
 @dataclass
-class HeaderErrorForbidden:
+class HeaderError_Forbidden:
     pass
 
 
 @dataclass
-class HeaderErrorImmutable:
+class HeaderError_Immutable:
     pass
 
 
-HeaderError = Union[HeaderErrorInvalidSyntax, HeaderErrorForbidden, HeaderErrorImmutable]
+HeaderError = Union[HeaderError_InvalidSyntax, HeaderError_Forbidden, HeaderError_Immutable]
 """
 This type enumerates the different kinds of errors that may occur when
 setting or appending to a `fields` resource.

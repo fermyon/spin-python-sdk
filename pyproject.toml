@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "spin-sdk"
-version = "2.0.0"
+version = "3.0.0"
 description = "Experimental SDK for Spin and Componentize-Py"
 readme = "README.md"
 license = { file = "LICENSE" }
