@@ -1,4 +1,4 @@
-from typing import TypeVar, Generic, Union, Optional, Union, Protocol, Tuple, List, Any, Self
+from typing import TypeVar, Generic, Union, Optional, Protocol, Tuple, List, Any, Self
 from enum import Flag, Enum, auto
 from dataclasses import dataclass
 from abc import abstractmethod
@@ -9,26 +9,26 @@ from ..types import Result, Ok, Err, Some
 
 
 @dataclass
-class ErrorInvalidAddress:
+class Error_InvalidAddress:
     pass
 
 
 @dataclass
-class ErrorTooManyConnections:
+class Error_TooManyConnections:
     pass
 
 
 @dataclass
-class ErrorTypeError:
+class Error_TypeError:
     pass
 
 
 @dataclass
-class ErrorOther:
+class Error_Other:
     value: str
 
 
-Error = Union[ErrorInvalidAddress, ErrorTooManyConnections, ErrorTypeError, ErrorOther]
+Error = Union[Error_InvalidAddress, Error_TooManyConnections, Error_TypeError, Error_Other]
 """
 Errors related to interacting with Redis
 """
@@ -36,16 +36,16 @@ Errors related to interacting with Redis
 
 
 @dataclass
-class RedisParameterInt64:
+class RedisParameter_Int64:
     value: int
 
 
 @dataclass
-class RedisParameterBinary:
+class RedisParameter_Binary:
     value: bytes
 
 
-RedisParameter = Union[RedisParameterInt64, RedisParameterBinary]
+RedisParameter = Union[RedisParameter_Int64, RedisParameter_Binary]
 """
 A parameter type for the general-purpose `execute` function.
 """
@@ -53,26 +53,26 @@ A parameter type for the general-purpose `execute` function.
 
 
 @dataclass
-class RedisResultNil:
+class RedisResult_Nil:
     pass
 
 
 @dataclass
-class RedisResultStatus:
+class RedisResult_Status:
     value: str
 
 
 @dataclass
-class RedisResultInt64:
+class RedisResult_Int64:
     value: int
 
 
 @dataclass
-class RedisResultBinary:
+class RedisResult_Binary:
     value: bytes
 
 
-RedisResult = Union[RedisResultNil, RedisResultStatus, RedisResultInt64, RedisResultBinary]
+RedisResult = Union[RedisResult_Nil, RedisResult_Status, RedisResult_Int64, RedisResult_Binary]
 """
 A return type for the general-purpose `execute` function.
 """

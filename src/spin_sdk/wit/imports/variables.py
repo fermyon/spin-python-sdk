@@ -1,4 +1,4 @@
-from typing import TypeVar, Generic, Union, Optional, Union, Protocol, Tuple, List, Any, Self
+from typing import TypeVar, Generic, Union, Optional, Protocol, Tuple, List, Any, Self
 from enum import Flag, Enum, auto
 from dataclasses import dataclass
 from abc import abstractmethod
@@ -9,26 +9,26 @@ from ..types import Result, Ok, Err, Some
 
 
 @dataclass
-class ErrorInvalidName:
+class Error_InvalidName:
     value: str
 
 
 @dataclass
-class ErrorUndefined:
+class Error_Undefined:
     value: str
 
 
 @dataclass
-class ErrorProvider:
+class Error_Provider:
     value: str
 
 
 @dataclass
-class ErrorOther:
+class Error_Other:
     value: str
 
 
-Error = Union[ErrorInvalidName, ErrorUndefined, ErrorProvider, ErrorOther]
+Error = Union[Error_InvalidName, Error_Undefined, Error_Provider, Error_Other]
 """
 The set of errors which may be raised by functions in this interface.
 """

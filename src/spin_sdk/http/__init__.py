@@ -6,11 +6,11 @@ from spin_sdk.wit import exports
 from spin_sdk.wit.types import Ok, Err
 from spin_sdk.wit.imports import types, outgoing_handler
 from spin_sdk.wit.imports.types import (
-    Method, MethodGet, MethodHead, MethodPost, MethodPut, MethodDelete, MethodConnect, MethodOptions, MethodTrace,
-    MethodPatch, MethodOther, IncomingRequest, IncomingBody, ResponseOutparam, OutgoingResponse, Fields, Scheme,
-    SchemeHttp, SchemeHttps, SchemeOther, OutgoingRequest, OutgoingBody
+    Method, Method_Get, Method_Head, Method_Post, Method_Put, Method_Delete, Method_Connect, Method_Options,
+    Method_Trace, Method_Patch, Method_Other, IncomingRequest, IncomingBody, ResponseOutparam, OutgoingResponse,
+    Fields, Scheme, Scheme_Http, Scheme_Https, Scheme_Other, OutgoingRequest, OutgoingBody
 )
-from spin_sdk.wit.imports.streams import StreamErrorClosed
+from spin_sdk.wit.imports.streams import StreamError_Closed
 from dataclasses import dataclass
 from collections.abc import Mapping
 from typing import Optional
@@ -41,25 +41,25 @@ class IncomingHandler(exports.IncomingHandler):
     def handle(self, request: IncomingRequest, response_out: ResponseOutparam):
         method = request.method()
 
-        if isinstance(method, MethodGet):
+        if isinstance(method, Method_Get):
             method_str = "GET"
-        elif isinstance(method, MethodHead):
+        elif isinstance(method, Method_Head):
             method_str = "HEAD"
-        elif isinstance(method, MethodPost):
+        elif isinstance(method, Method_Post):
             method_str = "POST"
-        elif isinstance(method, MethodPut):
+        elif isinstance(method, Method_Put):
             method_str = "PUT"
-        elif isinstance(method, MethodDelete):
+        elif isinstance(method, Method_Delete):
             method_str = "DELETE"
-        elif isinstance(method, MethodConnect):
+        elif isinstance(method, Method_Connect):
             method_str = "CONNECT"
-        elif isinstance(method, MethodOptions):
+        elif isinstance(method, Method_Options):
             method_str = "OPTIONS"
-        elif isinstance(method, MethodTrace):
+        elif isinstance(method, Method_Trace):
             method_str = "TRACE"
-        elif isinstance(method, MethodPatch):
+        elif isinstance(method, Method_Patch):
             method_str = "PATCH"
-        elif isinstance(method, MethodOther):
+        elif isinstance(method, Method_Other):
             method_str = method.value
         else:
             raise AssertionError
@@ -71,7 +71,7 @@ class IncomingHandler(exports.IncomingHandler):
             try:
                 body += request_stream.blocking_read(16 * 1024)
             except Err as e:
-                if isinstance(e.value, StreamErrorClosed):
+                if isinstance(e.value, StreamError_Closed):
                     request_stream.__exit__()
                     IncomingBody.finish(request_body)
                     break
@@ -122,35 +122,35 @@ def send(request: Request) -> Response:
 
     match request.method:
         case "GET":
-            method: Method = MethodGet()
+            method: Method = Method_Get()
         case "HEAD":
-            method = MethodHead()
+            method = Method_Head()
         case "POST":
-            method = MethodPost()
+            method = Method_Post()
         case "PUT":
-            method = MethodPut()
+            method = Method_Put()
         case "DELETE":
-            method = MethodDelete()
+            method = Method_Delete()
         case "CONNECT":
-            method = MethodConnect()
+            method = Method_Connect()
         case "OPTIONS":
-            method = MethodOptions()
+            method = Method_Options()
         case "TRACE":
-            method = MethodTrace()
+            method = Method_Trace()
         case "PATCH":
-            method = MethodPatch()
+            method = Method_Patch()
         case _:
-            method = MethodOther(request.method)
+            method = Method_Other(request.method)
     
     url_parsed = parse.urlparse(request.uri)
 
     match url_parsed.scheme:
         case "http":
-            scheme: Scheme = SchemeHttp()
+            scheme: Scheme = Scheme_Http()
         case "https":
-            scheme = SchemeHttps()
+            scheme = Scheme_Https()
         case _:
-            scheme = SchemeOther(url_parsed.scheme)
+            scheme = Scheme_Other(url_parsed.scheme)
 
     outgoing_request = OutgoingRequest(Fields.from_list(list(map(
         lambda pair: (pair[0], bytes(pair[1], "utf-8")),
@@ -185,7 +185,7 @@ def send(request: Request) -> Response:
                         try:
                             body += response_stream.blocking_read(16 * 1024)
                         except Err as e:
-                            if isinstance(e.value, StreamErrorClosed):
+                            if isinstance(e.value, StreamError_Closed):
                                 response_stream.__exit__()
                                 IncomingBody.finish(response_body)
                                 simple_response = Response(

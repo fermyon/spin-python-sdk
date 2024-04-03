@@ -1,4 +1,4 @@
-from typing import TypeVar, Generic, Union, Optional, Union, Protocol, Tuple, List, Any, Self
+from typing import TypeVar, Generic, Union, Optional, Protocol, Tuple, List, Any, Self
 from enum import Flag, Enum, auto
 from dataclasses import dataclass
 from abc import abstractmethod
@@ -9,31 +9,31 @@ from ..types import Result, Ok, Err, Some
 
 
 @dataclass
-class ErrorConnectionFailed:
+class Error_ConnectionFailed:
     value: str
 
 
 @dataclass
-class ErrorBadParameter:
+class Error_BadParameter:
     value: str
 
 
 @dataclass
-class ErrorQueryFailed:
+class Error_QueryFailed:
     value: str
 
 
 @dataclass
-class ErrorValueConversionFailed:
+class Error_ValueConversionFailed:
     value: str
 
 
 @dataclass
-class ErrorOther:
+class Error_Other:
     value: str
 
 
-Error = Union[ErrorConnectionFailed, ErrorBadParameter, ErrorQueryFailed, ErrorValueConversionFailed, ErrorOther]
+Error = Union[Error_ConnectionFailed, Error_BadParameter, Error_QueryFailed, Error_ValueConversionFailed, Error_Other]
 """
 Errors related to interacting with a database.
 """
@@ -60,81 +60,81 @@ class DbDataType(Enum):
 
 
 @dataclass
-class DbValueBoolean:
+class DbValue_Boolean:
     value: int
 
 
 @dataclass
-class DbValueInt8:
+class DbValue_Int8:
     value: int
 
 
 @dataclass
-class DbValueInt16:
+class DbValue_Int16:
     value: int
 
 
 @dataclass
-class DbValueInt32:
+class DbValue_Int32:
     value: int
 
 
 @dataclass
-class DbValueInt64:
+class DbValue_Int64:
     value: int
 
 
 @dataclass
-class DbValueUint8:
+class DbValue_Uint8:
     value: int
 
 
 @dataclass
-class DbValueUint16:
+class DbValue_Uint16:
     value: int
 
 
 @dataclass
-class DbValueUint32:
+class DbValue_Uint32:
     value: int
 
 
 @dataclass
-class DbValueUint64:
+class DbValue_Uint64:
     value: int
 
 
 @dataclass
-class DbValueFloating32:
+class DbValue_Floating32:
     value: float
 
 
 @dataclass
-class DbValueFloating64:
+class DbValue_Floating64:
     value: float
 
 
 @dataclass
-class DbValueStr:
+class DbValue_Str:
     value: str
 
 
 @dataclass
-class DbValueBinary:
+class DbValue_Binary:
     value: bytes
 
 
 @dataclass
-class DbValueDbNull:
+class DbValue_DbNull:
     pass
 
 
 @dataclass
-class DbValueUnsupported:
+class DbValue_Unsupported:
     pass
 
 
-DbValue = Union[DbValueBoolean, DbValueInt8, DbValueInt16, DbValueInt32, DbValueInt64, DbValueUint8, DbValueUint16, DbValueUint32, DbValueUint64, DbValueFloating32, DbValueFloating64, DbValueStr, DbValueBinary, DbValueDbNull, DbValueUnsupported]
+DbValue = Union[DbValue_Boolean, DbValue_Int8, DbValue_Int16, DbValue_Int32, DbValue_Int64, DbValue_Uint8, DbValue_Uint16, DbValue_Uint32, DbValue_Uint64, DbValue_Floating32, DbValue_Floating64, DbValue_Str, DbValue_Binary, DbValue_DbNull, DbValue_Unsupported]
 """
 Database values
 """
@@ -142,76 +142,76 @@ Database values
 
 
 @dataclass
-class ParameterValueBoolean:
+class ParameterValue_Boolean:
     value: int
 
 
 @dataclass
-class ParameterValueInt8:
+class ParameterValue_Int8:
     value: int
 
 
 @dataclass
-class ParameterValueInt16:
+class ParameterValue_Int16:
     value: int
 
 
 @dataclass
-class ParameterValueInt32:
+class ParameterValue_Int32:
     value: int
 
 
 @dataclass
-class ParameterValueInt64:
+class ParameterValue_Int64:
     value: int
 
 
 @dataclass
-class ParameterValueUint8:
+class ParameterValue_Uint8:
     value: int
 
 
 @dataclass
-class ParameterValueUint16:
+class ParameterValue_Uint16:
     value: int
 
 
 @dataclass
-class ParameterValueUint32:
+class ParameterValue_Uint32:
     value: int
 
 
 @dataclass
-class ParameterValueUint64:
+class ParameterValue_Uint64:
     value: int
 
 
 @dataclass
-class ParameterValueFloating32:
+class ParameterValue_Floating32:
     value: float
 
 
 @dataclass
-class ParameterValueFloating64:
+class ParameterValue_Floating64:
     value: float
 
 
 @dataclass
-class ParameterValueStr:
+class ParameterValue_Str:
     value: str
 
 
 @dataclass
-class ParameterValueBinary:
+class ParameterValue_Binary:
     value: bytes
 
 
 @dataclass
-class ParameterValueDbNull:
+class ParameterValue_DbNull:
     pass
 
 
-ParameterValue = Union[ParameterValueBoolean, ParameterValueInt8, ParameterValueInt16, ParameterValueInt32, ParameterValueInt64, ParameterValueUint8, ParameterValueUint16, ParameterValueUint32, ParameterValueUint64, ParameterValueFloating32, ParameterValueFloating64, ParameterValueStr, ParameterValueBinary, ParameterValueDbNull]
+ParameterValue = Union[ParameterValue_Boolean, ParameterValue_Int8, ParameterValue_Int16, ParameterValue_Int32, ParameterValue_Int64, ParameterValue_Uint8, ParameterValue_Uint16, ParameterValue_Uint32, ParameterValue_Uint64, ParameterValue_Floating32, ParameterValue_Floating64, ParameterValue_Str, ParameterValue_Binary, ParameterValue_DbNull]
 """
 Values used in parameterized queries
 """
