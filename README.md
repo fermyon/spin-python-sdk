@@ -6,7 +6,7 @@ Note that this SDK supersedes an earlier, experimental version, which may be
 found in the [old-sdk](https://github.com/fermyon/spin-python-sdk/tree/old-sdk)
 branch.
 
-## [API Documentation](https://fermyon.github.io/spin-python-sdk/index.html)
+## [API Documentation](https://fermyon.github.io/spin-python-sdk/v3/index.html)
 
 ## Example
 
