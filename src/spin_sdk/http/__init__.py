@@ -6,7 +6,6 @@ from spin_sdk.http import poll_loop
 from spin_sdk.http.poll_loop import PollLoop, Sink, Stream
 from spin_sdk.wit import exports
 from spin_sdk.wit.types import Ok, Err
-from spin_sdk.wit.imports import types, outgoing_handler
 from spin_sdk.wit.imports.types import (
     IncomingResponse, Method, Method_Get, Method_Head, Method_Post, Method_Put, Method_Delete, Method_Connect, Method_Options,
     Method_Trace, Method_Patch, Method_Other, IncomingRequest, IncomingBody, ResponseOutparam, OutgoingResponse,
@@ -14,7 +13,7 @@ from spin_sdk.wit.imports.types import (
 )
 from spin_sdk.wit.imports.streams import StreamError_Closed
 from dataclasses import dataclass
-from collections.abc import Mapping
+from collections.abc import MutableMapping
 from typing import Optional
 from urllib import parse
 
@@ -23,14 +22,14 @@ class Request:
     """An HTTP request"""
     method: str
     uri: str
-    headers: Mapping[str, str]
+    headers: MutableMapping[str, str]
     body: Optional[bytes]
 
 @dataclass
 class Response:
     """An HTTP response"""
     status: int
-    headers: Mapping[str, str]
+    headers: MutableMapping[str, str]
     body: Optional[bytes]
 
 class IncomingHandler(exports.IncomingHandler):
@@ -184,26 +183,21 @@ async def send_async(request: Request) -> Response:
 
     sink.close()
 
-    response_body = incoming_response.consume()
-    response_stream = response_body.stream()
+    response_body = Stream(incoming_response.consume())
     body = bytearray()
     while True:
-        try:
-            body += response_stream.blocking_read(16 * 1024)
-        except Err as e:
-            if isinstance(e.value, StreamError_Closed):
-                response_stream.__exit__()
-                IncomingBody.finish(response_body)
-                simple_response = Response(
-                    incoming_response.status(),
-                    dict(map(
-                        lambda pair: (pair[0], str(pair[1], "utf-8")),
-                        incoming_response.headers().entries()
-                    )),
-                    bytes(body)
-                )
-                incoming_response.__exit__()
-                return simple_response
-            else:
-                raise e
+        chunk = await response_body.next()
+        if chunk is None:
+            simple_response = Response(
+                incoming_response.status(),
+                dict(map(
+                    lambda pair: (pair[0], str(pair[1], "utf-8")),
+                    incoming_response.headers().entries()
+                )),
+                bytes(body)
+            )
+            incoming_response.__exit__()
+            return simple_response
+        else:
+            body += chunk
 
