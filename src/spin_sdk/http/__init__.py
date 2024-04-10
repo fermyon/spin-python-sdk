@@ -1,12 +1,14 @@
 """Module with helpers for wasi http"""
 
+import asyncio
 import traceback
-
+from spin_sdk.http import poll_loop
+from spin_sdk.http.poll_loop import PollLoop, Sink, Stream
 from spin_sdk.wit import exports
 from spin_sdk.wit.types import Ok, Err
 from spin_sdk.wit.imports import types, outgoing_handler
 from spin_sdk.wit.imports.types import (
-    Method, Method_Get, Method_Head, Method_Post, Method_Put, Method_Delete, Method_Connect, Method_Options,
+    IncomingResponse, Method, Method_Get, Method_Head, Method_Post, Method_Put, Method_Delete, Method_Connect, Method_Options,
     Method_Trace, Method_Patch, Method_Other, IncomingRequest, IncomingBody, ResponseOutparam, OutgoingResponse,
     Fields, Scheme, Scheme_Http, Scheme_Https, Scheme_Other, OutgoingRequest, OutgoingBody
 )
@@ -119,7 +121,12 @@ class IncomingHandler(exports.IncomingHandler):
     
 def send(request: Request) -> Response:
     """Send an HTTP request and return a response or raise an error"""
+    loop = PollLoop()
+    asyncio.set_event_loop(loop)
+    return loop.run_until_complete(send_async(request))
+    
 
+async def send_async(request: Request) -> Response:
     match request.method:
         case "GET":
             method: Method = Method_Get()
@@ -152,55 +159,51 @@ def send(request: Request) -> Response:
         case _:
             scheme = Scheme_Other(url_parsed.scheme)
 
-    outgoing_request = OutgoingRequest(Fields.from_list(list(map(
+    if request.headers.get('content-length') is None:
+        content_length = len(request.body) if request.body is not None else 0
+        request.headers['content-length'] = str(content_length)
+
+    headers = list(map(
         lambda pair: (pair[0], bytes(pair[1], "utf-8")),
         request.headers.items()
-    ))))
+    ))
+    print("Header length", request.headers.get('content-length'))
+
+    outgoing_request = OutgoingRequest(Fields.from_list(headers))
     outgoing_request.set_method(method)
     outgoing_request.set_scheme(scheme)
     outgoing_request.set_authority(url_parsed.netloc)
     outgoing_request.set_path_with_query(url_parsed.path)
 
-    if request.body is not None:
-        raise NotImplementedError("todo: handle outgoing request bodies")
+    outgoing_body = request.body if request.body is not None else bytearray()
+    sink = Sink(outgoing_request.body())
+    incoming_response: IncomingResponse = (await asyncio.gather(
+        poll_loop.send(outgoing_request),
+        sink.send(outgoing_body)
+    ))[0]
 
-    future = outgoing_handler.handle(outgoing_request, None)
-    pollable = future.subscribe()
+    sink.close()
 
+    response_body = incoming_response.consume()
+    response_stream = response_body.stream()
+    body = bytearray()
     while True:
-        response = future.get()
-        if response is None:
-            pollable.block()
-        else:
-            pollable.__exit__()
-            future.__exit__()
-            
-            if isinstance(response, Ok):
-                if isinstance(response.value, Ok):
-                    response_value = response.value.value
-                    response_body = response_value.consume()
-                    response_stream = response_body.stream()
-                    body = bytearray()
-                    while True:
-                        try:
-                            body += response_stream.blocking_read(16 * 1024)
-                        except Err as e:
-                            if isinstance(e.value, StreamError_Closed):
-                                response_stream.__exit__()
-                                IncomingBody.finish(response_body)
-                                simple_response = Response(
-                                    response_value.status(),
-                                    dict(map(
-                                        lambda pair: (pair[0], str(pair[1], "utf-8")),
-                                        response_value.headers().entries()
-                                    )),
-                                    bytes(body)
-                                )
-                                response_value.__exit__()
-                                return simple_response
-                            else:
-                                raise e
-                else:
-                    raise response.value
+        try:
+            body += response_stream.blocking_read(16 * 1024)
+        except Err as e:
+            if isinstance(e.value, StreamError_Closed):
+                response_stream.__exit__()
+                IncomingBody.finish(response_body)
+                simple_response = Response(
+                    incoming_response.status(),
+                    dict(map(
+                        lambda pair: (pair[0], str(pair[1], "utf-8")),
+                        incoming_response.headers().entries()
+                    )),
+                    bytes(body)
+                )
+                incoming_response.__exit__()
+                return simple_response
             else:
-                raise response
+                raise e
+
