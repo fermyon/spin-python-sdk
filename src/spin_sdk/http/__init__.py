@@ -100,6 +100,10 @@ class IncomingHandler(exports.IncomingHandler):
             ResponseOutparam.set(response_out, Ok(response))
             return
 
+        if simple_response.headers.get('content-length') is None:
+            content_length = len(simple_response.body) if simple_response.body is not None else 0
+            simple_response.headers['content-length'] = str(content_length)
+
         response = OutgoingResponse(Fields.from_list(list(map(
             lambda pair: (pair[0], bytes(pair[1], "utf-8")),
             simple_response.headers.items()
@@ -166,7 +170,6 @@ async def send_async(request: Request) -> Response:
         lambda pair: (pair[0], bytes(pair[1], "utf-8")),
         request.headers.items()
     ))
-    print("Header length", request.headers.get('content-length'))
 
     outgoing_request = OutgoingRequest(Fields.from_list(headers))
     outgoing_request.set_method(method)
