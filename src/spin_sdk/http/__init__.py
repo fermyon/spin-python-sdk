@@ -175,7 +175,10 @@ async def send_async(request: Request) -> Response:
     outgoing_request.set_method(method)
     outgoing_request.set_scheme(scheme)
     outgoing_request.set_authority(url_parsed.netloc)
-    outgoing_request.set_path_with_query(url_parsed.path)
+    path_and_query = url_parsed.path
+    if url_parsed.query:
+        path_and_query += '?' + url_parsed.query
+    outgoing_request.set_path_with_query(path_and_query)
 
     outgoing_body = request.body if request.body is not None else bytearray()
     sink = Sink(outgoing_request.body())
