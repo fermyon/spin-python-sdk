@@ -80,13 +80,13 @@ Finally, you can test your app using e.g. `curl` in another terminal:
 curl -i http://127.0.0.1:3000
 ```
 
-If all goes well, you should see:
+If all goes well, you should see something like:
 
 ```
 HTTP/1.1 200 OK
 content-type: text/plain
-transfer-encoding: chunked
-date: Tue, 09 Jan 2024 18:26:52 GMT
+content-length: 18
+date: Thu, 11 Apr 2024 17:42:31 GMT
 
 Hello from Python!
 ```

@@ -184,10 +184,8 @@ async def send_async(request: Request) -> Response:
     sink = Sink(outgoing_request.body())
     incoming_response: IncomingResponse = (await asyncio.gather(
         poll_loop.send(outgoing_request),
-        sink.send(outgoing_body)
+        send_and_close(sink, outgoing_body)
     ))[0]
-
-    sink.close()
 
     response_body = Stream(incoming_response.consume())
     body = bytearray()
@@ -207,3 +205,6 @@ async def send_async(request: Request) -> Response:
         else:
             body += chunk
 
+async def send_and_close(sink: Sink, data: bytes):
+    await sink.send(data)
+    sink.close()
