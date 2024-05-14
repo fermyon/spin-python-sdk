@@ -8,7 +8,7 @@ To build the component, [`componentize-py`](https://pypi.org/project/componentiz
 pip3 install -r requirements.txt
 ```
 
-## Builing and Running
+## Building and Running
 
 ```
 spin up --build
