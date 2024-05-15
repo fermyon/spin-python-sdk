@@ -35,7 +35,7 @@ Send a message on a redis channel named `messages`:
 
 ```bash
 $ redis-cli
-127.0.0.1:6379> publish messaged "hello world"
+127.0.0.1:6379> publish messages "hello world"
 ```
 
 The app should output:
