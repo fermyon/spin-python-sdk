@@ -155,12 +155,14 @@ async def send_async(request: Request) -> Response:
     url_parsed = parse.urlparse(request.uri)
 
     match url_parsed.scheme:
-        case "http":
-            scheme: Scheme = Scheme_Http()
-        case "https":
-            scheme = Scheme_Https()
-        case _:
-            scheme = Scheme_Other(url_parsed.scheme)
+            case "http":
+                scheme: Scheme = Scheme_Http()
+            case "https":
+                scheme = Scheme_Https()
+            case "":
+                scheme = Scheme_Http()
+            case _:
+                scheme = Scheme_Other(url_parsed.scheme)
 
     if request.headers.get('content-length') is None:
         content_length = len(request.body) if request.body is not None else 0
@@ -174,7 +176,16 @@ async def send_async(request: Request) -> Response:
     outgoing_request = OutgoingRequest(Fields.from_list(headers))
     outgoing_request.set_method(method)
     outgoing_request.set_scheme(scheme)
-    outgoing_request.set_authority(url_parsed.netloc)
+    if url_parsed.netloc == '':
+        if scheme == "http":
+            authority = ":80"
+        else:
+            authority = ":443"
+    else:
+        authority = url_parsed.netloc
+
+    outgoing_request.set_authority(authority)
+
     path_and_query = url_parsed.path
     if url_parsed.query:
         path_and_query += '?' + url_parsed.query
