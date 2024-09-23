@@ -164,13 +164,20 @@ async def send_async(request: Request) -> Response:
             case _:
                 scheme = Scheme_Other(url_parsed.scheme)
 
-    if request.headers.get('content-length') is None:
+    headers_dict = request.headers
+
+    # Add a `content-length` header if the caller didn't include one, but did
+    # specify a body:
+    if headers_dict.get('content-length') is None:
         content_length = len(request.body) if request.body is not None else 0
-        request.headers['content-length'] = str(content_length)
+        # Make a copy rather than mutate in place, since the caller might not
+        # expect us to mutate it:
+        headers_dict = headers_dict.copy()
+        headers_dict['content-length'] = str(content_length)
 
     headers = list(map(
         lambda pair: (pair[0], bytes(pair[1], "utf-8")),
-        request.headers.items()
+        headers_dict.items()
     ))
 
     outgoing_request = OutgoingRequest(Fields.from_list(headers))
