@@ -1,4 +1,5 @@
 from typing import TypeVar, Generic, Union, Optional, Protocol, Tuple, List, Any, Self
+from types import TracebackType
 from enum import Flag, Enum, auto
 from dataclasses import dataclass
 from abc import abstractmethod
@@ -61,7 +62,7 @@ class DbDataType(Enum):
 
 @dataclass
 class DbValue_Boolean:
-    value: int
+    value: bool
 
 
 @dataclass
@@ -143,7 +144,7 @@ Database values
 
 @dataclass
 class ParameterValue_Boolean:
-    value: int
+    value: bool
 
 
 @dataclass

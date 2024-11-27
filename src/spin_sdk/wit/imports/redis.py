@@ -1,4 +1,5 @@
 from typing import TypeVar, Generic, Union, Optional, Protocol, Tuple, List, Any, Self
+from types import TracebackType
 from enum import Flag, Enum, auto
 from dataclasses import dataclass
 from abc import abstractmethod
@@ -88,7 +89,6 @@ class Connection:
         Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.redis.Error)`
         """
         raise NotImplementedError
-
     def publish(self, channel: str, payload: bytes) -> None:
         """
         Publish a Redis message to the specified channel.
@@ -96,7 +96,6 @@ class Connection:
         Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.redis.Error)`
         """
         raise NotImplementedError
-
     def get(self, key: str) -> Optional[bytes]:
         """
         Get the value of a key.
@@ -104,7 +103,6 @@ class Connection:
         Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.redis.Error)`
         """
         raise NotImplementedError
-
     def set(self, key: str, value: bytes) -> None:
         """
         Set key to value.
@@ -114,7 +112,6 @@ class Connection:
         Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.redis.Error)`
         """
         raise NotImplementedError
-
     def incr(self, key: str) -> int:
         """
         Increments the number stored at key by one.
@@ -126,7 +123,6 @@ class Connection:
         Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.redis.Error)`
         """
         raise NotImplementedError
-
     def del_(self, keys: List[str]) -> int:
         """
         Removes the specified keys.
@@ -136,7 +132,6 @@ class Connection:
         Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.redis.Error)`
         """
         raise NotImplementedError
-
     def sadd(self, key: str, values: List[str]) -> int:
         """
         Add the specified `values` to the set named `key`, returning the number of newly-added values.
@@ -144,7 +139,6 @@ class Connection:
         Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.redis.Error)`
         """
         raise NotImplementedError
-
     def smembers(self, key: str) -> List[str]:
         """
         Retrieve the contents of the set named `key`.
@@ -152,7 +146,6 @@ class Connection:
         Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.redis.Error)`
         """
         raise NotImplementedError
-
     def srem(self, key: str, values: List[str]) -> int:
         """
         Remove the specified `values` from the set named `key`, returning the number of newly-removed values.
@@ -160,7 +153,6 @@ class Connection:
         Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.redis.Error)`
         """
         raise NotImplementedError
-
     def execute(self, command: str, arguments: List[RedisParameter]) -> List[RedisResult]:
         """
         Execute an arbitrary Redis command and receive the result.
@@ -168,12 +160,11 @@ class Connection:
         Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.redis.Error)`
         """
         raise NotImplementedError
-
-    def __enter__(self):
+    def __enter__(self) -> Self:
         """Returns self"""
         return self
-                                                                    
-    def __exit__(self, *args):
+                                
+    def __exit__(self, exc_type: type[BaseException] | None, exc_value: BaseException | None, traceback: TracebackType | None) -> bool | None:
         """
         Release this resource.
         """

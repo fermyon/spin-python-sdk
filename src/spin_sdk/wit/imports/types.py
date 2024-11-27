@@ -4,14 +4,15 @@ HTTP Requests and Responses, both incoming and outgoing, as well as
 their headers, trailers, and bodies.
 """
 from typing import TypeVar, Generic, Union, Optional, Protocol, Tuple, List, Any, Self
+from types import TracebackType
 from enum import Flag, Enum, auto
 from dataclasses import dataclass
 from abc import abstractmethod
 import weakref
 
 from ..types import Result, Ok, Err, Some
-from ..imports import poll
 from ..imports import streams
+from ..imports import poll
 from ..imports import error
 
 
@@ -357,7 +358,7 @@ class Fields:
     operations will fail with `header-error.immutable`.
     """
     
-    def __init__(self):
+    def __init__(self) -> None:
         """
         Construct an empty HTTP Fields.
         
@@ -387,7 +388,6 @@ class Fields:
         Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.types.HeaderError)`
         """
         raise NotImplementedError
-
     def get(self, name: str) -> List[bytes]:
         """
         Get all of the values corresponding to a key. If the key is not present
@@ -396,14 +396,12 @@ class Fields:
         empty field-values present.
         """
         raise NotImplementedError
-
-    def has(self, name: str) -> int:
+    def has(self, name: str) -> bool:
         """
         Returns `true` when the key is present in this `fields`. If the key is
         syntactically invalid, `false` is returned.
         """
         raise NotImplementedError
-
     def set(self, name: str, value: List[bytes]) -> None:
         """
         Set all of the values for a key. Clears any existing values for that
@@ -414,7 +412,6 @@ class Fields:
         Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.types.HeaderError)`
         """
         raise NotImplementedError
-
     def delete(self, name: str) -> None:
         """
         Delete all values for a key. Does nothing if no values for the key
@@ -425,7 +422,6 @@ class Fields:
         Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.types.HeaderError)`
         """
         raise NotImplementedError
-
     def append(self, name: str, value: bytes) -> None:
         """
         Append a value for a key. Does not change or delete any existing
@@ -436,7 +432,6 @@ class Fields:
         Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.types.HeaderError)`
         """
         raise NotImplementedError
-
     def entries(self) -> List[Tuple[str, bytes]]:
         """
         Retrieve the full set of keys and values in the Fields. Like the
@@ -447,7 +442,6 @@ class Fields:
         list with the same key.
         """
         raise NotImplementedError
-
     def clone(self) -> Self:
         """
         Make a deep copy of the Fields. Equivelant in behavior to calling the
@@ -455,12 +449,11 @@ class Fields:
         `fields` is mutable.
         """
         raise NotImplementedError
-
-    def __enter__(self):
+    def __enter__(self) -> Self:
         """Returns self"""
         return self
-                                                                    
-    def __exit__(self, *args):
+                                
+    def __exit__(self, exc_type: type[BaseException] | None, exc_value: BaseException | None, traceback: TracebackType | None) -> bool | None:
         """
         Release this resource.
         """
@@ -483,7 +476,6 @@ class FutureTrailers:
         the `get` method will return `some`.
         """
         raise NotImplementedError
-
     def get(self) -> Optional[Result[Result[Optional[Fields], ErrorCode], None]]:
         """
         Returns the contents of the trailers, or an error which occured,
@@ -507,12 +499,11 @@ class FutureTrailers:
         dropped before the parent `future-trailers` is dropped.
         """
         raise NotImplementedError
-
-    def __enter__(self):
+    def __enter__(self) -> Self:
         """Returns self"""
         return self
-                                                                    
-    def __exit__(self, *args):
+                                
+    def __exit__(self, exc_type: type[BaseException] | None, exc_value: BaseException | None, traceback: TracebackType | None) -> bool | None:
         """
         Release this resource.
         """
@@ -552,7 +543,6 @@ class IncomingBody:
         Raises: `spin_sdk.wit.types.Err(None)`
         """
         raise NotImplementedError
-
     @classmethod
     def finish(cls, this: Self) -> FutureTrailers:
         """
@@ -560,12 +550,11 @@ class IncomingBody:
         This function will trap if the `input-stream` child is still alive.
         """
         raise NotImplementedError
-
-    def __enter__(self):
+    def __enter__(self) -> Self:
         """Returns self"""
         return self
-                                                                    
-    def __exit__(self, *args):
+                                
+    def __exit__(self, exc_type: type[BaseException] | None, exc_value: BaseException | None, traceback: TracebackType | None) -> bool | None:
         """
         Release this resource.
         """
@@ -582,25 +571,21 @@ class IncomingRequest:
         Returns the method of the incoming request.
         """
         raise NotImplementedError
-
     def path_with_query(self) -> Optional[str]:
         """
         Returns the path with query parameters from the request, as a string.
         """
         raise NotImplementedError
-
     def scheme(self) -> Optional[Scheme]:
         """
         Returns the protocol scheme from the request.
         """
         raise NotImplementedError
-
     def authority(self) -> Optional[str]:
         """
         Returns the authority from the request, if it was present.
         """
         raise NotImplementedError
-
     def headers(self) -> Fields:
         """
         Get the `headers` associated with the request.
@@ -613,7 +598,6 @@ class IncomingRequest:
         `incoming-request` before all children are dropped will trap.
         """
         raise NotImplementedError
-
     def consume(self) -> IncomingBody:
         """
         Gives the `incoming-body` associated with this request. Will only
@@ -622,12 +606,11 @@ class IncomingRequest:
         Raises: `spin_sdk.wit.types.Err(None)`
         """
         raise NotImplementedError
-
-    def __enter__(self):
+    def __enter__(self) -> Self:
         """Returns self"""
         return self
-                                                                    
-    def __exit__(self, *args):
+                                
+    def __exit__(self, exc_type: type[BaseException] | None, exc_value: BaseException | None, traceback: TracebackType | None) -> bool | None:
         """
         Release this resource.
         """
@@ -669,7 +652,6 @@ class OutgoingBody:
         Raises: `spin_sdk.wit.types.Err(None)`
         """
         raise NotImplementedError
-
     @classmethod
     def finish(cls, this: Self, trailers: Optional[Fields]) -> None:
         """
@@ -686,12 +668,11 @@ class OutgoingBody:
         Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.types.ErrorCode)`
         """
         raise NotImplementedError
-
-    def __enter__(self):
+    def __enter__(self) -> Self:
         """Returns self"""
         return self
-                                                                    
-    def __exit__(self, *args):
+                                
+    def __exit__(self, exc_type: type[BaseException] | None, exc_value: BaseException | None, traceback: TracebackType | None) -> bool | None:
         """
         Release this resource.
         """
@@ -703,7 +684,7 @@ class OutgoingRequest:
     Represents an outgoing HTTP Request.
     """
     
-    def __init__(self, headers: Fields):
+    def __init__(self, headers: Fields) -> None:
         """
         Construct a new `outgoing-request` with a default `method` of `GET`, and
         `none` values for `path-with-query`, `scheme`, and `authority`.
@@ -730,13 +711,11 @@ class OutgoingRequest:
         Raises: `spin_sdk.wit.types.Err(None)`
         """
         raise NotImplementedError
-
     def method(self) -> Method:
         """
         Get the Method for the Request.
         """
         raise NotImplementedError
-
     def set_method(self, method: Method) -> None:
         """
         Set the Method for the Request. Fails if the string present in a
@@ -745,14 +724,12 @@ class OutgoingRequest:
         Raises: `spin_sdk.wit.types.Err(None)`
         """
         raise NotImplementedError
-
     def path_with_query(self) -> Optional[str]:
         """
         Get the combination of the HTTP Path and Query for the Request.
         When `none`, this represents an empty Path and empty Query.
         """
         raise NotImplementedError
-
     def set_path_with_query(self, path_with_query: Optional[str]) -> None:
         """
         Set the combination of the HTTP Path and Query for the Request.
@@ -762,14 +739,12 @@ class OutgoingRequest:
         Raises: `spin_sdk.wit.types.Err(None)`
         """
         raise NotImplementedError
-
     def scheme(self) -> Optional[Scheme]:
         """
         Get the HTTP Related Scheme for the Request. When `none`, the
         implementation may choose an appropriate default scheme.
         """
         raise NotImplementedError
-
     def set_scheme(self, scheme: Optional[Scheme]) -> None:
         """
         Set the HTTP Related Scheme for the Request. When `none`, the
@@ -779,7 +754,6 @@ class OutgoingRequest:
         Raises: `spin_sdk.wit.types.Err(None)`
         """
         raise NotImplementedError
-
     def authority(self) -> Optional[str]:
         """
         Get the HTTP Authority for the Request. A value of `none` may be used
@@ -787,7 +761,6 @@ class OutgoingRequest:
         HTTPS schemes always require an authority.
         """
         raise NotImplementedError
-
     def set_authority(self, authority: Optional[str]) -> None:
         """
         Set the HTTP Authority for the Request. A value of `none` may be used
@@ -798,7 +771,6 @@ class OutgoingRequest:
         Raises: `spin_sdk.wit.types.Err(None)`
         """
         raise NotImplementedError
-
     def headers(self) -> Fields:
         """
         Get the headers associated with the Request.
@@ -811,12 +783,11 @@ class OutgoingRequest:
         another component by e.g. `outgoing-handler.handle`.
         """
         raise NotImplementedError
-
-    def __enter__(self):
+    def __enter__(self) -> Self:
         """Returns self"""
         return self
-                                                                    
-    def __exit__(self, *args):
+                                
+    def __exit__(self, exc_type: type[BaseException] | None, exc_value: BaseException | None, traceback: TracebackType | None) -> bool | None:
         """
         Release this resource.
         """
@@ -833,7 +804,7 @@ class RequestOptions:
     blocking call to `wasi:io/poll.poll`.
     """
     
-    def __init__(self):
+    def __init__(self) -> None:
         """
         Construct a default `request-options` value.
         """
@@ -844,7 +815,6 @@ class RequestOptions:
         The timeout for the initial connect to the HTTP Server.
         """
         raise NotImplementedError
-
     def set_connect_timeout(self, duration: Optional[int]) -> None:
         """
         Set the timeout for the initial connect to the HTTP Server. An error
@@ -853,13 +823,11 @@ class RequestOptions:
         Raises: `spin_sdk.wit.types.Err(None)`
         """
         raise NotImplementedError
-
     def first_byte_timeout(self) -> Optional[int]:
         """
         The timeout for receiving the first byte of the Response body.
         """
         raise NotImplementedError
-
     def set_first_byte_timeout(self, duration: Optional[int]) -> None:
         """
         Set the timeout for receiving the first byte of the Response body. An
@@ -868,14 +836,12 @@ class RequestOptions:
         Raises: `spin_sdk.wit.types.Err(None)`
         """
         raise NotImplementedError
-
     def between_bytes_timeout(self) -> Optional[int]:
         """
         The timeout for receiving subsequent chunks of bytes in the Response
         body stream.
         """
         raise NotImplementedError
-
     def set_between_bytes_timeout(self, duration: Optional[int]) -> None:
         """
         Set the timeout for receiving subsequent chunks of bytes in the Response
@@ -885,12 +851,11 @@ class RequestOptions:
         Raises: `spin_sdk.wit.types.Err(None)`
         """
         raise NotImplementedError
-
-    def __enter__(self):
+    def __enter__(self) -> Self:
         """Returns self"""
         return self
-                                                                    
-    def __exit__(self, *args):
+                                
+    def __exit__(self, exc_type: type[BaseException] | None, exc_value: BaseException | None, traceback: TracebackType | None) -> bool | None:
         """
         Release this resource.
         """
@@ -902,7 +867,7 @@ class OutgoingResponse:
     Represents an outgoing HTTP Response.
     """
     
-    def __init__(self, headers: Fields):
+    def __init__(self, headers: Fields) -> None:
         """
         Construct an `outgoing-response`, with a default `status-code` of `200`.
         If a different `status-code` is needed, it must be set via the
@@ -917,7 +882,6 @@ class OutgoingResponse:
         Get the HTTP Status Code for the Response.
         """
         raise NotImplementedError
-
     def set_status_code(self, status_code: int) -> None:
         """
         Set the HTTP Status Code for the Response. Fails if the status-code
@@ -926,7 +890,6 @@ class OutgoingResponse:
         Raises: `spin_sdk.wit.types.Err(None)`
         """
         raise NotImplementedError
-
     def headers(self) -> Fields:
         """
         Get the headers associated with the Request.
@@ -939,7 +902,6 @@ class OutgoingResponse:
         another component by e.g. `outgoing-handler.handle`.
         """
         raise NotImplementedError
-
     def body(self) -> OutgoingBody:
         """
         Returns the resource corresponding to the outgoing Body for this Response.
@@ -951,12 +913,11 @@ class OutgoingResponse:
         Raises: `spin_sdk.wit.types.Err(None)`
         """
         raise NotImplementedError
-
-    def __enter__(self):
+    def __enter__(self) -> Self:
         """Returns self"""
         return self
-                                                                    
-    def __exit__(self, *args):
+                                
+    def __exit__(self, exc_type: type[BaseException] | None, exc_value: BaseException | None, traceback: TracebackType | None) -> bool | None:
         """
         Release this resource.
         """
@@ -986,12 +947,11 @@ class ResponseOutparam:
         implementation determine how to respond with an HTTP error response.
         """
         raise NotImplementedError
-
-    def __enter__(self):
+    def __enter__(self) -> Self:
         """Returns self"""
         return self
-                                                                    
-    def __exit__(self, *args):
+                                
+    def __exit__(self, exc_type: type[BaseException] | None, exc_value: BaseException | None, traceback: TracebackType | None) -> bool | None:
         """
         Release this resource.
         """
@@ -1008,7 +968,6 @@ class IncomingResponse:
         Returns the status code from the incoming response.
         """
         raise NotImplementedError
-
     def headers(self) -> Fields:
         """
         Returns the headers from the incoming response.
@@ -1020,7 +979,6 @@ class IncomingResponse:
         `incoming-response` is dropped.
         """
         raise NotImplementedError
-
     def consume(self) -> IncomingBody:
         """
         Returns the incoming body. May be called at most once. Returns error
@@ -1029,12 +987,11 @@ class IncomingResponse:
         Raises: `spin_sdk.wit.types.Err(None)`
         """
         raise NotImplementedError
-
-    def __enter__(self):
+    def __enter__(self) -> Self:
         """Returns self"""
         return self
-                                                                    
-    def __exit__(self, *args):
+                                
+    def __exit__(self, exc_type: type[BaseException] | None, exc_value: BaseException | None, traceback: TracebackType | None) -> bool | None:
         """
         Release this resource.
         """
@@ -1057,7 +1014,6 @@ class FutureIncomingResponse:
         the `get` method will return `some`.
         """
         raise NotImplementedError
-
     def get(self) -> Optional[Result[Result[IncomingResponse, ErrorCode], None]]:
         """
         Returns the incoming HTTP Response, or an error, once one is ready.
@@ -1076,12 +1032,11 @@ class FutureIncomingResponse:
         `output-stream` child.
         """
         raise NotImplementedError
-
-    def __enter__(self):
+    def __enter__(self) -> Self:
         """Returns self"""
         return self
-                                                                    
-    def __exit__(self, *args):
+                                
+    def __exit__(self, exc_type: type[BaseException] | None, exc_value: BaseException | None, traceback: TracebackType | None) -> bool | None:
         """
         Release this resource.
         """

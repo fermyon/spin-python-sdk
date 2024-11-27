@@ -6,6 +6,7 @@ In the future, the component model is expected to add built-in stream types;
 when it does, they are expected to subsume this API.
 """
 from typing import TypeVar, Generic, Union, Optional, Protocol, Tuple, List, Any, Self
+from types import TracebackType
 from enum import Flag, Enum, auto
 from dataclasses import dataclass
 from abc import abstractmethod
@@ -76,7 +77,6 @@ class InputStream:
         Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.streams.StreamError)`
         """
         raise NotImplementedError
-
     def blocking_read(self, len: int) -> bytes:
         """
         Read bytes from a stream, after blocking until at least one byte can
@@ -85,7 +85,6 @@ class InputStream:
         Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.streams.StreamError)`
         """
         raise NotImplementedError
-
     def skip(self, len: int) -> int:
         """
         Skip bytes from a stream. Returns number of bytes skipped.
@@ -96,7 +95,6 @@ class InputStream:
         Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.streams.StreamError)`
         """
         raise NotImplementedError
-
     def blocking_skip(self, len: int) -> int:
         """
         Skip bytes from a stream, after blocking until at least one byte
@@ -105,7 +103,6 @@ class InputStream:
         Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.streams.StreamError)`
         """
         raise NotImplementedError
-
     def subscribe(self) -> poll.Pollable:
         """
         Create a `pollable` which will resolve once either the specified stream
@@ -116,12 +113,11 @@ class InputStream:
         all derived `pollable`s created with this function are dropped.
         """
         raise NotImplementedError
-
-    def __enter__(self):
+    def __enter__(self) -> Self:
         """Returns self"""
         return self
-                                                                    
-    def __exit__(self, *args):
+                                
+    def __exit__(self, exc_type: type[BaseException] | None, exc_value: BaseException | None, traceback: TracebackType | None) -> bool | None:
         """
         Release this resource.
         """
@@ -155,7 +151,6 @@ class OutputStream:
         Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.streams.StreamError)`
         """
         raise NotImplementedError
-
     def write(self, contents: bytes) -> None:
         """
         Perform a write. This function never blocks.
@@ -175,7 +170,6 @@ class OutputStream:
         Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.streams.StreamError)`
         """
         raise NotImplementedError
-
     def blocking_write_and_flush(self, contents: bytes) -> None:
         """
         Perform a write of up to 4096 bytes, and then flush the stream. Block
@@ -206,7 +200,6 @@ class OutputStream:
         Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.streams.StreamError)`
         """
         raise NotImplementedError
-
     def flush(self) -> None:
         """
         Request to flush buffered output. This function never blocks.
@@ -223,7 +216,6 @@ class OutputStream:
         Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.streams.StreamError)`
         """
         raise NotImplementedError
-
     def blocking_flush(self) -> None:
         """
         Request to flush buffered output, and block until flush completes
@@ -232,7 +224,6 @@ class OutputStream:
         Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.streams.StreamError)`
         """
         raise NotImplementedError
-
     def subscribe(self) -> poll.Pollable:
         """
         Create a `pollable` which will resolve once the output-stream
@@ -247,7 +238,6 @@ class OutputStream:
         all derived `pollable`s created with this function are dropped.
         """
         raise NotImplementedError
-
     def write_zeroes(self, len: int) -> None:
         """
         Write zeroes to a stream.
@@ -260,7 +250,6 @@ class OutputStream:
         Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.streams.StreamError)`
         """
         raise NotImplementedError
-
     def blocking_write_zeroes_and_flush(self, len: int) -> None:
         """
         Perform a write of up to 4096 zeroes, and then flush the stream.
@@ -291,7 +280,6 @@ class OutputStream:
         Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.streams.StreamError)`
         """
         raise NotImplementedError
-
     def splice(self, src: InputStream, len: int) -> int:
         """
         Read from one stream and write to another.
@@ -311,7 +299,6 @@ class OutputStream:
         Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.streams.StreamError)`
         """
         raise NotImplementedError
-
     def blocking_splice(self, src: InputStream, len: int) -> int:
         """
         Read from one stream and write to another, with blocking.
@@ -323,12 +310,11 @@ class OutputStream:
         Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.streams.StreamError)`
         """
         raise NotImplementedError
-
-    def __enter__(self):
+    def __enter__(self) -> Self:
         """Returns self"""
         return self
-                                                                    
-    def __exit__(self, *args):
+                                
+    def __exit__(self, exc_type: type[BaseException] | None, exc_value: BaseException | None, traceback: TracebackType | None) -> bool | None:
         """
         Release this resource.
         """

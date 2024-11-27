@@ -1,2 +1,5 @@
 wit_directory = "wit"
 bindings = "wit"
+
+[import_interface_names]
+"fermyon:spin/postgres@2.0.0" = "postgres"

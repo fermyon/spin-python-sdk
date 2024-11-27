@@ -11,7 +11,7 @@ Python package containing native extensions within a guest component.
 
 * A clone of the Git repo in which you found this example
 * `spin` 2.2 or later
-* `componentize-py` 0.13.3
+* `componentize-py` 0.16.0
 * `NumPy`, built for WASI
 
 Note that we use an unofficial build of NumPy since the upstream project does
