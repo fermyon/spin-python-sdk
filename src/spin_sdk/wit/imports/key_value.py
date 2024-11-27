@@ -1,4 +1,5 @@
 from typing import TypeVar, Generic, Union, Optional, Protocol, Tuple, List, Any, Self
+from types import TracebackType
 from enum import Flag, Enum, auto
 from dataclasses import dataclass
 from abc import abstractmethod
@@ -51,7 +52,6 @@ class Store:
         Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.key_value.Error)`
         """
         raise NotImplementedError
-
     def get(self, key: str) -> Optional[bytes]:
         """
         Get the value associated with the specified `key`
@@ -61,7 +61,6 @@ class Store:
         Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.key_value.Error)`
         """
         raise NotImplementedError
-
     def set(self, key: str, value: bytes) -> None:
         """
         Set the `value` associated with the specified `key` overwriting any existing value.
@@ -69,7 +68,6 @@ class Store:
         Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.key_value.Error)`
         """
         raise NotImplementedError
-
     def delete(self, key: str) -> None:
         """
         Delete the tuple with the specified `key`
@@ -79,15 +77,13 @@ class Store:
         Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.key_value.Error)`
         """
         raise NotImplementedError
-
-    def exists(self, key: str) -> int:
+    def exists(self, key: str) -> bool:
         """
         Return whether a tuple exists for the specified `key`
         
         Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.key_value.Error)`
         """
         raise NotImplementedError
-
     def get_keys(self) -> List[str]:
         """
         Return a list of all the keys
@@ -95,12 +91,11 @@ class Store:
         Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.key_value.Error)`
         """
         raise NotImplementedError
-
-    def __enter__(self):
+    def __enter__(self) -> Self:
         """Returns self"""
         return self
-                                                                    
-    def __exit__(self, *args):
+                                
+    def __exit__(self, exc_type: type[BaseException] | None, exc_value: BaseException | None, traceback: TracebackType | None) -> bool | None:
         """
         Release this resource.
         """

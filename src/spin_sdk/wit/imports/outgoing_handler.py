@@ -3,6 +3,7 @@ This interface defines a handler of outgoing HTTP Requests. It should be
 imported by components which wish to make HTTP Requests.
 """
 from typing import TypeVar, Generic, Union, Optional, Protocol, Tuple, List, Any, Self
+from types import TracebackType
 from enum import Flag, Enum, auto
 from dataclasses import dataclass
 from abc import abstractmethod

@@ -3,6 +3,7 @@ A poll API intended to let users wait for I/O events on multiple handles
 at once.
 """
 from typing import TypeVar, Generic, Union, Optional, Protocol, Tuple, List, Any, Self
+from types import TracebackType
 from enum import Flag, Enum, auto
 from dataclasses import dataclass
 from abc import abstractmethod
@@ -16,14 +17,13 @@ class Pollable:
     `pollable` represents a single I/O event which may be ready, or not.
     """
     
-    def ready(self) -> int:
+    def ready(self) -> bool:
         """
         Return the readiness of a pollable. This function never blocks.
         
         Returns `true` when the pollable is ready, and `false` otherwise.
         """
         raise NotImplementedError
-
     def block(self) -> None:
         """
         `block` returns immediately if the pollable is ready, and otherwise
@@ -33,12 +33,11 @@ class Pollable:
         containing only this pollable.
         """
         raise NotImplementedError
-
-    def __enter__(self):
+    def __enter__(self) -> Self:
         """Returns self"""
         return self
-                                                                    
-    def __exit__(self, *args):
+                                
+    def __exit__(self, exc_type: type[BaseException] | None, exc_value: BaseException | None, traceback: TracebackType | None) -> bool | None:
         """
         Release this resource.
         """

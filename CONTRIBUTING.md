@@ -4,12 +4,12 @@
 
 - Python
 - `pip`
-- `componentize-py` 0.13.3
+- `componentize-py` 0.16.0
 
 Once you have `pip` installed, you can install `componentize-py` using:
 
 ```bash
-pip install componentize-py==0.13.3
+pip install componentize-py==0.16.0
 ```
 
 ### Generating the bindings
@@ -18,7 +18,13 @@ The bindings are generated from
 [src/spin_sdk/wit/spin.wit](./src/spin_sdk/wit/spin.wit).
 
 ```bash
-componentize-py -d src/spin_sdk/wit -w spin-all bindings bindings --world-module spin_sdk.wit
+componentize-py \
+    -d src/spin_sdk/wit \
+    -w spin-all \
+    --import-interface-name fermyon:spin/postgres@2.0.0=postgres \
+    bindings \
+    bindings \
+    --world-module spin_sdk.wit
 rm -r src/spin_sdk/wit/imports src/spin_sdk/wit/exports
 mv bindings/spin_sdk/wit/* src/spin_sdk/wit/
 rm -r bindings

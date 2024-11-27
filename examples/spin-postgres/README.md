@@ -28,6 +28,6 @@ spin build --up
 ## Testing the App
 
 ```bash
-$ curl localhost:3000                      
+$ curl localhost:3000
 Hello from Python!
 ```

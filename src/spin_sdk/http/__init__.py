@@ -37,14 +37,14 @@ try:
     
     class IncomingHandler(Base):
         """Simplified handler for incoming HTTP requests using blocking, buffered I/O."""
-        
+
         def handle_request(self, request: Request) -> Response:
             """Handle an incoming HTTP request and return a response or raise an error"""
             raise NotImplementedError
-        
+
         def handle(self, request: IncomingRequest, response_out: ResponseOutparam):
             method = request.method()
-    
+
             if isinstance(method, Method_Get):
                 method_str = "GET"
             elif isinstance(method, Method_Head):
@@ -67,7 +67,7 @@ try:
                 method_str = method.value
             else:
                 raise AssertionError
-    
+
             request_body = request.consume()
             request_stream = request_body.stream()
             body = bytearray()
@@ -76,12 +76,12 @@ try:
                     body += request_stream.blocking_read(16 * 1024)
                 except Err as e:
                     if isinstance(e.value, StreamError_Closed):
-                        request_stream.__exit__()
+                        request_stream.__exit__(None, None, None)
                         IncomingBody.finish(request_body)
                         break
                     else:
                         raise e
-    
+
             request_uri = request.path_with_query()
             if request_uri is None:
                 uri = "/"
@@ -102,11 +102,11 @@ try:
                 response.set_status_code(500)
                 ResponseOutparam.set(response_out, Ok(response))
                 return
-    
+
             if simple_response.headers.get('content-length') is None:
                 content_length = len(simple_response.body) if simple_response.body is not None else 0
                 simple_response.headers['content-length'] = str(content_length)
-    
+
             response = OutgoingResponse(Fields.from_list(list(map(
                 lambda pair: (pair[0], bytes(pair[1], "utf-8")),
                 simple_response.headers.items()
@@ -122,14 +122,14 @@ try:
                     count = min(len(simple_response.body) - offset, MAX_BLOCKING_WRITE_SIZE)
                     response_stream.blocking_write_and_flush(simple_response.body[offset:offset+count])
                     offset += count
-            response_stream.__exit__()
+            response_stream.__exit__(None, None, None)
             OutgoingBody.finish(response_body, None)
 
 except ImportError:
     # `spin_sdk.wit.exports` won't exist if the use is targeting `spin-imports`,
     # so just skip this part
     pass
-            
+
 def send(request: Request) -> Response:
     """Send an HTTP request and return a response or raise an error"""
     loop = PollLoop()
@@ -226,7 +226,7 @@ async def send_async(request: Request) -> Response:
                 )),
                 bytes(body)
             )
-            incoming_response.__exit__()
+            incoming_response.__exit__(None, None, None)
             return simple_response
         else:
             body += chunk

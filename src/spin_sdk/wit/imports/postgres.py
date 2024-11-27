@@ -1,4 +1,5 @@
 from typing import TypeVar, Generic, Union, Optional, Protocol, Tuple, List, Any, Self
+from types import TracebackType
 from enum import Flag, Enum, auto
 from dataclasses import dataclass
 from abc import abstractmethod
@@ -20,7 +21,6 @@ class Connection:
         Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.rdbms_types.Error)`
         """
         raise NotImplementedError
-
     def query(self, statement: str, params: List[rdbms_types.ParameterValue]) -> rdbms_types.RowSet:
         """
         Query the database.
@@ -28,7 +28,6 @@ class Connection:
         Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.rdbms_types.Error)`
         """
         raise NotImplementedError
-
     def execute(self, statement: str, params: List[rdbms_types.ParameterValue]) -> int:
         """
         Execute command to the database.
@@ -36,12 +35,11 @@ class Connection:
         Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.rdbms_types.Error)`
         """
         raise NotImplementedError
-
-    def __enter__(self):
+    def __enter__(self) -> Self:
         """Returns self"""
         return self
-                                                                    
-    def __exit__(self, *args):
+                                
+    def __exit__(self, exc_type: type[BaseException] | None, exc_value: BaseException | None, traceback: TracebackType | None) -> bool | None:
         """
         Release this resource.
         """
