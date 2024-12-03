@@ -1,0 +1,404 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
+<meta name="generator" content="pdoc3 0.11.3">
+<title>spin_sdk.wit.imports.wasi_keyvalue_store API documentation</title>
+<meta name="description" content="A keyvalue interface that provides eventually consistent key-value operations …">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/sanitize.min.css" integrity="sha512-y1dtMcuvtTMJc1yPgEqF0ZjQbhnc/bFhyvIyVNb9Zk5mIGtqVaAB1Ttl28su8AvFMOY0EwRbAe+HCLqj6W7/KA==" crossorigin>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/typography.min.css" integrity="sha512-Y1DYSb995BAfxobCkKepB1BqJJTPrOp3zPL74AWFugHHmmdcvO+C48WLrUOlhGMc0QG7AE3f7gmvvcrmX2fDoA==" crossorigin>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:1.5em;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:2em 0 .50em 0}h3{font-size:1.4em;margin:1.6em 0 .7em 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .2s ease-in-out}a:visited{color:#503}a:hover{color:#b62}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900;font-weight:bold}pre code{font-size:.8em;line-height:1.4em;padding:1em;display:block}code{background:#f3f3f3;font-family:"DejaVu Sans Mono",monospace;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em 1em;margin:1em 0}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul ul{padding-left:1em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" integrity="sha512-D9gUyxqja7hBtkWpPWGt9wfbfaMGVt9gnyCvYa+jojwwPHLCzUm5i8rpk7vD7wNee9bA35eYIjobYPaQuKS1MQ==" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => {
+hljs.configure({languages: ['bash', 'css', 'diff', 'graphql', 'ini', 'javascript', 'json', 'plaintext', 'python', 'python-repl', 'rust', 'shell', 'sql', 'typescript', 'xml', 'yaml']});
+hljs.highlightAll();
+})</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>spin_sdk.wit.imports.wasi_keyvalue_store</code></h1>
+</header>
+<section id="section-intro">
+<p>A keyvalue interface that provides eventually consistent key-value operations.</p>
+<p>Each of these operations acts on a single key-value pair.</p>
+<p>The value in the key-value pair is defined as a <code>u8</code> byte array and the intention is that it is
+the common denominator for all data types defined by different key-value stores to handle data,
+ensuring compatibility between different key-value stores. Note: the clients will be expecting
+serialization/deserialization overhead to be handled by the key-value store. The value could be
+a serialized object from JSON, HTML or vendor-specific data types like AWS S3 objects.</p>
+<p>Data consistency in a key value store refers to the guarantee that once a write operation
+completes, all subsequent read operations will return the value that was written.</p>
+<p>Any implementation of this interface must have enough consistency to guarantee "reading your
+writes." In particular, this means that the client should never get a value that is older than
+the one it wrote, but it MAY get a newer value if one was written around the same time. These
+guarantees only apply to the same client (which will likely be provided by the host or an
+external capability of some kind). In this context a "client" is referring to the caller or
+guest that is consuming this interface. Once a write request is committed by a specific client,
+all subsequent read requests by the same client will reflect that write or any subsequent
+writes. Another client running in a different context may or may not immediately see the result
+due to the replication lag. As an example of all of this, if a value at a given key is A, and
+the client writes B, then immediately reads, it should get B. If something else writes C in
+quick succession, then the client may get C. However, a client running in a separate context may
+still see A or B</p>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-variables">Global variables</h2>
+<dl>
+<dt id="spin_sdk.wit.imports.wasi_keyvalue_store.Error"><code class="name">var <span class="ident">Error</span></code></dt>
+<dd>
+<div class="desc"><p>The set of errors which may be raised by functions in this package</p></div>
+</dd>
+</dl>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="spin_sdk.wit.imports.wasi_keyvalue_store.open"><code class="name flex">
+<span>def <span class="ident">open</span></span>(<span>identifier: str) ‑> <a title="spin_sdk.wit.imports.wasi_keyvalue_store.Bucket" href="#spin_sdk.wit.imports.wasi_keyvalue_store.Bucket">Bucket</a></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Get the bucket with the specified identifier.</p>
+<p><code>identifier</code> must refer to a bucket provided by the host.</p>
+<p><code>error::no-such-store</code> will be raised if the <code>identifier</code> is not recognized.</p>
+<p>Raises: <code><a title="spin_sdk.wit.types.Err" href="../types.html#spin_sdk.wit.types.Err">Err</a>(<a title="spin_sdk.wit.imports.wasi_keyvalue_store.Error" href="#spin_sdk.wit.imports.wasi_keyvalue_store.Error">Error</a>)</code></p></div>
+</dd>
+</dl>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="spin_sdk.wit.imports.wasi_keyvalue_store.Bucket"><code class="flex name class">
+<span>class <span class="ident">Bucket</span></span>
+</code></dt>
+<dd>
+<div class="desc"><p>A bucket is a collection of key-value pairs. Each key-value pair is stored as a entry in the
+bucket, and the bucket itself acts as a collection of all these entries.</p>
+<p>It is worth noting that the exact terminology for bucket in key-value stores can very
+depending on the specific implementation. For example:</p>
+<ol>
+<li>Amazon DynamoDB calls a collection of key-value pairs a table</li>
+<li>Redis has hashes, sets, and sorted sets as different types of collections</li>
+<li>Cassandra calls a collection of key-value pairs a column family</li>
+<li>MongoDB calls a collection of key-value pairs a collection</li>
+<li>Riak calls a collection of key-value pairs a bucket</li>
+<li>Memcached calls a collection of key-value pairs a slab</li>
+<li>Azure Cosmos DB calls a collection of key-value pairs a container</li>
+</ol>
+<p>In this interface, we use the term <code>bucket</code> to refer to a collection of key-value pairs</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Bucket:
+    &#34;&#34;&#34;
+    A bucket is a collection of key-value pairs. Each key-value pair is stored as a entry in the
+    bucket, and the bucket itself acts as a collection of all these entries.
+    
+    It is worth noting that the exact terminology for bucket in key-value stores can very
+    depending on the specific implementation. For example:
+    
+    1. Amazon DynamoDB calls a collection of key-value pairs a table
+    2. Redis has hashes, sets, and sorted sets as different types of collections
+    3. Cassandra calls a collection of key-value pairs a column family
+    4. MongoDB calls a collection of key-value pairs a collection
+    5. Riak calls a collection of key-value pairs a bucket
+    6. Memcached calls a collection of key-value pairs a slab
+    7. Azure Cosmos DB calls a collection of key-value pairs a container
+    
+    In this interface, we use the term `bucket` to refer to a collection of key-value pairs
+    &#34;&#34;&#34;
+    
+    def get(self, key: str) -&gt; Optional[bytes]:
+        &#34;&#34;&#34;
+        Get the value associated with the specified `key`
+        
+        The value is returned as an option. If the key-value pair exists in the
+        store, it returns `Ok(value)`. If the key does not exist in the
+        store, it returns `Ok(none)`.
+        
+        If any other error occurs, it returns an `Err(error)`.
+        
+        Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.wasi_keyvalue_store.Error)`
+        &#34;&#34;&#34;
+        raise NotImplementedError
+    def set(self, key: str, value: bytes) -&gt; None:
+        &#34;&#34;&#34;
+        Set the value associated with the key in the store. If the key already
+        exists in the store, it overwrites the value.
+        
+        If the key does not exist in the store, it creates a new key-value pair.
+        
+        If any other error occurs, it returns an `Err(error)`.
+        
+        Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.wasi_keyvalue_store.Error)`
+        &#34;&#34;&#34;
+        raise NotImplementedError
+    def delete(self, key: str) -&gt; None:
+        &#34;&#34;&#34;
+        Delete the key-value pair associated with the key in the store.
+        
+        If the key does not exist in the store, it does nothing.
+        
+        If any other error occurs, it returns an `Err(error)`.
+        
+        Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.wasi_keyvalue_store.Error)`
+        &#34;&#34;&#34;
+        raise NotImplementedError
+    def exists(self, key: str) -&gt; bool:
+        &#34;&#34;&#34;
+        Check if the key exists in the store.
+        
+        If the key exists in the store, it returns `Ok(true)`. If the key does
+        not exist in the store, it returns `Ok(false)`.
+        
+        If any other error occurs, it returns an `Err(error)`.
+        
+        Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.wasi_keyvalue_store.Error)`
+        &#34;&#34;&#34;
+        raise NotImplementedError
+    def list_keys(self, cursor: Optional[str]) -&gt; KeyResponse:
+        &#34;&#34;&#34;
+        Get all the keys in the store with an optional cursor (for use in pagination). It
+        returns a list of keys. Please note that for most KeyValue implementations, this is a
+        can be a very expensive operation and so it should be used judiciously. Implementations
+        can return any number of keys in a single response, but they should never attempt to
+        send more data than is reasonable (i.e. on a small edge device, this may only be a few
+        KB, while on a large machine this could be several MB). Any response should also return
+        a cursor that can be used to fetch the next page of keys. See the `key-response` record
+        for more information.
+        
+        Note that the keys are not guaranteed to be returned in any particular order.
+        
+        If the store is empty, it returns an empty list.
+        
+        MAY show an out-of-date list of keys if there are concurrent writes to the store.
+        
+        If any error occurs, it returns an `Err(error)`.
+        
+        Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.wasi_keyvalue_store.Error)`
+        &#34;&#34;&#34;
+        raise NotImplementedError
+    def __enter__(self) -&gt; Self:
+        &#34;&#34;&#34;Returns self&#34;&#34;&#34;
+        return self
+                                
+    def __exit__(self, exc_type: type[BaseException] | None, exc_value: BaseException | None, traceback: TracebackType | None) -&gt; bool | None:
+        &#34;&#34;&#34;
+        Release this resource.
+        &#34;&#34;&#34;
+        raise NotImplementedError</code></pre>
+</details>
+<h3>Methods</h3>
+<dl>
+<dt id="spin_sdk.wit.imports.wasi_keyvalue_store.Bucket.delete"><code class="name flex">
+<span>def <span class="ident">delete</span></span>(<span>self, key: str) ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Delete the key-value pair associated with the key in the store.</p>
+<p>If the key does not exist in the store, it does nothing.</p>
+<p>If any other error occurs, it returns an <code>Err(error)</code>.</p>
+<p>Raises: <code><a title="spin_sdk.wit.types.Err" href="../types.html#spin_sdk.wit.types.Err">Err</a>(<a title="spin_sdk.wit.imports.wasi_keyvalue_store.Error" href="#spin_sdk.wit.imports.wasi_keyvalue_store.Error">Error</a>)</code></p></div>
+</dd>
+<dt id="spin_sdk.wit.imports.wasi_keyvalue_store.Bucket.exists"><code class="name flex">
+<span>def <span class="ident">exists</span></span>(<span>self, key: str) ‑> bool</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Check if the key exists in the store.</p>
+<p>If the key exists in the store, it returns <code>Ok(true)</code>. If the key does
+not exist in the store, it returns <code>Ok(false)</code>.</p>
+<p>If any other error occurs, it returns an <code>Err(error)</code>.</p>
+<p>Raises: <code><a title="spin_sdk.wit.types.Err" href="../types.html#spin_sdk.wit.types.Err">Err</a>(<a title="spin_sdk.wit.imports.wasi_keyvalue_store.Error" href="#spin_sdk.wit.imports.wasi_keyvalue_store.Error">Error</a>)</code></p></div>
+</dd>
+<dt id="spin_sdk.wit.imports.wasi_keyvalue_store.Bucket.get"><code class="name flex">
+<span>def <span class="ident">get</span></span>(<span>self, key: str) ‑> bytes | None</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Get the value associated with the specified <code>key</code></p>
+<p>The value is returned as an option. If the key-value pair exists in the
+store, it returns <code>Ok(value)</code>. If the key does not exist in the
+store, it returns <code>Ok(none)</code>.</p>
+<p>If any other error occurs, it returns an <code>Err(error)</code>.</p>
+<p>Raises: <code><a title="spin_sdk.wit.types.Err" href="../types.html#spin_sdk.wit.types.Err">Err</a>(<a title="spin_sdk.wit.imports.wasi_keyvalue_store.Error" href="#spin_sdk.wit.imports.wasi_keyvalue_store.Error">Error</a>)</code></p></div>
+</dd>
+<dt id="spin_sdk.wit.imports.wasi_keyvalue_store.Bucket.list_keys"><code class="name flex">
+<span>def <span class="ident">list_keys</span></span>(<span>self, cursor: str | None) ‑> <a title="spin_sdk.wit.imports.wasi_keyvalue_store.KeyResponse" href="#spin_sdk.wit.imports.wasi_keyvalue_store.KeyResponse">KeyResponse</a></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Get all the keys in the store with an optional cursor (for use in pagination). It
+returns a list of keys. Please note that for most KeyValue implementations, this is a
+can be a very expensive operation and so it should be used judiciously. Implementations
+can return any number of keys in a single response, but they should never attempt to
+send more data than is reasonable (i.e. on a small edge device, this may only be a few
+KB, while on a large machine this could be several MB). Any response should also return
+a cursor that can be used to fetch the next page of keys. See the <code>key-response</code> record
+for more information.</p>
+<p>Note that the keys are not guaranteed to be returned in any particular order.</p>
+<p>If the store is empty, it returns an empty list.</p>
+<p>MAY show an out-of-date list of keys if there are concurrent writes to the store.</p>
+<p>If any error occurs, it returns an <code>Err(error)</code>.</p>
+<p>Raises: <code><a title="spin_sdk.wit.types.Err" href="../types.html#spin_sdk.wit.types.Err">Err</a>(<a title="spin_sdk.wit.imports.wasi_keyvalue_store.Error" href="#spin_sdk.wit.imports.wasi_keyvalue_store.Error">Error</a>)</code></p></div>
+</dd>
+<dt id="spin_sdk.wit.imports.wasi_keyvalue_store.Bucket.set"><code class="name flex">
+<span>def <span class="ident">set</span></span>(<span>self, key: str, value: bytes) ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Set the value associated with the key in the store. If the key already
+exists in the store, it overwrites the value.</p>
+<p>If the key does not exist in the store, it creates a new key-value pair.</p>
+<p>If any other error occurs, it returns an <code>Err(error)</code>.</p>
+<p>Raises: <code><a title="spin_sdk.wit.types.Err" href="../types.html#spin_sdk.wit.types.Err">Err</a>(<a title="spin_sdk.wit.imports.wasi_keyvalue_store.Error" href="#spin_sdk.wit.imports.wasi_keyvalue_store.Error">Error</a>)</code></p></div>
+</dd>
+</dl>
+</dd>
+<dt id="spin_sdk.wit.imports.wasi_keyvalue_store.Error_AccessDenied"><code class="flex name class">
+<span>class <span class="ident">Error_AccessDenied</span></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Error_AccessDenied()</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@dataclass
+class Error_AccessDenied:
+    pass</code></pre>
+</details>
+</dd>
+<dt id="spin_sdk.wit.imports.wasi_keyvalue_store.Error_NoSuchStore"><code class="flex name class">
+<span>class <span class="ident">Error_NoSuchStore</span></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Error_NoSuchStore()</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@dataclass
+class Error_NoSuchStore:
+    pass</code></pre>
+</details>
+</dd>
+<dt id="spin_sdk.wit.imports.wasi_keyvalue_store.Error_Other"><code class="flex name class">
+<span>class <span class="ident">Error_Other</span></span>
+<span>(</span><span>value: str)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Error_Other(value: str)</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@dataclass
+class Error_Other:
+    value: str</code></pre>
+</details>
+<h3>Class variables</h3>
+<dl>
+<dt id="spin_sdk.wit.imports.wasi_keyvalue_store.Error_Other.value"><code class="name">var <span class="ident">value</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
+<dt id="spin_sdk.wit.imports.wasi_keyvalue_store.KeyResponse"><code class="flex name class">
+<span>class <span class="ident">KeyResponse</span></span>
+<span>(</span><span>keys: List[str], cursor: str | None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>A response to a <code>list-keys</code> operation.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@dataclass
+class KeyResponse:
+    &#34;&#34;&#34;
+    A response to a `list-keys` operation.
+    &#34;&#34;&#34;
+    keys: List[str]
+    cursor: Optional[str]</code></pre>
+</details>
+<h3>Class variables</h3>
+<dl>
+<dt id="spin_sdk.wit.imports.wasi_keyvalue_store.KeyResponse.cursor"><code class="name">var <span class="ident">cursor</span> : str | None</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="spin_sdk.wit.imports.wasi_keyvalue_store.KeyResponse.keys"><code class="name">var <span class="ident">keys</span> : List[str]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="spin_sdk.wit.imports" href="index.html">spin_sdk.wit.imports</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-variables">Global variables</a></h3>
+<ul class="">
+<li><code><a title="spin_sdk.wit.imports.wasi_keyvalue_store.Error" href="#spin_sdk.wit.imports.wasi_keyvalue_store.Error">Error</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="spin_sdk.wit.imports.wasi_keyvalue_store.open" href="#spin_sdk.wit.imports.wasi_keyvalue_store.open">open</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="spin_sdk.wit.imports.wasi_keyvalue_store.Bucket" href="#spin_sdk.wit.imports.wasi_keyvalue_store.Bucket">Bucket</a></code></h4>
+<ul class="">
+<li><code><a title="spin_sdk.wit.imports.wasi_keyvalue_store.Bucket.delete" href="#spin_sdk.wit.imports.wasi_keyvalue_store.Bucket.delete">delete</a></code></li>
+<li><code><a title="spin_sdk.wit.imports.wasi_keyvalue_store.Bucket.exists" href="#spin_sdk.wit.imports.wasi_keyvalue_store.Bucket.exists">exists</a></code></li>
+<li><code><a title="spin_sdk.wit.imports.wasi_keyvalue_store.Bucket.get" href="#spin_sdk.wit.imports.wasi_keyvalue_store.Bucket.get">get</a></code></li>
+<li><code><a title="spin_sdk.wit.imports.wasi_keyvalue_store.Bucket.list_keys" href="#spin_sdk.wit.imports.wasi_keyvalue_store.Bucket.list_keys">list_keys</a></code></li>
+<li><code><a title="spin_sdk.wit.imports.wasi_keyvalue_store.Bucket.set" href="#spin_sdk.wit.imports.wasi_keyvalue_store.Bucket.set">set</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="spin_sdk.wit.imports.wasi_keyvalue_store.Error_AccessDenied" href="#spin_sdk.wit.imports.wasi_keyvalue_store.Error_AccessDenied">Error_AccessDenied</a></code></h4>
+</li>
+<li>
+<h4><code><a title="spin_sdk.wit.imports.wasi_keyvalue_store.Error_NoSuchStore" href="#spin_sdk.wit.imports.wasi_keyvalue_store.Error_NoSuchStore">Error_NoSuchStore</a></code></h4>
+</li>
+<li>
+<h4><code><a title="spin_sdk.wit.imports.wasi_keyvalue_store.Error_Other" href="#spin_sdk.wit.imports.wasi_keyvalue_store.Error_Other">Error_Other</a></code></h4>
+<ul class="">
+<li><code><a title="spin_sdk.wit.imports.wasi_keyvalue_store.Error_Other.value" href="#spin_sdk.wit.imports.wasi_keyvalue_store.Error_Other.value">value</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="spin_sdk.wit.imports.wasi_keyvalue_store.KeyResponse" href="#spin_sdk.wit.imports.wasi_keyvalue_store.KeyResponse">KeyResponse</a></code></h4>
+<ul class="">
+<li><code><a title="spin_sdk.wit.imports.wasi_keyvalue_store.KeyResponse.cursor" href="#spin_sdk.wit.imports.wasi_keyvalue_store.KeyResponse.cursor">cursor</a></code></li>
+<li><code><a title="spin_sdk.wit.imports.wasi_keyvalue_store.KeyResponse.keys" href="#spin_sdk.wit.imports.wasi_keyvalue_store.KeyResponse.keys">keys</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.11.3</a>.</p>
+</footer>
+</body>
+</html>

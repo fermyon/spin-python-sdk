@@ -11,6 +11,7 @@ successive reads of the clock will produce non-decreasing values.
 It is intended for measuring elapsed time.
 """
 from typing import TypeVar, Generic, Union, Optional, Protocol, Tuple, List, Any, Self
+from types import TracebackType
 from enum import Flag, Enum, auto
 from dataclasses import dataclass
 from abc import abstractmethod

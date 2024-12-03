@@ -1,0 +1,1271 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
+<meta name="generator" content="pdoc3 0.11.3">
+<title>spin_sdk.wit.imports.spin_postgres_postgres API documentation</title>
+<meta name="description" content="">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/sanitize.min.css" integrity="sha512-y1dtMcuvtTMJc1yPgEqF0ZjQbhnc/bFhyvIyVNb9Zk5mIGtqVaAB1Ttl28su8AvFMOY0EwRbAe+HCLqj6W7/KA==" crossorigin>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/typography.min.css" integrity="sha512-Y1DYSb995BAfxobCkKepB1BqJJTPrOp3zPL74AWFugHHmmdcvO+C48WLrUOlhGMc0QG7AE3f7gmvvcrmX2fDoA==" crossorigin>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:1.5em;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:2em 0 .50em 0}h3{font-size:1.4em;margin:1.6em 0 .7em 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .2s ease-in-out}a:visited{color:#503}a:hover{color:#b62}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900;font-weight:bold}pre code{font-size:.8em;line-height:1.4em;padding:1em;display:block}code{background:#f3f3f3;font-family:"DejaVu Sans Mono",monospace;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em 1em;margin:1em 0}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul ul{padding-left:1em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" integrity="sha512-D9gUyxqja7hBtkWpPWGt9wfbfaMGVt9gnyCvYa+jojwwPHLCzUm5i8rpk7vD7wNee9bA35eYIjobYPaQuKS1MQ==" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => {
+hljs.configure({languages: ['bash', 'css', 'diff', 'graphql', 'ini', 'javascript', 'json', 'plaintext', 'python', 'python-repl', 'rust', 'shell', 'sql', 'typescript', 'xml', 'yaml']});
+hljs.highlightAll();
+})</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>spin_sdk.wit.imports.spin_postgres_postgres</code></h1>
+</header>
+<section id="section-intro">
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-variables">Global variables</h2>
+<dl>
+<dt id="spin_sdk.wit.imports.spin_postgres_postgres.DbValue"><code class="name">var <span class="ident">DbValue</span></code></dt>
+<dd>
+<div class="desc"><p>Database values</p></div>
+</dd>
+<dt id="spin_sdk.wit.imports.spin_postgres_postgres.Error"><code class="name">var <span class="ident">Error</span></code></dt>
+<dd>
+<div class="desc"><p>Errors related to interacting with a database.</p></div>
+</dd>
+<dt id="spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue"><code class="name">var <span class="ident">ParameterValue</span></code></dt>
+<dd>
+<div class="desc"><p>Values used in parameterized queries</p></div>
+</dd>
+</dl>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="spin_sdk.wit.imports.spin_postgres_postgres.Column"><code class="flex name class">
+<span>class <span class="ident">Column</span></span>
+<span>(</span><span>name: str,<br>data_type: <a title="spin_sdk.wit.imports.spin_postgres_postgres.DbDataType" href="#spin_sdk.wit.imports.spin_postgres_postgres.DbDataType">DbDataType</a>)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>A database column</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@dataclass
+class Column:
+    &#34;&#34;&#34;
+    A database column
+    &#34;&#34;&#34;
+    name: str
+    data_type: DbDataType</code></pre>
+</details>
+<h3>Class variables</h3>
+<dl>
+<dt id="spin_sdk.wit.imports.spin_postgres_postgres.Column.data_type"><code class="name">var <span class="ident">data_type</span> : <a title="spin_sdk.wit.imports.spin_postgres_postgres.DbDataType" href="#spin_sdk.wit.imports.spin_postgres_postgres.DbDataType">DbDataType</a></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="spin_sdk.wit.imports.spin_postgres_postgres.Column.name"><code class="name">var <span class="ident">name</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
+<dt id="spin_sdk.wit.imports.spin_postgres_postgres.Connection"><code class="flex name class">
+<span>class <span class="ident">Connection</span></span>
+</code></dt>
+<dd>
+<div class="desc"><p>A connection to a postgres database.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Connection:
+    &#34;&#34;&#34;
+    A connection to a postgres database.
+    &#34;&#34;&#34;
+    
+    @classmethod
+    def open(cls, address: str) -&gt; Self:
+        &#34;&#34;&#34;
+        Open a connection to the Postgres instance at `address`.
+        
+        Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.spin_postgres_postgres.Error)`
+        &#34;&#34;&#34;
+        raise NotImplementedError
+    def query(self, statement: str, params: List[ParameterValue]) -&gt; RowSet:
+        &#34;&#34;&#34;
+        Query the database.
+        
+        Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.spin_postgres_postgres.Error)`
+        &#34;&#34;&#34;
+        raise NotImplementedError
+    def execute(self, statement: str, params: List[ParameterValue]) -&gt; int:
+        &#34;&#34;&#34;
+        Execute command to the database.
+        
+        Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.spin_postgres_postgres.Error)`
+        &#34;&#34;&#34;
+        raise NotImplementedError
+    def __enter__(self) -&gt; Self:
+        &#34;&#34;&#34;Returns self&#34;&#34;&#34;
+        return self
+                                
+    def __exit__(self, exc_type: type[BaseException] | None, exc_value: BaseException | None, traceback: TracebackType | None) -&gt; bool | None:
+        &#34;&#34;&#34;
+        Release this resource.
+        &#34;&#34;&#34;
+        raise NotImplementedError</code></pre>
+</details>
+<h3>Static methods</h3>
+<dl>
+<dt id="spin_sdk.wit.imports.spin_postgres_postgres.Connection.open"><code class="name flex">
+<span>def <span class="ident">open</span></span>(<span>address: str) ‑> Self</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Open a connection to the Postgres instance at <code>address</code>.</p>
+<p>Raises: <code><a title="spin_sdk.wit.types.Err" href="../types.html#spin_sdk.wit.types.Err">Err</a>(<a title="spin_sdk.wit.imports.spin_postgres_postgres.Error" href="#spin_sdk.wit.imports.spin_postgres_postgres.Error">Error</a>)</code></p></div>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="spin_sdk.wit.imports.spin_postgres_postgres.Connection.execute"><code class="name flex">
+<span>def <span class="ident">execute</span></span>(<span>self,<br>statement: str,<br>params: List[<a title="spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_Boolean" href="#spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_Boolean">ParameterValue_Boolean</a> | <a title="spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_Int8" href="#spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_Int8">ParameterValue_Int8</a> | <a title="spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_Int16" href="#spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_Int16">ParameterValue_Int16</a> | <a title="spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_Int32" href="#spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_Int32">ParameterValue_Int32</a> | <a title="spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_Int64" href="#spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_Int64">ParameterValue_Int64</a> | <a title="spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_Floating32" href="#spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_Floating32">ParameterValue_Floating32</a> | <a title="spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_Floating64" href="#spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_Floating64">ParameterValue_Floating64</a> | <a title="spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_Str" href="#spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_Str">ParameterValue_Str</a> | <a title="spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_Binary" href="#spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_Binary">ParameterValue_Binary</a> | <a title="spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_Date" href="#spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_Date">ParameterValue_Date</a> | <a title="spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_Time" href="#spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_Time">ParameterValue_Time</a> | <a title="spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_Datetime" href="#spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_Datetime">ParameterValue_Datetime</a> | <a title="spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_Timestamp" href="#spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_Timestamp">ParameterValue_Timestamp</a> | <a title="spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_DbNull" href="#spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_DbNull">ParameterValue_DbNull</a>]) ‑> int</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Execute command to the database.</p>
+<p>Raises: <code><a title="spin_sdk.wit.types.Err" href="../types.html#spin_sdk.wit.types.Err">Err</a>(<a title="spin_sdk.wit.imports.spin_postgres_postgres.Error" href="#spin_sdk.wit.imports.spin_postgres_postgres.Error">Error</a>)</code></p></div>
+</dd>
+<dt id="spin_sdk.wit.imports.spin_postgres_postgres.Connection.query"><code class="name flex">
+<span>def <span class="ident">query</span></span>(<span>self,<br>statement: str,<br>params: List[<a title="spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_Boolean" href="#spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_Boolean">ParameterValue_Boolean</a> | <a title="spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_Int8" href="#spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_Int8">ParameterValue_Int8</a> | <a title="spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_Int16" href="#spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_Int16">ParameterValue_Int16</a> | <a title="spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_Int32" href="#spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_Int32">ParameterValue_Int32</a> | <a title="spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_Int64" href="#spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_Int64">ParameterValue_Int64</a> | <a title="spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_Floating32" href="#spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_Floating32">ParameterValue_Floating32</a> | <a title="spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_Floating64" href="#spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_Floating64">ParameterValue_Floating64</a> | <a title="spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_Str" href="#spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_Str">ParameterValue_Str</a> | <a title="spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_Binary" href="#spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_Binary">ParameterValue_Binary</a> | <a title="spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_Date" href="#spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_Date">ParameterValue_Date</a> | <a title="spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_Time" href="#spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_Time">ParameterValue_Time</a> | <a title="spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_Datetime" href="#spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_Datetime">ParameterValue_Datetime</a> | <a title="spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_Timestamp" href="#spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_Timestamp">ParameterValue_Timestamp</a> | <a title="spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_DbNull" href="#spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_DbNull">ParameterValue_DbNull</a>]) ‑> <a title="spin_sdk.wit.imports.spin_postgres_postgres.RowSet" href="#spin_sdk.wit.imports.spin_postgres_postgres.RowSet">RowSet</a></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Query the database.</p>
+<p>Raises: <code><a title="spin_sdk.wit.types.Err" href="../types.html#spin_sdk.wit.types.Err">Err</a>(<a title="spin_sdk.wit.imports.spin_postgres_postgres.Error" href="#spin_sdk.wit.imports.spin_postgres_postgres.Error">Error</a>)</code></p></div>
+</dd>
+</dl>
+</dd>
+<dt id="spin_sdk.wit.imports.spin_postgres_postgres.DbDataType"><code class="flex name class">
+<span>class <span class="ident">DbDataType</span></span>
+<span>(</span><span>*args, **kwds)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Data types for a database column</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class DbDataType(Enum):
+    &#34;&#34;&#34;
+    Data types for a database column
+    &#34;&#34;&#34;
+    BOOLEAN = 0
+    INT8 = 1
+    INT16 = 2
+    INT32 = 3
+    INT64 = 4
+    FLOATING32 = 5
+    FLOATING64 = 6
+    STR = 7
+    BINARY = 8
+    DATE = 9
+    TIME = 10
+    DATETIME = 11
+    TIMESTAMP = 12
+    OTHER = 13</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>enum.Enum</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="spin_sdk.wit.imports.spin_postgres_postgres.DbDataType.BINARY"><code class="name">var <span class="ident">BINARY</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="spin_sdk.wit.imports.spin_postgres_postgres.DbDataType.BOOLEAN"><code class="name">var <span class="ident">BOOLEAN</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="spin_sdk.wit.imports.spin_postgres_postgres.DbDataType.DATE"><code class="name">var <span class="ident">DATE</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="spin_sdk.wit.imports.spin_postgres_postgres.DbDataType.DATETIME"><code class="name">var <span class="ident">DATETIME</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="spin_sdk.wit.imports.spin_postgres_postgres.DbDataType.FLOATING32"><code class="name">var <span class="ident">FLOATING32</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="spin_sdk.wit.imports.spin_postgres_postgres.DbDataType.FLOATING64"><code class="name">var <span class="ident">FLOATING64</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="spin_sdk.wit.imports.spin_postgres_postgres.DbDataType.INT16"><code class="name">var <span class="ident">INT16</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="spin_sdk.wit.imports.spin_postgres_postgres.DbDataType.INT32"><code class="name">var <span class="ident">INT32</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="spin_sdk.wit.imports.spin_postgres_postgres.DbDataType.INT64"><code class="name">var <span class="ident">INT64</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="spin_sdk.wit.imports.spin_postgres_postgres.DbDataType.INT8"><code class="name">var <span class="ident">INT8</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="spin_sdk.wit.imports.spin_postgres_postgres.DbDataType.OTHER"><code class="name">var <span class="ident">OTHER</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="spin_sdk.wit.imports.spin_postgres_postgres.DbDataType.STR"><code class="name">var <span class="ident">STR</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="spin_sdk.wit.imports.spin_postgres_postgres.DbDataType.TIME"><code class="name">var <span class="ident">TIME</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="spin_sdk.wit.imports.spin_postgres_postgres.DbDataType.TIMESTAMP"><code class="name">var <span class="ident">TIMESTAMP</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
+<dt id="spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Binary"><code class="flex name class">
+<span>class <span class="ident">DbValue_Binary</span></span>
+<span>(</span><span>value: bytes)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>DbValue_Binary(value: bytes)</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@dataclass
+class DbValue_Binary:
+    value: bytes</code></pre>
+</details>
+<h3>Class variables</h3>
+<dl>
+<dt id="spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Binary.value"><code class="name">var <span class="ident">value</span> : bytes</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
+<dt id="spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Boolean"><code class="flex name class">
+<span>class <span class="ident">DbValue_Boolean</span></span>
+<span>(</span><span>value: bool)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>DbValue_Boolean(value: bool)</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@dataclass
+class DbValue_Boolean:
+    value: bool</code></pre>
+</details>
+<h3>Class variables</h3>
+<dl>
+<dt id="spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Boolean.value"><code class="name">var <span class="ident">value</span> : bool</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
+<dt id="spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Date"><code class="flex name class">
+<span>class <span class="ident">DbValue_Date</span></span>
+<span>(</span><span>value: Tuple[int, int, int])</span>
+</code></dt>
+<dd>
+<div class="desc"><p>DbValue_Date(value: Tuple[int, int, int])</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@dataclass
+class DbValue_Date:
+    value: Tuple[int, int, int]</code></pre>
+</details>
+<h3>Class variables</h3>
+<dl>
+<dt id="spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Date.value"><code class="name">var <span class="ident">value</span> : Tuple[int, int, int]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
+<dt id="spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Datetime"><code class="flex name class">
+<span>class <span class="ident">DbValue_Datetime</span></span>
+<span>(</span><span>value: Tuple[int, int, int, int, int, int, int])</span>
+</code></dt>
+<dd>
+<div class="desc"><p>DbValue_Datetime(value: Tuple[int, int, int, int, int, int, int])</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@dataclass
+class DbValue_Datetime:
+    value: Tuple[int, int, int, int, int, int, int]</code></pre>
+</details>
+<h3>Class variables</h3>
+<dl>
+<dt id="spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Datetime.value"><code class="name">var <span class="ident">value</span> : Tuple[int, int, int, int, int, int, int]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
+<dt id="spin_sdk.wit.imports.spin_postgres_postgres.DbValue_DbNull"><code class="flex name class">
+<span>class <span class="ident">DbValue_DbNull</span></span>
+</code></dt>
+<dd>
+<div class="desc"><p>DbValue_DbNull()</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@dataclass
+class DbValue_DbNull:
+    pass</code></pre>
+</details>
+</dd>
+<dt id="spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Floating32"><code class="flex name class">
+<span>class <span class="ident">DbValue_Floating32</span></span>
+<span>(</span><span>value: float)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>DbValue_Floating32(value: float)</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@dataclass
+class DbValue_Floating32:
+    value: float</code></pre>
+</details>
+<h3>Class variables</h3>
+<dl>
+<dt id="spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Floating32.value"><code class="name">var <span class="ident">value</span> : float</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
+<dt id="spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Floating64"><code class="flex name class">
+<span>class <span class="ident">DbValue_Floating64</span></span>
+<span>(</span><span>value: float)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>DbValue_Floating64(value: float)</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@dataclass
+class DbValue_Floating64:
+    value: float</code></pre>
+</details>
+<h3>Class variables</h3>
+<dl>
+<dt id="spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Floating64.value"><code class="name">var <span class="ident">value</span> : float</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
+<dt id="spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Int16"><code class="flex name class">
+<span>class <span class="ident">DbValue_Int16</span></span>
+<span>(</span><span>value: int)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>DbValue_Int16(value: int)</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@dataclass
+class DbValue_Int16:
+    value: int</code></pre>
+</details>
+<h3>Class variables</h3>
+<dl>
+<dt id="spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Int16.value"><code class="name">var <span class="ident">value</span> : int</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
+<dt id="spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Int32"><code class="flex name class">
+<span>class <span class="ident">DbValue_Int32</span></span>
+<span>(</span><span>value: int)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>DbValue_Int32(value: int)</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@dataclass
+class DbValue_Int32:
+    value: int</code></pre>
+</details>
+<h3>Class variables</h3>
+<dl>
+<dt id="spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Int32.value"><code class="name">var <span class="ident">value</span> : int</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
+<dt id="spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Int64"><code class="flex name class">
+<span>class <span class="ident">DbValue_Int64</span></span>
+<span>(</span><span>value: int)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>DbValue_Int64(value: int)</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@dataclass
+class DbValue_Int64:
+    value: int</code></pre>
+</details>
+<h3>Class variables</h3>
+<dl>
+<dt id="spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Int64.value"><code class="name">var <span class="ident">value</span> : int</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
+<dt id="spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Int8"><code class="flex name class">
+<span>class <span class="ident">DbValue_Int8</span></span>
+<span>(</span><span>value: int)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>DbValue_Int8(value: int)</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@dataclass
+class DbValue_Int8:
+    value: int</code></pre>
+</details>
+<h3>Class variables</h3>
+<dl>
+<dt id="spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Int8.value"><code class="name">var <span class="ident">value</span> : int</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
+<dt id="spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Str"><code class="flex name class">
+<span>class <span class="ident">DbValue_Str</span></span>
+<span>(</span><span>value: str)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>DbValue_Str(value: str)</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@dataclass
+class DbValue_Str:
+    value: str</code></pre>
+</details>
+<h3>Class variables</h3>
+<dl>
+<dt id="spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Str.value"><code class="name">var <span class="ident">value</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
+<dt id="spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Time"><code class="flex name class">
+<span>class <span class="ident">DbValue_Time</span></span>
+<span>(</span><span>value: Tuple[int, int, int, int])</span>
+</code></dt>
+<dd>
+<div class="desc"><p>DbValue_Time(value: Tuple[int, int, int, int])</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@dataclass
+class DbValue_Time:
+    value: Tuple[int, int, int, int]</code></pre>
+</details>
+<h3>Class variables</h3>
+<dl>
+<dt id="spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Time.value"><code class="name">var <span class="ident">value</span> : Tuple[int, int, int, int]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
+<dt id="spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Timestamp"><code class="flex name class">
+<span>class <span class="ident">DbValue_Timestamp</span></span>
+<span>(</span><span>value: int)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>DbValue_Timestamp(value: int)</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@dataclass
+class DbValue_Timestamp:
+    value: int</code></pre>
+</details>
+<h3>Class variables</h3>
+<dl>
+<dt id="spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Timestamp.value"><code class="name">var <span class="ident">value</span> : int</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
+<dt id="spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Unsupported"><code class="flex name class">
+<span>class <span class="ident">DbValue_Unsupported</span></span>
+</code></dt>
+<dd>
+<div class="desc"><p>DbValue_Unsupported()</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@dataclass
+class DbValue_Unsupported:
+    pass</code></pre>
+</details>
+</dd>
+<dt id="spin_sdk.wit.imports.spin_postgres_postgres.Error_BadParameter"><code class="flex name class">
+<span>class <span class="ident">Error_BadParameter</span></span>
+<span>(</span><span>value: str)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Error_BadParameter(value: str)</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@dataclass
+class Error_BadParameter:
+    value: str</code></pre>
+</details>
+<h3>Class variables</h3>
+<dl>
+<dt id="spin_sdk.wit.imports.spin_postgres_postgres.Error_BadParameter.value"><code class="name">var <span class="ident">value</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
+<dt id="spin_sdk.wit.imports.spin_postgres_postgres.Error_ConnectionFailed"><code class="flex name class">
+<span>class <span class="ident">Error_ConnectionFailed</span></span>
+<span>(</span><span>value: str)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Error_ConnectionFailed(value: str)</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@dataclass
+class Error_ConnectionFailed:
+    value: str</code></pre>
+</details>
+<h3>Class variables</h3>
+<dl>
+<dt id="spin_sdk.wit.imports.spin_postgres_postgres.Error_ConnectionFailed.value"><code class="name">var <span class="ident">value</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
+<dt id="spin_sdk.wit.imports.spin_postgres_postgres.Error_Other"><code class="flex name class">
+<span>class <span class="ident">Error_Other</span></span>
+<span>(</span><span>value: str)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Error_Other(value: str)</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@dataclass
+class Error_Other:
+    value: str</code></pre>
+</details>
+<h3>Class variables</h3>
+<dl>
+<dt id="spin_sdk.wit.imports.spin_postgres_postgres.Error_Other.value"><code class="name">var <span class="ident">value</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
+<dt id="spin_sdk.wit.imports.spin_postgres_postgres.Error_QueryFailed"><code class="flex name class">
+<span>class <span class="ident">Error_QueryFailed</span></span>
+<span>(</span><span>value: str)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Error_QueryFailed(value: str)</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@dataclass
+class Error_QueryFailed:
+    value: str</code></pre>
+</details>
+<h3>Class variables</h3>
+<dl>
+<dt id="spin_sdk.wit.imports.spin_postgres_postgres.Error_QueryFailed.value"><code class="name">var <span class="ident">value</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
+<dt id="spin_sdk.wit.imports.spin_postgres_postgres.Error_ValueConversionFailed"><code class="flex name class">
+<span>class <span class="ident">Error_ValueConversionFailed</span></span>
+<span>(</span><span>value: str)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Error_ValueConversionFailed(value: str)</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@dataclass
+class Error_ValueConversionFailed:
+    value: str</code></pre>
+</details>
+<h3>Class variables</h3>
+<dl>
+<dt id="spin_sdk.wit.imports.spin_postgres_postgres.Error_ValueConversionFailed.value"><code class="name">var <span class="ident">value</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
+<dt id="spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_Binary"><code class="flex name class">
+<span>class <span class="ident">ParameterValue_Binary</span></span>
+<span>(</span><span>value: bytes)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>ParameterValue_Binary(value: bytes)</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@dataclass
+class ParameterValue_Binary:
+    value: bytes</code></pre>
+</details>
+<h3>Class variables</h3>
+<dl>
+<dt id="spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_Binary.value"><code class="name">var <span class="ident">value</span> : bytes</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
+<dt id="spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_Boolean"><code class="flex name class">
+<span>class <span class="ident">ParameterValue_Boolean</span></span>
+<span>(</span><span>value: bool)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>ParameterValue_Boolean(value: bool)</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@dataclass
+class ParameterValue_Boolean:
+    value: bool</code></pre>
+</details>
+<h3>Class variables</h3>
+<dl>
+<dt id="spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_Boolean.value"><code class="name">var <span class="ident">value</span> : bool</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
+<dt id="spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_Date"><code class="flex name class">
+<span>class <span class="ident">ParameterValue_Date</span></span>
+<span>(</span><span>value: Tuple[int, int, int])</span>
+</code></dt>
+<dd>
+<div class="desc"><p>ParameterValue_Date(value: Tuple[int, int, int])</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@dataclass
+class ParameterValue_Date:
+    value: Tuple[int, int, int]</code></pre>
+</details>
+<h3>Class variables</h3>
+<dl>
+<dt id="spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_Date.value"><code class="name">var <span class="ident">value</span> : Tuple[int, int, int]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
+<dt id="spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_Datetime"><code class="flex name class">
+<span>class <span class="ident">ParameterValue_Datetime</span></span>
+<span>(</span><span>value: Tuple[int, int, int, int, int, int, int])</span>
+</code></dt>
+<dd>
+<div class="desc"><p>ParameterValue_Datetime(value: Tuple[int, int, int, int, int, int, int])</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@dataclass
+class ParameterValue_Datetime:
+    value: Tuple[int, int, int, int, int, int, int]</code></pre>
+</details>
+<h3>Class variables</h3>
+<dl>
+<dt id="spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_Datetime.value"><code class="name">var <span class="ident">value</span> : Tuple[int, int, int, int, int, int, int]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
+<dt id="spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_DbNull"><code class="flex name class">
+<span>class <span class="ident">ParameterValue_DbNull</span></span>
+</code></dt>
+<dd>
+<div class="desc"><p>ParameterValue_DbNull()</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@dataclass
+class ParameterValue_DbNull:
+    pass</code></pre>
+</details>
+</dd>
+<dt id="spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_Floating32"><code class="flex name class">
+<span>class <span class="ident">ParameterValue_Floating32</span></span>
+<span>(</span><span>value: float)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>ParameterValue_Floating32(value: float)</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@dataclass
+class ParameterValue_Floating32:
+    value: float</code></pre>
+</details>
+<h3>Class variables</h3>
+<dl>
+<dt id="spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_Floating32.value"><code class="name">var <span class="ident">value</span> : float</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
+<dt id="spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_Floating64"><code class="flex name class">
+<span>class <span class="ident">ParameterValue_Floating64</span></span>
+<span>(</span><span>value: float)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>ParameterValue_Floating64(value: float)</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@dataclass
+class ParameterValue_Floating64:
+    value: float</code></pre>
+</details>
+<h3>Class variables</h3>
+<dl>
+<dt id="spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_Floating64.value"><code class="name">var <span class="ident">value</span> : float</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
+<dt id="spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_Int16"><code class="flex name class">
+<span>class <span class="ident">ParameterValue_Int16</span></span>
+<span>(</span><span>value: int)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>ParameterValue_Int16(value: int)</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@dataclass
+class ParameterValue_Int16:
+    value: int</code></pre>
+</details>
+<h3>Class variables</h3>
+<dl>
+<dt id="spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_Int16.value"><code class="name">var <span class="ident">value</span> : int</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
+<dt id="spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_Int32"><code class="flex name class">
+<span>class <span class="ident">ParameterValue_Int32</span></span>
+<span>(</span><span>value: int)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>ParameterValue_Int32(value: int)</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@dataclass
+class ParameterValue_Int32:
+    value: int</code></pre>
+</details>
+<h3>Class variables</h3>
+<dl>
+<dt id="spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_Int32.value"><code class="name">var <span class="ident">value</span> : int</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
+<dt id="spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_Int64"><code class="flex name class">
+<span>class <span class="ident">ParameterValue_Int64</span></span>
+<span>(</span><span>value: int)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>ParameterValue_Int64(value: int)</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@dataclass
+class ParameterValue_Int64:
+    value: int</code></pre>
+</details>
+<h3>Class variables</h3>
+<dl>
+<dt id="spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_Int64.value"><code class="name">var <span class="ident">value</span> : int</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
+<dt id="spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_Int8"><code class="flex name class">
+<span>class <span class="ident">ParameterValue_Int8</span></span>
+<span>(</span><span>value: int)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>ParameterValue_Int8(value: int)</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@dataclass
+class ParameterValue_Int8:
+    value: int</code></pre>
+</details>
+<h3>Class variables</h3>
+<dl>
+<dt id="spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_Int8.value"><code class="name">var <span class="ident">value</span> : int</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
+<dt id="spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_Str"><code class="flex name class">
+<span>class <span class="ident">ParameterValue_Str</span></span>
+<span>(</span><span>value: str)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>ParameterValue_Str(value: str)</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@dataclass
+class ParameterValue_Str:
+    value: str</code></pre>
+</details>
+<h3>Class variables</h3>
+<dl>
+<dt id="spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_Str.value"><code class="name">var <span class="ident">value</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
+<dt id="spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_Time"><code class="flex name class">
+<span>class <span class="ident">ParameterValue_Time</span></span>
+<span>(</span><span>value: Tuple[int, int, int, int])</span>
+</code></dt>
+<dd>
+<div class="desc"><p>ParameterValue_Time(value: Tuple[int, int, int, int])</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@dataclass
+class ParameterValue_Time:
+    value: Tuple[int, int, int, int]</code></pre>
+</details>
+<h3>Class variables</h3>
+<dl>
+<dt id="spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_Time.value"><code class="name">var <span class="ident">value</span> : Tuple[int, int, int, int]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
+<dt id="spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_Timestamp"><code class="flex name class">
+<span>class <span class="ident">ParameterValue_Timestamp</span></span>
+<span>(</span><span>value: int)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>ParameterValue_Timestamp(value: int)</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@dataclass
+class ParameterValue_Timestamp:
+    value: int</code></pre>
+</details>
+<h3>Class variables</h3>
+<dl>
+<dt id="spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_Timestamp.value"><code class="name">var <span class="ident">value</span> : int</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
+<dt id="spin_sdk.wit.imports.spin_postgres_postgres.RowSet"><code class="flex name class">
+<span>class <span class="ident">RowSet</span></span>
+<span>(</span><span>columns: List[<a title="spin_sdk.wit.imports.spin_postgres_postgres.Column" href="#spin_sdk.wit.imports.spin_postgres_postgres.Column">Column</a>],<br>rows: List[List[<a title="spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Boolean" href="#spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Boolean">DbValue_Boolean</a> | <a title="spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Int8" href="#spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Int8">DbValue_Int8</a> | <a title="spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Int16" href="#spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Int16">DbValue_Int16</a> | <a title="spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Int32" href="#spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Int32">DbValue_Int32</a> | <a title="spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Int64" href="#spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Int64">DbValue_Int64</a> | <a title="spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Floating32" href="#spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Floating32">DbValue_Floating32</a> | <a title="spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Floating64" href="#spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Floating64">DbValue_Floating64</a> | <a title="spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Str" href="#spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Str">DbValue_Str</a> | <a title="spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Binary" href="#spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Binary">DbValue_Binary</a> | <a title="spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Date" href="#spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Date">DbValue_Date</a> | <a title="spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Time" href="#spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Time">DbValue_Time</a> | <a title="spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Datetime" href="#spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Datetime">DbValue_Datetime</a> | <a title="spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Timestamp" href="#spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Timestamp">DbValue_Timestamp</a> | <a title="spin_sdk.wit.imports.spin_postgres_postgres.DbValue_DbNull" href="#spin_sdk.wit.imports.spin_postgres_postgres.DbValue_DbNull">DbValue_DbNull</a> | <a title="spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Unsupported" href="#spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Unsupported">DbValue_Unsupported</a>]])</span>
+</code></dt>
+<dd>
+<div class="desc"><p>A set of database rows</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@dataclass
+class RowSet:
+    &#34;&#34;&#34;
+    A set of database rows
+    &#34;&#34;&#34;
+    columns: List[Column]
+    rows: List[List[DbValue]]</code></pre>
+</details>
+<h3>Class variables</h3>
+<dl>
+<dt id="spin_sdk.wit.imports.spin_postgres_postgres.RowSet.columns"><code class="name">var <span class="ident">columns</span> : List[<a title="spin_sdk.wit.imports.spin_postgres_postgres.Column" href="#spin_sdk.wit.imports.spin_postgres_postgres.Column">Column</a>]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="spin_sdk.wit.imports.spin_postgres_postgres.RowSet.rows"><code class="name">var <span class="ident">rows</span> : List[List[<a title="spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Boolean" href="#spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Boolean">DbValue_Boolean</a> | <a title="spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Int8" href="#spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Int8">DbValue_Int8</a> | <a title="spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Int16" href="#spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Int16">DbValue_Int16</a> | <a title="spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Int32" href="#spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Int32">DbValue_Int32</a> | <a title="spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Int64" href="#spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Int64">DbValue_Int64</a> | <a title="spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Floating32" href="#spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Floating32">DbValue_Floating32</a> | <a title="spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Floating64" href="#spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Floating64">DbValue_Floating64</a> | <a title="spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Str" href="#spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Str">DbValue_Str</a> | <a title="spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Binary" href="#spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Binary">DbValue_Binary</a> | <a title="spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Date" href="#spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Date">DbValue_Date</a> | <a title="spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Time" href="#spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Time">DbValue_Time</a> | <a title="spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Datetime" href="#spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Datetime">DbValue_Datetime</a> | <a title="spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Timestamp" href="#spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Timestamp">DbValue_Timestamp</a> | <a title="spin_sdk.wit.imports.spin_postgres_postgres.DbValue_DbNull" href="#spin_sdk.wit.imports.spin_postgres_postgres.DbValue_DbNull">DbValue_DbNull</a> | <a title="spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Unsupported" href="#spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Unsupported">DbValue_Unsupported</a>]]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="spin_sdk.wit.imports" href="index.html">spin_sdk.wit.imports</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-variables">Global variables</a></h3>
+<ul class="">
+<li><code><a title="spin_sdk.wit.imports.spin_postgres_postgres.DbValue" href="#spin_sdk.wit.imports.spin_postgres_postgres.DbValue">DbValue</a></code></li>
+<li><code><a title="spin_sdk.wit.imports.spin_postgres_postgres.Error" href="#spin_sdk.wit.imports.spin_postgres_postgres.Error">Error</a></code></li>
+<li><code><a title="spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue" href="#spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue">ParameterValue</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="spin_sdk.wit.imports.spin_postgres_postgres.Column" href="#spin_sdk.wit.imports.spin_postgres_postgres.Column">Column</a></code></h4>
+<ul class="">
+<li><code><a title="spin_sdk.wit.imports.spin_postgres_postgres.Column.data_type" href="#spin_sdk.wit.imports.spin_postgres_postgres.Column.data_type">data_type</a></code></li>
+<li><code><a title="spin_sdk.wit.imports.spin_postgres_postgres.Column.name" href="#spin_sdk.wit.imports.spin_postgres_postgres.Column.name">name</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="spin_sdk.wit.imports.spin_postgres_postgres.Connection" href="#spin_sdk.wit.imports.spin_postgres_postgres.Connection">Connection</a></code></h4>
+<ul class="">
+<li><code><a title="spin_sdk.wit.imports.spin_postgres_postgres.Connection.execute" href="#spin_sdk.wit.imports.spin_postgres_postgres.Connection.execute">execute</a></code></li>
+<li><code><a title="spin_sdk.wit.imports.spin_postgres_postgres.Connection.open" href="#spin_sdk.wit.imports.spin_postgres_postgres.Connection.open">open</a></code></li>
+<li><code><a title="spin_sdk.wit.imports.spin_postgres_postgres.Connection.query" href="#spin_sdk.wit.imports.spin_postgres_postgres.Connection.query">query</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="spin_sdk.wit.imports.spin_postgres_postgres.DbDataType" href="#spin_sdk.wit.imports.spin_postgres_postgres.DbDataType">DbDataType</a></code></h4>
+<ul class="two-column">
+<li><code><a title="spin_sdk.wit.imports.spin_postgres_postgres.DbDataType.BINARY" href="#spin_sdk.wit.imports.spin_postgres_postgres.DbDataType.BINARY">BINARY</a></code></li>
+<li><code><a title="spin_sdk.wit.imports.spin_postgres_postgres.DbDataType.BOOLEAN" href="#spin_sdk.wit.imports.spin_postgres_postgres.DbDataType.BOOLEAN">BOOLEAN</a></code></li>
+<li><code><a title="spin_sdk.wit.imports.spin_postgres_postgres.DbDataType.DATE" href="#spin_sdk.wit.imports.spin_postgres_postgres.DbDataType.DATE">DATE</a></code></li>
+<li><code><a title="spin_sdk.wit.imports.spin_postgres_postgres.DbDataType.DATETIME" href="#spin_sdk.wit.imports.spin_postgres_postgres.DbDataType.DATETIME">DATETIME</a></code></li>
+<li><code><a title="spin_sdk.wit.imports.spin_postgres_postgres.DbDataType.FLOATING32" href="#spin_sdk.wit.imports.spin_postgres_postgres.DbDataType.FLOATING32">FLOATING32</a></code></li>
+<li><code><a title="spin_sdk.wit.imports.spin_postgres_postgres.DbDataType.FLOATING64" href="#spin_sdk.wit.imports.spin_postgres_postgres.DbDataType.FLOATING64">FLOATING64</a></code></li>
+<li><code><a title="spin_sdk.wit.imports.spin_postgres_postgres.DbDataType.INT16" href="#spin_sdk.wit.imports.spin_postgres_postgres.DbDataType.INT16">INT16</a></code></li>
+<li><code><a title="spin_sdk.wit.imports.spin_postgres_postgres.DbDataType.INT32" href="#spin_sdk.wit.imports.spin_postgres_postgres.DbDataType.INT32">INT32</a></code></li>
+<li><code><a title="spin_sdk.wit.imports.spin_postgres_postgres.DbDataType.INT64" href="#spin_sdk.wit.imports.spin_postgres_postgres.DbDataType.INT64">INT64</a></code></li>
+<li><code><a title="spin_sdk.wit.imports.spin_postgres_postgres.DbDataType.INT8" href="#spin_sdk.wit.imports.spin_postgres_postgres.DbDataType.INT8">INT8</a></code></li>
+<li><code><a title="spin_sdk.wit.imports.spin_postgres_postgres.DbDataType.OTHER" href="#spin_sdk.wit.imports.spin_postgres_postgres.DbDataType.OTHER">OTHER</a></code></li>
+<li><code><a title="spin_sdk.wit.imports.spin_postgres_postgres.DbDataType.STR" href="#spin_sdk.wit.imports.spin_postgres_postgres.DbDataType.STR">STR</a></code></li>
+<li><code><a title="spin_sdk.wit.imports.spin_postgres_postgres.DbDataType.TIME" href="#spin_sdk.wit.imports.spin_postgres_postgres.DbDataType.TIME">TIME</a></code></li>
+<li><code><a title="spin_sdk.wit.imports.spin_postgres_postgres.DbDataType.TIMESTAMP" href="#spin_sdk.wit.imports.spin_postgres_postgres.DbDataType.TIMESTAMP">TIMESTAMP</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Binary" href="#spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Binary">DbValue_Binary</a></code></h4>
+<ul class="">
+<li><code><a title="spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Binary.value" href="#spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Binary.value">value</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Boolean" href="#spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Boolean">DbValue_Boolean</a></code></h4>
+<ul class="">
+<li><code><a title="spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Boolean.value" href="#spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Boolean.value">value</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Date" href="#spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Date">DbValue_Date</a></code></h4>
+<ul class="">
+<li><code><a title="spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Date.value" href="#spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Date.value">value</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Datetime" href="#spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Datetime">DbValue_Datetime</a></code></h4>
+<ul class="">
+<li><code><a title="spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Datetime.value" href="#spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Datetime.value">value</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="spin_sdk.wit.imports.spin_postgres_postgres.DbValue_DbNull" href="#spin_sdk.wit.imports.spin_postgres_postgres.DbValue_DbNull">DbValue_DbNull</a></code></h4>
+</li>
+<li>
+<h4><code><a title="spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Floating32" href="#spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Floating32">DbValue_Floating32</a></code></h4>
+<ul class="">
+<li><code><a title="spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Floating32.value" href="#spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Floating32.value">value</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Floating64" href="#spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Floating64">DbValue_Floating64</a></code></h4>
+<ul class="">
+<li><code><a title="spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Floating64.value" href="#spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Floating64.value">value</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Int16" href="#spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Int16">DbValue_Int16</a></code></h4>
+<ul class="">
+<li><code><a title="spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Int16.value" href="#spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Int16.value">value</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Int32" href="#spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Int32">DbValue_Int32</a></code></h4>
+<ul class="">
+<li><code><a title="spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Int32.value" href="#spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Int32.value">value</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Int64" href="#spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Int64">DbValue_Int64</a></code></h4>
+<ul class="">
+<li><code><a title="spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Int64.value" href="#spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Int64.value">value</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Int8" href="#spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Int8">DbValue_Int8</a></code></h4>
+<ul class="">
+<li><code><a title="spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Int8.value" href="#spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Int8.value">value</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Str" href="#spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Str">DbValue_Str</a></code></h4>
+<ul class="">
+<li><code><a title="spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Str.value" href="#spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Str.value">value</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Time" href="#spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Time">DbValue_Time</a></code></h4>
+<ul class="">
+<li><code><a title="spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Time.value" href="#spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Time.value">value</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Timestamp" href="#spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Timestamp">DbValue_Timestamp</a></code></h4>
+<ul class="">
+<li><code><a title="spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Timestamp.value" href="#spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Timestamp.value">value</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Unsupported" href="#spin_sdk.wit.imports.spin_postgres_postgres.DbValue_Unsupported">DbValue_Unsupported</a></code></h4>
+</li>
+<li>
+<h4><code><a title="spin_sdk.wit.imports.spin_postgres_postgres.Error_BadParameter" href="#spin_sdk.wit.imports.spin_postgres_postgres.Error_BadParameter">Error_BadParameter</a></code></h4>
+<ul class="">
+<li><code><a title="spin_sdk.wit.imports.spin_postgres_postgres.Error_BadParameter.value" href="#spin_sdk.wit.imports.spin_postgres_postgres.Error_BadParameter.value">value</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="spin_sdk.wit.imports.spin_postgres_postgres.Error_ConnectionFailed" href="#spin_sdk.wit.imports.spin_postgres_postgres.Error_ConnectionFailed">Error_ConnectionFailed</a></code></h4>
+<ul class="">
+<li><code><a title="spin_sdk.wit.imports.spin_postgres_postgres.Error_ConnectionFailed.value" href="#spin_sdk.wit.imports.spin_postgres_postgres.Error_ConnectionFailed.value">value</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="spin_sdk.wit.imports.spin_postgres_postgres.Error_Other" href="#spin_sdk.wit.imports.spin_postgres_postgres.Error_Other">Error_Other</a></code></h4>
+<ul class="">
+<li><code><a title="spin_sdk.wit.imports.spin_postgres_postgres.Error_Other.value" href="#spin_sdk.wit.imports.spin_postgres_postgres.Error_Other.value">value</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="spin_sdk.wit.imports.spin_postgres_postgres.Error_QueryFailed" href="#spin_sdk.wit.imports.spin_postgres_postgres.Error_QueryFailed">Error_QueryFailed</a></code></h4>
+<ul class="">
+<li><code><a title="spin_sdk.wit.imports.spin_postgres_postgres.Error_QueryFailed.value" href="#spin_sdk.wit.imports.spin_postgres_postgres.Error_QueryFailed.value">value</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="spin_sdk.wit.imports.spin_postgres_postgres.Error_ValueConversionFailed" href="#spin_sdk.wit.imports.spin_postgres_postgres.Error_ValueConversionFailed">Error_ValueConversionFailed</a></code></h4>
+<ul class="">
+<li><code><a title="spin_sdk.wit.imports.spin_postgres_postgres.Error_ValueConversionFailed.value" href="#spin_sdk.wit.imports.spin_postgres_postgres.Error_ValueConversionFailed.value">value</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_Binary" href="#spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_Binary">ParameterValue_Binary</a></code></h4>
+<ul class="">
+<li><code><a title="spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_Binary.value" href="#spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_Binary.value">value</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_Boolean" href="#spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_Boolean">ParameterValue_Boolean</a></code></h4>
+<ul class="">
+<li><code><a title="spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_Boolean.value" href="#spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_Boolean.value">value</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_Date" href="#spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_Date">ParameterValue_Date</a></code></h4>
+<ul class="">
+<li><code><a title="spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_Date.value" href="#spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_Date.value">value</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_Datetime" href="#spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_Datetime">ParameterValue_Datetime</a></code></h4>
+<ul class="">
+<li><code><a title="spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_Datetime.value" href="#spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_Datetime.value">value</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_DbNull" href="#spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_DbNull">ParameterValue_DbNull</a></code></h4>
+</li>
+<li>
+<h4><code><a title="spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_Floating32" href="#spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_Floating32">ParameterValue_Floating32</a></code></h4>
+<ul class="">
+<li><code><a title="spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_Floating32.value" href="#spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_Floating32.value">value</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_Floating64" href="#spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_Floating64">ParameterValue_Floating64</a></code></h4>
+<ul class="">
+<li><code><a title="spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_Floating64.value" href="#spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_Floating64.value">value</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_Int16" href="#spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_Int16">ParameterValue_Int16</a></code></h4>
+<ul class="">
+<li><code><a title="spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_Int16.value" href="#spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_Int16.value">value</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_Int32" href="#spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_Int32">ParameterValue_Int32</a></code></h4>
+<ul class="">
+<li><code><a title="spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_Int32.value" href="#spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_Int32.value">value</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_Int64" href="#spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_Int64">ParameterValue_Int64</a></code></h4>
+<ul class="">
+<li><code><a title="spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_Int64.value" href="#spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_Int64.value">value</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_Int8" href="#spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_Int8">ParameterValue_Int8</a></code></h4>
+<ul class="">
+<li><code><a title="spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_Int8.value" href="#spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_Int8.value">value</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_Str" href="#spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_Str">ParameterValue_Str</a></code></h4>
+<ul class="">
+<li><code><a title="spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_Str.value" href="#spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_Str.value">value</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_Time" href="#spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_Time">ParameterValue_Time</a></code></h4>
+<ul class="">
+<li><code><a title="spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_Time.value" href="#spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_Time.value">value</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_Timestamp" href="#spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_Timestamp">ParameterValue_Timestamp</a></code></h4>
+<ul class="">
+<li><code><a title="spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_Timestamp.value" href="#spin_sdk.wit.imports.spin_postgres_postgres.ParameterValue_Timestamp.value">value</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="spin_sdk.wit.imports.spin_postgres_postgres.RowSet" href="#spin_sdk.wit.imports.spin_postgres_postgres.RowSet">RowSet</a></code></h4>
+<ul class="">
+<li><code><a title="spin_sdk.wit.imports.spin_postgres_postgres.RowSet.columns" href="#spin_sdk.wit.imports.spin_postgres_postgres.RowSet.columns">columns</a></code></li>
+<li><code><a title="spin_sdk.wit.imports.spin_postgres_postgres.RowSet.rows" href="#spin_sdk.wit.imports.spin_postgres_postgres.RowSet.rows">rows</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.11.3</a>.</p>
+</footer>
+</body>
+</html>

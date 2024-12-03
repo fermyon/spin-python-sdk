@@ -1,4 +1,5 @@
 from typing import TypeVar, Generic, Union, Optional, Protocol, Tuple, List, Any, Self
+from types import TracebackType
 from enum import Flag, Enum, auto
 from dataclasses import dataclass
 from abc import abstractmethod
@@ -52,7 +53,6 @@ class Connection:
         Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.mqtt.Error)`
         """
         raise NotImplementedError
-
     def publish(self, topic: str, payload: bytes, qos: Qos) -> None:
         """
         Publish an Mqtt message to the specified `topic`.
@@ -60,12 +60,11 @@ class Connection:
         Raises: `spin_sdk.wit.types.Err(spin_sdk.wit.imports.mqtt.Error)`
         """
         raise NotImplementedError
-
-    def __enter__(self):
+    def __enter__(self) -> Self:
         """Returns self"""
         return self
-                                                                    
-    def __exit__(self, *args):
+                                
+    def __exit__(self, exc_type: type[BaseException] | None, exc_value: BaseException | None, traceback: TracebackType | None) -> bool | None:
         """
         Release this resource.
         """
