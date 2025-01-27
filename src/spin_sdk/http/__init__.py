@@ -163,14 +163,14 @@ async def send_async(request: Request) -> Response:
     url_parsed = parse.urlparse(request.uri)
 
     match url_parsed.scheme:
-            case "http":
-                scheme: Scheme = Scheme_Http()
-            case "https":
-                scheme = Scheme_Https()
-            case "":
-                scheme = Scheme_Http()
-            case _:
-                scheme = Scheme_Other(url_parsed.scheme)
+        case "http":
+            scheme: Scheme = Scheme_Http()
+        case "https":
+            scheme = Scheme_Https()
+        case "":
+            scheme = Scheme_Http()
+        case _:
+            scheme = Scheme_Other(url_parsed.scheme)
 
     headers_dict = request.headers
 
@@ -218,14 +218,16 @@ async def send_async(request: Request) -> Response:
     while True:
         chunk = await response_body.next()
         if chunk is None:
+            headers = incoming_response.headers()
             simple_response = Response(
                 incoming_response.status(),
                 dict(map(
                     lambda pair: (pair[0], str(pair[1], "utf-8")),
-                    incoming_response.headers().entries()
+                    headers.entries()
                 )),
                 bytes(body)
             )
+            headers.__exit__(None, None, None)
             incoming_response.__exit__(None, None, None)
             return simple_response
         else:
